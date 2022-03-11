@@ -1,0 +1,255 @@
+basePath: /
+definitions:
+  api.APICustomerLogin:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    required:
+    - password
+    - username
+    type: object
+  api.APICustomerRegister:
+    properties:
+      email:
+        type: string
+      name:
+        type: string
+      password:
+        type: string
+      phone_number:
+        type: string
+      surname:
+        type: string
+      username:
+        type: string
+    required:
+    - email
+    - name
+    - password
+    - phone_number
+    - surname
+    - username
+    type: object
+  model.Customer:
+    properties:
+      email:
+        type: string
+      id:
+        type: integer
+      is_student:
+        type: boolean
+      name:
+        type: string
+      password:
+        type: string
+      phone_number:
+        type: string
+      surname:
+        type: string
+      username:
+        type: string
+    type: object
+  model.Employee:
+    properties:
+      email:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      password:
+        type: string
+      phone_number:
+        type: string
+      role:
+        $ref: '#/definitions/model.Role'
+      roleId:
+        type: integer
+      surname:
+        type: string
+      username:
+        type: string
+    type: object
+  model.Movie:
+    properties:
+      description:
+        type: string
+      director:
+        type: string
+      id:
+        type: integer
+      length:
+        type: integer
+      movieType:
+        $ref: '#/definitions/model.MovieType'
+      movieTypeId:
+        type: integer
+      title:
+        type: string
+    type: object
+  model.MovieHall:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+      number_of_seats:
+        type: integer
+    type: object
+  model.MovieType:
+    properties:
+      id:
+        type: integer
+      price:
+        type: integer
+      type:
+        type: string
+    type: object
+  model.Reservation:
+    properties:
+      active:
+        type: boolean
+      customer:
+        $ref: '#/definitions/model.Customer'
+      customerId:
+        type: integer
+      employee:
+        $ref: '#/definitions/model.Employee'
+      employeeId:
+        type: integer
+      id:
+        type: integer
+      paid:
+        type: boolean
+      reservationType:
+        $ref: '#/definitions/model.ReservationType'
+      reservationTypeId:
+        type: integer
+      reserved:
+        type: boolean
+      screening:
+        $ref: '#/definitions/model.Screening'
+      screeningId:
+        type: integer
+    type: object
+  model.ReservationType:
+    properties:
+      id:
+        type: integer
+      type:
+        type: string
+    type: object
+  model.Role:
+    properties:
+      id:
+        type: integer
+      roleName:
+        type: string
+    type: object
+  model.Screening:
+    properties:
+      id:
+        type: integer
+      movie:
+        $ref: '#/definitions/model.Movie'
+      movieHall:
+        $ref: '#/definitions/model.MovieHall'
+      movieHallId:
+        type: integer
+      movieId:
+        type: integer
+      reservations:
+        items:
+          $ref: '#/definitions/model.Reservation'
+        type: array
+      start_of_screening:
+        type: string
+    type: object
+host: localhost:4000
+info:
+  contact: {}
+  description: This is a mistake.
+  title: MovieTown API
+  version: 0.1-alpha
+paths:
+  /api/v1/customer/login:
+    post:
+      consumes:
+      - application/json
+      description: Login as a customer and return AccessToken (not yet implemented)
+      parameters:
+      - description: login customer DTO
+        in: body
+        name: customer
+        required: true
+        schema:
+          $ref: '#/definitions/api.APICustomerLogin'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Customer'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Login as a customer
+      tags:
+      - customer
+  /api/v1/customer/register:
+    post:
+      consumes:
+      - application/json
+      description: register new customer
+      parameters:
+      - description: create customer
+        in: body
+        name: customer
+        required: true
+        schema:
+          $ref: '#/definitions/api.APICustomerRegister'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: type
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Creates new customer
+      tags:
+      - customer
+  /ping/{customer_id}:
+    get:
+      consumes:
+      - application/json
+      description: get []Reservation by customer_id
+      parameters:
+      - description: reservation search by customer_id
+        format: int
+        in: query
+        name: customer_id
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Reservation'
+      summary: Show reservations
+      tags:
+      - reservations
+securityDefinitions:
+  BasicAuth:
+    type: basic
+swagger: "2.0"
