@@ -72,11 +72,13 @@ func main() {
 		employeeApi := v1.Group("/employee")
 		{
 			employeeApi.POST("/login", employeeHandler.LoginEmployee)
-			employeeApi.POST("/create", auth.EmployeeAuthMiddleware(), employeeHandler.RegisterNewEmployee)
-			employeeApi.GET("/info/:username", auth.EmployeeAuthMiddleware(), employeeHandler.GetEmployeeInfo)
-			employeeApi.PUT("/role", auth.EmployeeAuthMiddleware(), employeeHandler.ChangeEmployeeRole)
-			employeeApi.PUT("/info", auth.EmployeeAuthMiddleware(), employeeHandler.UpdateEmployeeInfo)
-			employeeApi.PUT("/password", auth.EmployeeAuthMiddleware(), employeeHandler.ChangePassword)
+			employeeApi.Use(auth.EmployeeAuthMiddleware())
+			employeeApi.POST("/create", employeeHandler.RegisterNewEmployee)
+			employeeApi.GET("/info/:username", employeeHandler.GetEmployeeInfo)
+			employeeApi.PUT("/role", employeeHandler.ChangeEmployeeRole)
+			employeeApi.PUT("/info", employeeHandler.UpdateEmployeeInfo)
+			employeeApi.PUT("/password", employeeHandler.ChangePassword)
+			employeeApi.DELETE("/delete/:id", employeeHandler.DeleteEmployee)
 		}
 	}
 

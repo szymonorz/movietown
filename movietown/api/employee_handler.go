@@ -4,6 +4,7 @@ import (
 	"movietown/auth"
 	"movietown/model"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
@@ -268,4 +269,26 @@ func (h *EmployeeHandler) ChangePassword(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"password": "password changed succesfully"})
+}
+
+// DeleteEmployee godoc
+// @Summary      Delete Employee
+// @Description  Delete employee of sepcified id
+// @Tags         employee
+// @Accept       json
+// @Produce      json
+// @Param		 Authorization	header string true "Authorization"
+// @Param		 id		path	int	true	"delete employee of :id"
+// @Success      200  {object}  		map[string]interface{}
+// @Failure		 404  {object}			map[string]interface{}
+// @Router       /api/v1/employee/delete/{id} [delete]
+func (h *EmployeeHandler) DeleteEmployee(c *gin.Context) {
+	id, _ := strconv.ParseUint(c.Param("id"), 10, 0)
+	err := h.auth.EmployeeService.DeleteEmployee(uint(id))
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"employee": "employee deleted succesfully"})
 }

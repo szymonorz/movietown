@@ -20,7 +20,6 @@ func (r *EmployeeRepository) Create(employee *model.Employee) error {
 
 func (r *EmployeeRepository) FindEmployeeInfoByUsername(username string) (*model.EmployeeInfo, error) {
 	var employee model.EmployeeInfo
-	//result := r.db.Model(model.Employee{}).Preload("Role").First(&employee, "username = ?", username)
 	err := r.db.Table("employees").
 		Preload("Role").
 		First(&employee, "username = ?", username).Error
@@ -29,7 +28,6 @@ func (r *EmployeeRepository) FindEmployeeInfoByUsername(username string) (*model
 
 func (r *EmployeeRepository) FindEmployeeInfoById(id uint) (*model.EmployeeInfo, error) {
 	var employee model.EmployeeInfo
-	//result := r.db.Model(model.Employee{}).Preload("Role").First(&employee, "username = ?", username)
 	err := r.db.Table("employees").
 		Preload("Role").
 		First(&employee, "id = ?", id).Error
@@ -38,7 +36,6 @@ func (r *EmployeeRepository) FindEmployeeInfoById(id uint) (*model.EmployeeInfo,
 
 func (r *EmployeeRepository) FindEmployeeById(id uint) (*model.Employee, error) {
 	var employee model.Employee
-	//result := r.db.Model(model.Employee{}).Preload("Role").First(&employee, "username = ?", username)
 	err := r.db.Table("employees").
 		Omit("Role").
 		First(&employee, "id = ?", id).Error
@@ -71,4 +68,8 @@ func (r *EmployeeRepository) UpdateEmployeePassword(id uint, newpassword_hash st
 	return r.db.Model(&model.Employee{}).
 		Where("id = ?", id).
 		Update("password", newpassword_hash).Error
+}
+
+func (r *EmployeeRepository) DeleteEmployee(id uint) error {
+	return r.db.Where("id = ?", id).Delete(&model.Employee{}).Error
 }

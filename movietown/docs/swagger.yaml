@@ -299,37 +299,6 @@ paths:
       summary: Creates new customer
       tags:
       - customer
-  /api/v1/employee/{username}:
-    get:
-      consumes:
-      - application/json
-      description: get employee's info
-      parameters:
-      - description: Authorization
-        in: header
-        name: Authorization
-        required: true
-        type: string
-      - description: Employee's username
-        in: path
-        name: username
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            type: type
-        "404":
-          description: Not Found
-          schema:
-            additionalProperties: true
-            type: object
-      summary: Gets information about employee with specified username
-      tags:
-      - employee
   /api/v1/employee/create:
     post:
       consumes:
@@ -362,6 +331,38 @@ paths:
       summary: Creates new employee
       tags:
       - employee
+  /api/v1/employee/delete/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete employee of sepcified id
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: delete employee of :id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Delete Employee
+      tags:
+      - employee
   /api/v1/employee/info:
     put:
       consumes:
@@ -392,6 +393,42 @@ paths:
             additionalProperties: true
             type: object
       summary: Updates employees information
+      tags:
+      - employee
+  /api/v1/employee/info/{username}:
+    get:
+      consumes:
+      - application/json
+      description: get employee's info
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Employee's username
+        in: path
+        name: username
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: type
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Gets information about employee with specified username
       tags:
       - employee
   /api/v1/employee/login:

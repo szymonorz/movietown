@@ -86,7 +86,8 @@ func (auth *AuthMiddleware) EmployeeAuthMiddleware() gin.HandlerFunc {
 		switch c.FullPath() {
 		case "/api/v1/employee/create",
 			"/api/v1/roles/all",
-			"/api/v1/employee/role":
+			"/api/v1/employee/role",
+			"/api/v1/employee/delete/:id":
 			if role != "manager" {
 				c.JSON(http.StatusUnauthorized, gin.H{"error": "employee unathorized to use this feature"})
 				c.Abort()

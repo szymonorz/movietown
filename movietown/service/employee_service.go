@@ -64,3 +64,7 @@ func (s *EmployeeService) UpdateEmployeePassword(employee model.Employee, curren
 	}
 	return s.repository.UpdateEmployeePassword(employee.ID, new_hash)
 }
+
+func (s *EmployeeService) DeleteEmployee(id uint) error {
+	return s.repository.DeleteEmployee(id)
+}
