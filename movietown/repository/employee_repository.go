@@ -21,6 +21,6 @@ func (r *EmployeeRepository) Create(employee *model.Employee) error {
 
 func (r *EmployeeRepository) FindEmployeeByUsername(username string) (*model.Employee, error) {
 	var employee model.Employee
-	result := r.db.Find(&employee, "username = ?", username)
+	result := r.db.Preload("Role").Find(&employee, "username = ?", username)
 	return &employee, result.Error
 }
