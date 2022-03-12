@@ -11,25 +11,19 @@ func generateTokenPair(id uint, role string) (map[string]string, error) {
 
 	claims := token.Claims.(jwt.MapClaims)
 	claims["identitykey"] = id
-	claims["role"] = role
 	claims["exp"] = time.Now().Add(time.Hour * 10).Unix()
-	t, err := token.SignedString([]byte("test"))
-	if err != nil {
-		return nil, err
+	var secret string
+	if role == "customer" {
+		secret = "CustomerSecret"
+	} else {
+		secret = "EmployeeSecret"
 	}
-
-	refreshToken := jwt.New(jwt.SigningMethodHS256)
-	rtClaims := refreshToken.Claims.(jwt.MapClaims)
-	rtClaims["exp"] = time.Now().Add(time.Hour * 10).Unix()
-	rtClaims["identitykey"] = id
-
-	rt, err := refreshToken.SignedString([]byte("test"))
+	t, err := token.SignedString([]byte(secret))
 	if err != nil {
 		return nil, err
 	}
 
 	return map[string]string{
-		"access_token":  t,
-		"refresh_token": rt,
+		"access_token": t,
 	}, nil
 }

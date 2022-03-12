@@ -1,8 +1,8 @@
 package api
 
 import (
+	"movietown/auth"
 	"movietown/model"
-	"movietown/service"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -10,12 +10,12 @@ import (
 )
 
 type CustomerHandler struct {
-	service   service.CustomerService
+	auth      auth.AuthMiddleware
 	validator validator.Validate
 }
 
-func NewCustomerHandler(service service.CustomerService) CustomerHandler {
-	return CustomerHandler{service: service, validator: *validator.New()}
+func NewCustomerHandler(auth auth.AuthMiddleware) CustomerHandler {
+	return CustomerHandler{auth: auth, validator: *validator.New()}
 }
 
 type apiCustomerLogin struct {
@@ -29,7 +29,7 @@ type apiCustomerLogin struct {
 // @Tags         customer
 // @Accept       json
 // @Produce      json
-// @Param		 customer body APICustomerLogin true "login customer DTO"
+// @Param		 customer body apiCustomerLogin true "login customer DTO"
 // @Success      200  	{object}  		model.Customer
 // @Failure		 400  	{object}		map[string]interface{}
 // @Router       /api/v1/customer/login [post]
@@ -45,7 +45,7 @@ func (h *CustomerHandler) LoginCustomer(c *gin.Context) {
 		return
 	}
 
-	customer, err := h.service.FindCustomerByUsernameAndPassword(req_customer.Username, req_customer.Password)
+	customer, err := h.auth.CustomerService.FindCustomerByUsernameAndPassword(req_customer.Username, req_customer.Password)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"login": "user not found"})
 		return
@@ -88,7 +88,7 @@ func getRegisterCustomer(req apiCustomerRegister) model.Customer {
 // @Tags         customer
 // @Accept       json
 // @Produce      json
-// @Param		 customer body APICustomerRegister true "create customer"
+// @Param		 customer body apiCustomerRegister true "create customer"
 // @Success      200  {type}  		uint
 // @Failure		 400  {object}		map[string]interface{}
 // @Router       /api/v1/customer/register [post]
@@ -105,7 +105,7 @@ func (h *CustomerHandler) RegisterNewCustomer(c *gin.Context) {
 	}
 
 	customer := getRegisterCustomer(req_customer)
-	err := h.service.AddNewCustomer(&customer)
+	err := h.auth.CustomerService.AddNewCustomer(&customer)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, err)
 		return

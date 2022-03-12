@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"movietown/api"
+	"movietown/auth"
 	"movietown/database"
 	"movietown/repository"
 	"movietown/service"
@@ -21,16 +22,20 @@ func InitializeReservationHandler(database *gorm.DB) api.ReservationHandler {
 	return api.NewReservationHandler(reservationService)
 }
 
-func InitializeCustomerHandler(database *gorm.DB) api.CustomerHandler {
-	customerRepo := repository.NewCustomerRepository(database)
-	customerService := service.NewCustomerService(customerRepo)
-	return api.NewCustomerHandler(customerService)
+func InitializeCustomerHandler(auth auth.AuthMiddleware) api.CustomerHandler {
+	return api.NewCustomerHandler(auth)
 }
 
-func InitializeEmployeeHandler(database *gorm.DB) api.EmployeeHandler {
+func InitializeEmployeeHandler(auth auth.AuthMiddleware) api.EmployeeHandler {
+	return api.NewEmployeeHandler(auth)
+}
+
+func InitializeAuthMiddleware(database *gorm.DB) auth.AuthMiddleware {
 	employeeRepo := repository.NewEmployeeRepository(database)
 	employeeServce := service.NewEmployeeService(employeeRepo)
-	return api.NewEmployeeHandler(employeeServce)
+	customerRepo := repository.NewCustomerRepository(database)
+	customerService := service.NewCustomerService(customerRepo)
+	return auth.NewAuthMiddleware(customerService, employeeServce)
 }
 
 // @title           MovieTown API
@@ -39,8 +44,6 @@ func InitializeEmployeeHandler(database *gorm.DB) api.EmployeeHandler {
 
 // @host      localhost:4000
 // @BasePath  /
-
-// @securityDefinitions.basic  BasicAuth
 func main() {
 	postgresString := "postgres://postgres:postgres@localhost:5432/postgres"
 	var db *gorm.DB
@@ -50,11 +53,13 @@ func main() {
 	}
 
 	_ = InitializeReservationHandler(db)
-	customerHandler := InitializeCustomerHandler(db)
-	employeeHandler := InitializeEmployeeHandler(db)
+	auth := InitializeAuthMiddleware(db)
+	customerHandler := InitializeCustomerHandler(auth)
+	employeeHandler := InitializeEmployeeHandler(auth)
+
 	gin.SetMode(gin.DebugMode)
 	router := gin.Default()
-	router.Use(gin.Logger())
+	//router.Use(gin.Logger())
 	router.Use(CORSMiddleware())
 
 	v1 := router.Group("/api/v1")
@@ -67,7 +72,11 @@ func main() {
 		employeeApi := v1.Group("/employee")
 		{
 			employeeApi.POST("/login", employeeHandler.LoginEmployee)
-			employeeApi.POST("/register", employeeHandler.RegisterNewEmployee)
+			employeeApi.POST("/create", auth.EmployeeAuthMiddleware(), employeeHandler.RegisterNewEmployee)
+			employeeApi.GET("/info/:username", auth.EmployeeAuthMiddleware(), employeeHandler.GetEmployeeInfo)
+			employeeApi.PUT("/role", auth.EmployeeAuthMiddleware(), employeeHandler.ChangeEmployeeRole)
+			employeeApi.PUT("/info", auth.EmployeeAuthMiddleware(), employeeHandler.UpdateEmployeeInfo)
+			employeeApi.PUT("/password", auth.EmployeeAuthMiddleware(), employeeHandler.ChangePassword)
 		}
 	}
 
