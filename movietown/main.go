@@ -45,7 +45,7 @@ func InitializeAuthMiddleware(database *gorm.DB) auth.AuthMiddleware {
 // @host      localhost:4000
 // @BasePath  /
 func main() {
-	postgresString := "postgres://postgres:postgres@localhost:5432/postgres"
+	postgresString := "postgres://postgres:postgres@localhost:5432/movietown"
 	var db *gorm.DB
 	var err error
 	if db, err = database.InitPostgresConnection(postgresString); err != nil {
@@ -68,6 +68,11 @@ func main() {
 		{
 			customerApi.POST("/login", customerHandler.LoginCustomer)
 			customerApi.POST("/register", customerHandler.RegisterNewCustomer)
+			customerApi.Use(auth.CustomerAuthMiddleware())
+			customerApi.PUT("/info", customerHandler.UpdateCustomerInfo)
+			customerApi.GET("/info", customerHandler.GetCustomerInfo)
+			customerApi.PUT("/password", customerHandler.ChangeCustomerPassword)
+			customerApi.DELETE("/delete", customerHandler.DeleteCustomer)
 		}
 		employeeApi := v1.Group("/employee")
 		{

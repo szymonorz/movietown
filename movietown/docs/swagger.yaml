@@ -84,6 +84,25 @@ definitions:
       new_role_id:
         type: integer
     type: object
+  api.requestBody:
+    properties:
+      email:
+        type: string
+      name:
+        type: string
+      phone_number:
+        type: string
+      surname:
+        type: string
+      username:
+        type: string
+    required:
+    - email
+    - name
+    - phone_number
+    - surname
+    - username
+    type: object
   model.Customer:
     properties:
       email:
@@ -245,6 +264,95 @@ info:
   title: MovieTown API
   version: 0.1-alpha
 paths:
+  /api/v1/customer/delete:
+    delete:
+      consumes:
+      - application/json
+      description: Delete customer of sepcified id
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Delete Customer
+      tags:
+      - customer
+  /api/v1/customer/info:
+    get:
+      consumes:
+      - application/json
+      description: get customer's info from token
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: type
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Gets information about employee with specified username
+      tags:
+      - customer
+    put:
+      consumes:
+      - application/json
+      description: update customer's info
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: updated employee information
+        in: body
+        name: customer
+        required: true
+        schema:
+          $ref: '#/definitions/api.requestBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: type
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Updates cutomer's information
+      tags:
+      - customer
   /api/v1/customer/login:
     post:
       consumes:
@@ -270,6 +378,39 @@ paths:
             additionalProperties: true
             type: object
       summary: Login as a customer
+      tags:
+      - customer
+  /api/v1/customer/password:
+    put:
+      consumes:
+      - application/json
+      description: customer changes their own password by themselfs
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: change employee password
+        in: body
+        name: employee
+        required: true
+        schema:
+          $ref: '#/definitions/api.changePasswordBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+      summary: ChangePassword
       tags:
       - customer
   /api/v1/customer/register:

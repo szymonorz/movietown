@@ -52,14 +52,9 @@ func (auth *AuthMiddleware) VerifyToken(r *http.Request, secret string) (*jwt.To
 
 func (auth *AuthMiddleware) CustomerAuthMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		claims, err := auth.TokenValid(c.Request, "CustomerSecret")
+		_, err := auth.TokenValid(c.Request, "CustomerSecret")
 		if err != nil {
 			c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
-			c.Abort()
-			return
-		}
-		if claims["role"] != "customer" {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": "user unathorized"})
 			c.Abort()
 			return
 		}
@@ -127,6 +122,40 @@ func (auth *AuthMiddleware) GetEmployeeFromRequest(r *http.Request) (*model.Empl
 		return nil, err
 	}
 	return employee, nil
+}
+
+func (auth *AuthMiddleware) GetCustomerFromRequest(r *http.Request) (*model.Customer, error) {
+	token, err := auth.VerifyToken(r, "CustomerSecret")
+	if err != nil {
+		return nil, err
+	}
+	claims, ok := token.Claims.(jwt.MapClaims)
+	if !ok && !token.Valid {
+		return nil, err
+	}
+	id := claims["identitykey"].(float64)
+	customer, err := auth.CustomerService.FindCustomerById(uint(id))
+	if err != nil {
+		return nil, err
+	}
+	return customer, nil
+}
+
+func (auth *AuthMiddleware) GetCustomerInfoFromRequest(r *http.Request) (*model.CustomerInfo, error) {
+	token, err := auth.VerifyToken(r, "CustomerSecret")
+	if err != nil {
+		return nil, err
+	}
+	claims, ok := token.Claims.(jwt.MapClaims)
+	if !ok && !token.Valid {
+		return nil, err
+	}
+	id := claims["identitykey"].(float64)
+	customer, err := auth.CustomerService.FindCustomerInfoById(uint(id))
+	if err != nil {
+		return nil, err
+	}
+	return customer, nil
 }
 
 func (auth *AuthMiddleware) extractToken(r *http.Request) string {

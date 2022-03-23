@@ -32,3 +32,33 @@ func (s *CustomerService) FindCustomerByUsernameAndPassword(username, password s
 	}
 	return customer, err
 }
+
+func (s *CustomerService) FindCustomerById(id uint) (*model.Customer, error) {
+	return s.repository.FindCustomerById(id)
+}
+
+func (s *CustomerService) FindCustomerInfoById(id uint) (*model.CustomerInfo, error) {
+	return s.repository.FindCustomerInfoById(id)
+}
+
+func (s *CustomerService) UpdateCustomerInfo(customer model.CustomerInfo) error {
+	return s.repository.UpdateCustomer(customer)
+}
+
+func (s *CustomerService) UpdateCustomerPassword(customer model.Customer, current_password, new_password string) error {
+	if current_password == new_password {
+		return errors.New("new password cannot match old password")
+	}
+	if !verifyPassword(current_password, customer.Password) {
+		return errors.New("invalid password")
+	}
+	new_hash, err := hashPassword(new_password)
+	if err != nil {
+		return err
+	}
+	return s.repository.UpdateCustomerPassword(customer.ID, new_hash)
+}
+
+func (s *CustomerService) DeleteCustomer(id uint) error {
+	return s.repository.DeleteCustomer(id)
+}
