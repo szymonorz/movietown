@@ -10,6 +10,5 @@ type Screening struct {
 	Movie              Movie `gorm:"foreignKey:MovieId"`
 	MovieHallId        *uint
 	MovieHall          MovieHall `gorm:"foreignKey:MovieHallId"`
-	Reservations       []Reservation
 	Start_of_screening time.Time
 }

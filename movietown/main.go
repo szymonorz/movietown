@@ -16,6 +16,18 @@ import (
 	"gorm.io/gorm"
 )
 
+func IntitializeMovieHandler(database *gorm.DB) api.MovieHandler {
+	movieRepo := repository.NewMovieRepository(database)
+	movieService := service.NewMovieService(movieRepo)
+	return api.NewMovieHandler(movieService)
+}
+
+func InitializeScreeningHandler(database *gorm.DB) api.ScreeningHandler {
+	screeningRepo := repository.NewScreeningRepository(database)
+	screeningService := service.NewScreeningService(screeningRepo)
+	return api.NewScreeningHandler(screeningService)
+}
+
 func InitializeReservationHandler(database *gorm.DB) api.ReservationHandler {
 	reservationRepo := repository.NewReservationRepository(database)
 	reservationService := service.NewReservationService(reservationRepo)
@@ -54,6 +66,8 @@ func main() {
 
 	_ = InitializeReservationHandler(db)
 	auth := InitializeAuthMiddleware(db)
+	screeningHandler := InitializeScreeningHandler(db)
+	movieHandler := IntitializeMovieHandler(db)
 	customerHandler := InitializeCustomerHandler(auth)
 	employeeHandler := InitializeEmployeeHandler(auth)
 
@@ -84,6 +98,18 @@ func main() {
 			employeeApi.PUT("/info", employeeHandler.UpdateEmployeeInfo)
 			employeeApi.PUT("/password", employeeHandler.ChangePassword)
 			employeeApi.DELETE("/delete/:id", employeeHandler.DeleteEmployee)
+		}
+		movieApi := v1.Group("/movies")
+		{
+			movieApi.GET("/", movieHandler.GetMovies)
+			movieApi.GET("/:movie_id", movieHandler.GetMovieInfo)
+		}
+		screeningApi := v1.Group("/screening")
+		{
+			screeningApi.GET("/:movie_id", screeningHandler.GetMovieScreeningsByTime)
+			screeningApi.GET("/", screeningHandler.GetScreeningsByTime)
+			screeningApi.Use(auth.EmployeeAuthMiddleware())
+			screeningApi.POST("/add", screeningHandler.AddScreening)
 		}
 	}
 

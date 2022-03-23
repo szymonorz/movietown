@@ -82,14 +82,14 @@ func (auth *AuthMiddleware) EmployeeAuthMiddleware() gin.HandlerFunc {
 		case "/api/v1/employee/create",
 			"/api/v1/roles/all",
 			"/api/v1/employee/role",
-			"/api/v1/employee/delete/:id":
+			"/api/v1/employee/delete/:id",
+			"/api/v1/screening/add":
 			if role != "manager" {
 				c.JSON(http.StatusUnauthorized, gin.H{"error": "employee unathorized to use this feature"})
 				c.Abort()
 				return
 			}
-		case "/api/v1/screening/create",
-			"/api/v1/screening/sellTicket",
+		case "/api/v1/screening/sellTicket",
 			"/api/v1/employee/info",
 			"/api/v1/employee/password",
 			"/api/v1/employee/info/:username":

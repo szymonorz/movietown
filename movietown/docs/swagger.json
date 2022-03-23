@@ -606,7 +606,275 @@
                 }
             }
         },
-        "/ping/{customer_id}": {
+        "/api/v1/movies": {
+            "get": {
+                "description": "get []model.Movie",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "movie"
+                ],
+                "summary": "Show movies",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "title",
+                        "name": "title",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "page",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "offset",
+                        "name": "offset",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.Movie"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/movies/{movie_id}": {
+            "get": {
+                "description": "get []model.Movie",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "movie"
+                ],
+                "summary": "Show movie info",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "movie_id",
+                        "name": "movie_id",
+                        "in": "path"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.Movie"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/screening": {
+            "get": {
+                "description": "get []Screening",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "screening"
+                ],
+                "summary": "Show screenings",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "first",
+                        "name": "from",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "second",
+                        "name": "to",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "page",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "offset",
+                        "name": "offset",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.Screening"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/screening/add": {
+            "post": {
+                "description": "Boss is able to add a new screening",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "screening"
+                ],
+                "summary": "Add new screening",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Authorization",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "add screening DTO",
+                        "name": "screening",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/api.newScreening"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/screening/{movie_id}": {
+            "get": {
+                "description": "get []Screening by movie_id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "screening"
+                ],
+                "summary": "Show screenings",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "format": "int",
+                        "description": "screening search by movie_id",
+                        "name": "movie_id",
+                        "in": "path"
+                    },
+                    {
+                        "type": "string",
+                        "description": "first",
+                        "name": "from",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "second",
+                        "name": "to",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "page",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "offset",
+                        "name": "offset",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.Screening"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/customer/reservations": {
+            "get": {
+                "description": "get []Reservation by customer_id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "reservations"
+                ],
+                "summary": "Show reservations",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "format": "int",
+                        "description": "reservation search by customer_id",
+                        "name": "customer_id",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.Reservation"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/customer/reservations/{customer_id}": {
             "get": {
                 "description": "get []Reservation by customer_id",
                 "consumes": [
@@ -759,6 +1027,25 @@
                 },
                 "new_role_id": {
                     "type": "integer"
+                }
+            }
+        },
+        "api.newScreening": {
+            "type": "object",
+            "required": [
+                "movie_hall_id",
+                "movie_id",
+                "start_of_screening"
+            ],
+            "properties": {
+                "movie_hall_id": {
+                    "type": "integer"
+                },
+                "movie_id": {
+                    "type": "integer"
+                },
+                "start_of_screening": {
+                    "type": "string"
                 }
             }
         },
@@ -926,7 +1213,7 @@
                     "type": "integer"
                 },
                 "price": {
-                    "type": "integer"
+                    "type": "number"
                 },
                 "type": {
                     "type": "string"
@@ -1013,12 +1300,6 @@
                 },
                 "movieId": {
                     "type": "integer"
-                },
-                "reservations": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/model.Reservation"
-                    }
                 },
                 "start_of_screening": {
                     "type": "string"
