@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import SignUpForm, { SignUpValues } from '../forms/SignUpForm';
 import SignInForm, { SignInValues } from './../forms/SignInForm';
 import AccessToken from '../../model/AccessToken';
-import {instance, tokenValid} from '../../common/CustomerApi';
+import {loginCustomer, registerCustomer} from '../../api/CustomerApi';
 import {Navigate} from 'react-router-dom';
 
 const useStyles = makeStyles(() => ({
@@ -27,26 +27,29 @@ const useStyles = makeStyles(() => ({
 
 }))
 
+interface SignInPageProps{
+    loginState: boolean,
+    setLoginState: (arg: boolean) => void
+}
 
 
-const SignInPage: React.FC<{}> = () => {
+const SignInPage: React.FC<SignInPageProps> = ({loginState, setLoginState}) => {
     const { container, containerElement } = useStyles()
-    const [loginState, setLoginState] = useState<boolean>(false)
     const [loginError, setLoginError] = useState<boolean>(false)
     const [registerError, setRegisterError] = useState<boolean>(false)
-
     useEffect(() => {
         const token = localStorage.getItem("token")
-        if (token && tokenValid(token)) {
+        if (token) {
           setLoginState(true)
           console.log("Logged in")
         }
       }, [])
    
 
-    const loginUser = async (values: SignInValues) => {
+    const login = async (values: SignInValues) => {
         try {
-            const {data} = await instance.post("/customer/login", values)
+            const {data} = await loginCustomer(values)
+            console.log(data)
             const token = data as AccessToken
             localStorage.setItem("token", token.access_token)
             setLoginState(true)
@@ -56,10 +59,10 @@ const SignInPage: React.FC<{}> = () => {
         }
     }
 
-    const registerUser = async (values: SignUpValues) => {
+    const register = async (values: SignUpValues) => {
 
         try {
-            const {data} = await instance.post("/customer/register", values)
+            const {data} = await registerCustomer(values)
             const token = data as AccessToken
             console.log(token.access_token)
         } catch (err) {
@@ -76,13 +79,13 @@ const SignInPage: React.FC<{}> = () => {
             <SignInForm
                 loginError={loginError}
                 className={containerElement}
-                onSubmit={(values: SignInValues) => loginUser(values)}
+                onSubmit={(values: SignInValues) => login(values)}
             />
             <Divider orientation='vertical' flexItem />
             <SignUpForm
                 registerError={registerError}
                 className={containerElement}
-                onSubmit={(values: SignUpValues) => registerUser(values)}
+                onSubmit={(values: SignUpValues) => register(values)}
             />
         </div>
     )

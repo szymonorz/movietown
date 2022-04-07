@@ -1,7 +1,6 @@
 import React from 'react';
-import { TextField, makeStyles, Typography } from '@material-ui/core';
+import { TextField, makeStyles, Typography, BaseTextFieldProps } from '@material-ui/core';
 import { FieldAttributes, useField } from 'formik';
-
 
 const useStyles = makeStyles(() => ({
     root: {
@@ -16,11 +15,11 @@ const useStyles = makeStyles(() => ({
 
 interface TextFieldProps {
     label: string,
-    name: string,
+    name: string
 }
 
 
-const MTextField: React.FC<TextFieldProps & FieldAttributes<{}>> = ({ name, label, placeholder, type }) => {
+const MTextField: React.FC<TextFieldProps & FieldAttributes<{}> & BaseTextFieldProps> = ({ name, label, placeholder, type, disabled }) => {
     const { root, textLabel} = useStyles()
     const [field, meta] = useField<string>(name)
     const hasError = meta.error && meta.touched
@@ -33,6 +32,7 @@ const MTextField: React.FC<TextFieldProps & FieldAttributes<{}>> = ({ name, labe
             </Typography>
 
             <TextField
+                disabled={disabled}
                 InputProps={{ className: root }}
                 error={hasError as boolean}
                 variant='outlined'

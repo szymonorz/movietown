@@ -1,11 +1,18 @@
-import { AppBar, Button, Toolbar, Typography, makeStyles } from '@material-ui/core'
-import { Link } from 'react-router-dom';
+import { Button, Toolbar, Typography, makeStyles } from '@material-ui/core'
+import { useEffect, useState } from 'react';
+import { createSearchParams, Link, useNavigate } from 'react-router-dom';
+import SearchBar from './SearchBar';
+import { getQueriedMovies } from '../api/MovieApi';
 
 
-const headersData = [
+let headersData = [
     {
         label: "Sign In",
         href: "/signin"
+    },
+    {
+        label: "Repertuar",
+        href: "/screenings"
     }
 ]
 
@@ -36,6 +43,11 @@ const useStyles = makeStyles(() => ({
         },
         color: "white",
         margin: "0 5px 0 5px"
+    },
+    pain: {
+        display: "flex",
+        flexDirection: "row",
+        justifyContent: "spaceBetween"
     }
 }))
 
@@ -44,7 +56,7 @@ interface HeaderProps {
 }
 
 const Header: React.FC<HeaderProps> = ({ loggedIn }) => {
-    const { header, logo, toolbar, menuButton } = useStyles()
+    const { header, logo, toolbar, menuButton, pain } = useStyles()
 
     const movieTownLogo = (
         <Typography
@@ -57,51 +69,69 @@ const Header: React.FC<HeaderProps> = ({ loggedIn }) => {
         </Typography>
     )
     const makeButtons = () => {
-        if (!loggedIn) {
-            return headersData.map(({ label, href }) => {
-                return (
-                    <Button
-                        {...{
-                            key: label,
-                            color: "inherit",
-                            to: href,
-                            className: menuButton,
-                            component: Link
-                        }}>
-                        {label}
-                    </Button>
-                )
-            })
-        }else{
+        return headersData.map(({ label, href }) => {
+            if (loggedIn && href === "/signin") {
+                href = "/account/info"
+                label = "My account"
+            }
             return (
-                <Button 
-                {...{
-                    className: menuButton
-                }}>
-                    My account
+                <Button
+                    {...{
+                        key: label,
+                        color: "inherit",
+                        to: href,
+                        className: menuButton,
+                        component: Link
+                    }}>
+                    {label}
                 </Button>
             )
-        }
+        })
+        // } else {
+        //     return (
+        //         <Button
+        //             {...{
+        //                 className: menuButton,
+        //                 to: "/account/info",
+        //                 component: Link
+        //             }}>
+        //             My account
+        //         </Button>
+        //     )
+        // }
 
     }
 
-    const displayDesktop = () => {
+    const displayButtons = () => {
         return (
             <Toolbar className={toolbar}>
                 <Link to={"/"} className={logo}>
                     {movieTownLogo}
                 </Link>
-                <div>
+                <div className={pain}>
+                    <SearchBar
+                        // setSubmitQuery={(val: string) => console.log(val)}
+                        onSubmit={setSearchQuery} />
                     {makeButtons()}
                 </div>
             </Toolbar>
         )
     }
+    const [searchQuery, setSearchQuery] = useState("")
+    const navigate = useNavigate()
+    useEffect(() => {
+        if (searchQuery != "") {
 
+            navigate({
+                pathname: '/search',
+                search: `?title=${searchQuery}`
+            })
+        }
+    }, [searchQuery])
 
     return (
         <div className={header}>
-            {displayDesktop()}
+            {displayButtons()}
         </div>
     )
 }
