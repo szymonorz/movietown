@@ -967,8 +967,8 @@
                     },
                     {
                         "type": "integer",
-                        "description": "page",
-                        "name": "page",
+                        "description": "limit",
+                        "name": "limit",
                         "in": "query"
                     },
                     {
@@ -1074,8 +1074,8 @@
                     },
                     {
                         "type": "integer",
-                        "description": "page",
-                        "name": "page",
+                        "description": "limit",
+                        "name": "limit",
                         "in": "query"
                     },
                     {

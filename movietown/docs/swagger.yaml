@@ -1004,9 +1004,9 @@ paths:
         in: query
         name: to
         type: string
-      - description: page
+      - description: limit
         in: query
-        name: page
+        name: limit
         type: integer
       - description: offset
         in: query
@@ -1043,9 +1043,9 @@ paths:
         in: query
         name: to
         type: string
-      - description: page
+      - description: limit
         in: query
-        name: page
+        name: limit
         type: integer
       - description: offset
         in: query

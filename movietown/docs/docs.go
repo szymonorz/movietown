@@ -974,8 +974,8 @@ const docTemplate = `{
                     },
                     {
                         "type": "integer",
-                        "description": "page",
-                        "name": "page",
+                        "description": "limit",
+                        "name": "limit",
                         "in": "query"
                     },
                     {
@@ -1081,8 +1081,8 @@ const docTemplate = `{
                     },
                     {
                         "type": "integer",
-                        "description": "page",
-                        "name": "page",
+                        "description": "limit",
+                        "name": "limit",
                         "in": "query"
                     },
                     {

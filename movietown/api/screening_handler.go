@@ -28,12 +28,12 @@ func NewScreeningHandler(service service.ScreeningService) ScreeningHandler {
 // @Produce      json
 // @Param        from    query     string  false  "first"
 // @Param 		 to    query     string  false  "second"
-// @Param 		 page    query     int  false  "page"
+// @Param 		 limit    query     int  false  "limit"
 // @Param 		 offset    query     int  false  "offset"
 // @Success      200  {object}  []model.Screening
 // @Router       /api/v1/screening [get]
 func (h *ScreeningHandler) GetScreeningsByTime(c *gin.Context) {
-	page, err := strconv.ParseInt(c.Query("page"), 10, 0)
+	limit, err := strconv.ParseInt(c.Query("limit"), 10, 0)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -53,7 +53,7 @@ func (h *ScreeningHandler) GetScreeningsByTime(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	screenings, err := h.service.GetScreeningsByTime(from, to, int(page), int(offset))
+	screenings, err := h.service.GetScreeningsByTime(from, to, int(limit), int(offset))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -71,12 +71,12 @@ func (h *ScreeningHandler) GetScreeningsByTime(c *gin.Context) {
 // @Param        movie_id    path     int  false  "screening search by movie_id"  Format(int)
 // @Param        from    query     string  false  "first"
 // @Param 		 to    query     string  false  "second"
-// @Param 		 page    query     int  false  "page"
+// @Param 		 limit    query     int  false  "limit"
 // @Param 		 offset    query     int  false  "offset"
 // @Success      200  {object}  []model.Screening
 // @Router       /api/v1/screening/{movie_id} [get]
 func (h *ScreeningHandler) GetMovieScreeningsByTime(c *gin.Context) {
-	page, err := strconv.ParseInt(c.Query("page"), 10, 0)
+	limit, err := strconv.ParseInt(c.Query("limit"), 10, 0)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -101,7 +101,7 @@ func (h *ScreeningHandler) GetMovieScreeningsByTime(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	screenings, err := h.service.GetMovieScreeningsByTime(uint(movie_id), from, to, int(page), int(offset))
+	screenings, err := h.service.GetMovieScreeningsByTime(uint(movie_id), from, to, int(limit), int(offset))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
