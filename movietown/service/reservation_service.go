@@ -3,7 +3,6 @@ package service
 import (
 	"movietown/model"
 	"movietown/repository"
-	"log"
 )
 
 type ReservationService struct {
@@ -14,19 +13,10 @@ func NewReservationService(repository repository.ReservationRepository) Reservat
 	return ReservationService{repository: repository}
 }
 
-func (rs *ReservationService) AddReservation(reservation model.Reservation) error {
-	if err := rs.repository.Create(&reservation); err != nil {
-		log.Printf("error: %v\n", err)
-		return err
-	}
-	return nil
+func (rs *ReservationService) AddReservation(reservation *model.Reservation) error {
+	return rs.repository.Create(reservation)
 }
 
 func (rs *ReservationService) GetCustomerReservations(customer_id uint) ([]model.Reservation, error) {
-	reservations, err := rs.repository.FindByCustomerId(customer_id)
-	if err != nil {
-		log.Printf("error: %v\n", err)
-		return nil, err
-	}
-	return reservations, nil
+	return rs.repository.FindByCustomerId(customer_id)
 }

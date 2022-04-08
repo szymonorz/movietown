@@ -179,6 +179,26 @@ func (h *EmployeeHandler) GetEmployeeInfo(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, employee)
+}
+
+// GetEmployeeInfo godoc
+// @Summary      Gets information about employee with specified username
+// @Description  get employee's info
+// @Tags         employee
+// @Accept       json
+// @Produce      json
+// @Param		 Authorization	header string true "Authorization"
+// @Success      200  {type}  		map[string]interface{}
+// @Failure		 404  {object}		map[string]interface{}
+// @Failure		 400  {object}		map[string]interface{}
+// @Router       /api/v1/employee/info [get]
+func (h *EmployeeHandler) GetCurrentEmployeeInfo(c *gin.Context) {
+	employee, err := h.auth.GetEmployeeInfoFromRequest(c.Request)
+	if err != nil {
+		c.JSON(http.StatusNotFound, err)
+		return
+	}
+	c.JSON(http.StatusOK, employee)
 
 }
 

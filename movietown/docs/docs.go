@@ -375,6 +375,50 @@ const docTemplate = `{
             }
         },
         "/api/v1/employee/info": {
+            "get": {
+                "description": "get employee's info",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "employee"
+                ],
+                "summary": "Gets information about employee with specified username",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Authorization",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "type"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            },
             "put": {
                 "description": "update employee's info",
                 "consumes": [
@@ -690,6 +734,218 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/v1/reservations": {
+            "get": {
+                "description": "get []Reservation by customer_id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "reservations"
+                ],
+                "summary": "Show reservations",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Authorization",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "format": "int",
+                        "description": "reservation search by customer_id",
+                        "name": "customer_id",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.Reservation"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/reservations/customer/create": {
+            "post": {
+                "description": "make reservation as a customer",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "reservations"
+                ],
+                "summary": "Customer makes a seat reservation for screening",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Authorization",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "guest reservation DTO",
+                        "name": "guestReservation",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/api.customerReservation"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/definitions/model.ReservedSeat"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/reservations/customer/{customer_id}": {
+            "get": {
+                "description": "get []Reservation by customer_id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "reservations"
+                ],
+                "summary": "Show reservations",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Authorization",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "format": "int",
+                        "description": "reservation search by customer_id",
+                        "name": "customer_id",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.Reservation"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/reservations/employee/create": {
+            "post": {
+                "description": "reservation",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "reservations"
+                ],
+                "summary": "Employee makes a reservation for a customer",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Authorization",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "customer reservation DTO",
+                        "name": "guestReservation",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/api.customerReservation"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/definitions/model.ReservedSeat"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/reservations/guest/create": {
+            "post": {
+                "description": "make reservation as a guest",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "reservations"
+                ],
+                "summary": "Show reservations",
+                "parameters": [
+                    {
+                        "description": "guest reservation DTO",
+                        "name": "guestReservation",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/api.customerGuestReservation"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/definitions/model.ReservedSeat"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/screening": {
             "get": {
                 "description": "get []Screening",
@@ -848,70 +1104,6 @@ const docTemplate = `{
                     }
                 }
             }
-        },
-        "/v1/customer/reservations": {
-            "get": {
-                "description": "get []Reservation by customer_id",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "reservations"
-                ],
-                "summary": "Show reservations",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "format": "int",
-                        "description": "reservation search by customer_id",
-                        "name": "customer_id",
-                        "in": "query"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/model.Reservation"
-                        }
-                    }
-                }
-            }
-        },
-        "/v1/customer/reservations/{customer_id}": {
-            "get": {
-                "description": "get []Reservation by customer_id",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "reservations"
-                ],
-                "summary": "Show reservations",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "format": "int",
-                        "description": "reservation search by customer_id",
-                        "name": "customer_id",
-                        "in": "query"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/model.Reservation"
-                        }
-                    }
-                }
-            }
         }
     },
     "definitions": {
@@ -1037,6 +1229,80 @@ const docTemplate = `{
                 }
             }
         },
+        "api.customerGuestReservation": {
+            "type": "object",
+            "required": [
+                "email",
+                "name",
+                "password",
+                "phone_number",
+                "reservation_type_id",
+                "screening_id",
+                "seats_id",
+                "surname",
+                "username"
+            ],
+            "properties": {
+                "discount_id": {
+                    "type": "integer"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "phone_number": {
+                    "type": "string"
+                },
+                "reservation_type_id": {
+                    "type": "integer"
+                },
+                "screening_id": {
+                    "type": "integer"
+                },
+                "seats_id": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "surname": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "api.customerReservation": {
+            "type": "object",
+            "required": [
+                "reservation_type_id",
+                "screening_id",
+                "seats_id"
+            ],
+            "properties": {
+                "discount_id": {
+                    "type": "integer"
+                },
+                "reservation_type_id": {
+                    "type": "integer"
+                },
+                "screening_id": {
+                    "type": "integer"
+                },
+                "seats_id": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                }
+            }
+        },
         "api.newScreening": {
             "type": "object",
             "required": [
@@ -1108,6 +1374,20 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.DiscountType": {
+            "type": "object",
+            "properties": {
+                "discount": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "type": {
                     "type": "string"
                 }
             }
@@ -1188,10 +1468,10 @@ const docTemplate = `{
                 "length": {
                     "type": "integer"
                 },
-                "movieType": {
+                "movie_type": {
                     "$ref": "#/definitions/model.MovieType"
                 },
-                "movieTypeId": {
+                "movie_type_id": {
                     "type": "integer"
                 },
                 "title": {
@@ -1279,6 +1559,38 @@ const docTemplate = `{
                 }
             }
         },
+        "model.ReservedSeat": {
+            "type": "object",
+            "properties": {
+                "discountType": {
+                    "$ref": "#/definitions/model.DiscountType"
+                },
+                "discountTypeId": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "reservation": {
+                    "$ref": "#/definitions/model.Reservation"
+                },
+                "reservationId": {
+                    "type": "integer"
+                },
+                "screening": {
+                    "$ref": "#/definitions/model.Screening"
+                },
+                "screeningId": {
+                    "type": "integer"
+                },
+                "seat": {
+                    "$ref": "#/definitions/model.Seat"
+                },
+                "seatId": {
+                    "type": "integer"
+                }
+            }
+        },
         "model.Role": {
             "type": "object",
             "properties": {
@@ -1310,6 +1622,29 @@ const docTemplate = `{
                 },
                 "start_of_screening": {
                     "type": "string"
+                }
+            }
+        },
+        "model.Seat": {
+            "type": "object",
+            "properties": {
+                "column": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "movieHall": {
+                    "$ref": "#/definitions/model.MovieHall"
+                },
+                "movieHallId": {
+                    "type": "integer"
+                },
+                "number": {
+                    "type": "integer"
+                },
+                "row": {
+                    "type": "integer"
                 }
             }
         }

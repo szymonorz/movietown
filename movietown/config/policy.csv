@@ -1,0 +1,5 @@
+p, manager, /*, *
+p, wagie, /api/v1/screening/sellTicket, *
+p, wagie, /api/v1/employee/info, GET
+p, wagie, /api/v1/employee/password, *
+p, wagie, /api/v1/employee/info/:username, GET

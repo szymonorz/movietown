@@ -38,7 +38,7 @@ func (h *MovieHandler) GetMovies(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	pattern := c.Query("name")
+	pattern := c.Query("title")
 	movies, err := h.service.FindByPattern(pattern, int(page), int(offset))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})

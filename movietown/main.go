@@ -10,6 +10,7 @@ import (
 
 	_ "movietown/docs"
 
+	"github.com/casbin/casbin/v2"
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
@@ -28,10 +29,14 @@ func InitializeScreeningHandler(database *gorm.DB) api.ScreeningHandler {
 	return api.NewScreeningHandler(screeningService)
 }
 
-func InitializeReservationHandler(database *gorm.DB) api.ReservationHandler {
+func InitializeReservationHandler(database *gorm.DB, auth auth.AuthMiddleware) api.ReservationHandler {
+	reservedSeatRepo := repository.NewReservedSeatRepository(database)
+	reservedSeatService := service.NewReservedSeatService(reservedSeatRepo)
 	reservationRepo := repository.NewReservationRepository(database)
 	reservationService := service.NewReservationService(reservationRepo)
-	return api.NewReservationHandler(reservationService)
+	customerRepo := repository.NewCustomerRepository(database)
+	customerService := service.NewCustomerService(customerRepo)
+	return api.NewReservationHandler(reservationService, customerService, reservedSeatService, auth)
 }
 
 func InitializeCustomerHandler(auth auth.AuthMiddleware) api.CustomerHandler {
@@ -42,12 +47,12 @@ func InitializeEmployeeHandler(auth auth.AuthMiddleware) api.EmployeeHandler {
 	return api.NewEmployeeHandler(auth)
 }
 
-func InitializeAuthMiddleware(database *gorm.DB) auth.AuthMiddleware {
+func InitializeAuthMiddleware(database *gorm.DB, enforcer *casbin.Enforcer) auth.AuthMiddleware {
 	employeeRepo := repository.NewEmployeeRepository(database)
 	employeeServce := service.NewEmployeeService(employeeRepo)
 	customerRepo := repository.NewCustomerRepository(database)
 	customerService := service.NewCustomerService(customerRepo)
-	return auth.NewAuthMiddleware(customerService, employeeServce)
+	return auth.NewAuthMiddleware(customerService, employeeServce, enforcer)
 }
 
 // @title           MovieTown API
@@ -63,17 +68,20 @@ func main() {
 	if db, err = database.InitPostgresConnection(postgresString); err != nil {
 		log.Fatalf("error: %v", err)
 	}
+	authEnforcer, err := casbin.NewEnforcer("./config/auth.conf", "./config/policy.csv")
+	if err != nil {
+		log.Fatal(err)
+	}
 
-	_ = InitializeReservationHandler(db)
-	auth := InitializeAuthMiddleware(db)
+	auth := InitializeAuthMiddleware(db, authEnforcer)
 	screeningHandler := InitializeScreeningHandler(db)
 	movieHandler := IntitializeMovieHandler(db)
 	customerHandler := InitializeCustomerHandler(auth)
 	employeeHandler := InitializeEmployeeHandler(auth)
+	reservationHandler := InitializeReservationHandler(db, auth)
 
 	gin.SetMode(gin.DebugMode)
 	router := gin.Default()
-	//router.Use(gin.Logger())
 	router.Use(CORSMiddleware())
 
 	v1 := router.Group("/api/v1")
@@ -93,6 +101,7 @@ func main() {
 			employeeApi.POST("/login", employeeHandler.LoginEmployee)
 			employeeApi.Use(auth.EmployeeAuthMiddleware())
 			employeeApi.POST("/create", employeeHandler.RegisterNewEmployee)
+			employeeApi.GET("/info", employeeHandler.GetCurrentEmployeeInfo)
 			employeeApi.GET("/info/:username", employeeHandler.GetEmployeeInfo)
 			employeeApi.PUT("/role", employeeHandler.ChangeEmployeeRole)
 			employeeApi.PUT("/info", employeeHandler.UpdateEmployeeInfo)
@@ -110,6 +119,15 @@ func main() {
 			screeningApi.GET("/", screeningHandler.GetScreeningsByTime)
 			screeningApi.Use(auth.EmployeeAuthMiddleware())
 			screeningApi.POST("/add", screeningHandler.AddScreening)
+		}
+
+		reservationApi := v1.Group("/reservations")
+		{
+			reservationApi.GET("/", reservationHandler.GetCustomerReservations)
+			reservationApi.GET("/:customer_id", auth.EmployeeAuthMiddleware(), reservationHandler.GetCustomerReservationsFromId)
+			reservationApi.POST("/employee/create", auth.EmployeeAuthMiddleware(), reservationHandler.EmployeeCreateReservation)
+			reservationApi.POST("/customer/create", auth.CustomerAuthMiddleware(), reservationHandler.CustomerCreateReservation)
+			reservationApi.POST("/guest/create", reservationHandler.GuestCreateReservation)
 		}
 	}
 

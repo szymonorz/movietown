@@ -84,6 +84,58 @@ definitions:
       new_role_id:
         type: integer
     type: object
+  api.customerGuestReservation:
+    properties:
+      discount_id:
+        type: integer
+      email:
+        type: string
+      name:
+        type: string
+      password:
+        type: string
+      phone_number:
+        type: string
+      reservation_type_id:
+        type: integer
+      screening_id:
+        type: integer
+      seats_id:
+        items:
+          type: integer
+        type: array
+      surname:
+        type: string
+      username:
+        type: string
+    required:
+    - email
+    - name
+    - password
+    - phone_number
+    - reservation_type_id
+    - screening_id
+    - seats_id
+    - surname
+    - username
+    type: object
+  api.customerReservation:
+    properties:
+      discount_id:
+        type: integer
+      reservation_type_id:
+        type: integer
+      screening_id:
+        type: integer
+      seats_id:
+        items:
+          type: integer
+        type: array
+    required:
+    - reservation_type_id
+    - screening_id
+    - seats_id
+    type: object
   api.newScreening:
     properties:
       movie_hall_id:
@@ -133,6 +185,15 @@ definitions:
       surname:
         type: string
       username:
+        type: string
+    type: object
+  model.DiscountType:
+    properties:
+      discount:
+        type: integer
+      id:
+        type: integer
+      type:
         type: string
     type: object
   model.Employee:
@@ -185,9 +246,9 @@ definitions:
         type: integer
       length:
         type: integer
-      movieType:
+      movie_type:
         $ref: '#/definitions/model.MovieType'
-      movieTypeId:
+      movie_type_id:
         type: integer
       title:
         type: string
@@ -244,6 +305,27 @@ definitions:
       type:
         type: string
     type: object
+  model.ReservedSeat:
+    properties:
+      discountType:
+        $ref: '#/definitions/model.DiscountType'
+      discountTypeId:
+        type: integer
+      id:
+        type: integer
+      reservation:
+        $ref: '#/definitions/model.Reservation'
+      reservationId:
+        type: integer
+      screening:
+        $ref: '#/definitions/model.Screening'
+      screeningId:
+        type: integer
+      seat:
+        $ref: '#/definitions/model.Seat'
+      seatId:
+        type: integer
+    type: object
   model.Role:
     properties:
       id:
@@ -265,6 +347,21 @@ definitions:
         type: integer
       start_of_screening:
         type: string
+    type: object
+  model.Seat:
+    properties:
+      column:
+        type: integer
+      id:
+        type: integer
+      movieHall:
+        $ref: '#/definitions/model.MovieHall'
+      movieHallId:
+        type: integer
+      number:
+        type: integer
+      row:
+        type: integer
     type: object
 host: localhost:4000
 info:
@@ -514,6 +611,36 @@ paths:
       tags:
       - employee
   /api/v1/employee/info:
+    get:
+      consumes:
+      - application/json
+      description: get employee's info
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: type
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Gets information about employee with specified username
+      tags:
+      - employee
     put:
       consumes:
       - application/json
@@ -723,6 +850,146 @@ paths:
       summary: Show movie info
       tags:
       - movie
+  /api/v1/reservations:
+    get:
+      consumes:
+      - application/json
+      description: get []Reservation by customer_id
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: reservation search by customer_id
+        format: int
+        in: query
+        name: customer_id
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Reservation'
+      summary: Show reservations
+      tags:
+      - reservations
+  /api/v1/reservations/customer/{customer_id}:
+    get:
+      consumes:
+      - application/json
+      description: get []Reservation by customer_id
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: reservation search by customer_id
+        format: int
+        in: query
+        name: customer_id
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Reservation'
+      summary: Show reservations
+      tags:
+      - reservations
+  /api/v1/reservations/customer/create:
+    post:
+      consumes:
+      - application/json
+      description: make reservation as a customer
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: guest reservation DTO
+        in: body
+        name: guestReservation
+        required: true
+        schema:
+          $ref: '#/definitions/api.customerReservation'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              items:
+                $ref: '#/definitions/model.ReservedSeat'
+              type: array
+            type: array
+      summary: Customer makes a seat reservation for screening
+      tags:
+      - reservations
+  /api/v1/reservations/employee/create:
+    post:
+      consumes:
+      - application/json
+      description: reservation
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: customer reservation DTO
+        in: body
+        name: guestReservation
+        required: true
+        schema:
+          $ref: '#/definitions/api.customerReservation'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              items:
+                $ref: '#/definitions/model.ReservedSeat'
+              type: array
+            type: array
+      summary: Employee makes a reservation for a customer
+      tags:
+      - reservations
+  /api/v1/reservations/guest/create:
+    post:
+      consumes:
+      - application/json
+      description: make reservation as a guest
+      parameters:
+      - description: guest reservation DTO
+        in: body
+        name: guestReservation
+        required: true
+        schema:
+          $ref: '#/definitions/api.customerGuestReservation'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              items:
+                $ref: '#/definitions/model.ReservedSeat'
+              type: array
+            type: array
+      summary: Show reservations
+      tags:
+      - reservations
   /api/v1/screening:
     get:
       consumes:
@@ -828,46 +1095,4 @@ paths:
       summary: Add new screening
       tags:
       - screening
-  /v1/customer/reservations:
-    get:
-      consumes:
-      - application/json
-      description: get []Reservation by customer_id
-      parameters:
-      - description: reservation search by customer_id
-        format: int
-        in: query
-        name: customer_id
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/model.Reservation'
-      summary: Show reservations
-      tags:
-      - reservations
-  /v1/customer/reservations/{customer_id}:
-    get:
-      consumes:
-      - application/json
-      description: get []Reservation by customer_id
-      parameters:
-      - description: reservation search by customer_id
-        format: int
-        in: query
-        name: customer_id
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/model.Reservation'
-      summary: Show reservations
-      tags:
-      - reservations
 swagger: "2.0"

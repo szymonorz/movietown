@@ -2,11 +2,13 @@ package auth
 
 import (
 	"fmt"
+	"log"
 	"movietown/model"
 	"movietown/service"
 	"net/http"
 	"strings"
 
+	"github.com/casbin/casbin/v2"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 )
@@ -14,12 +16,16 @@ import (
 type AuthMiddleware struct {
 	CustomerService service.CustomerService
 	EmployeeService service.EmployeeService
+	Enforcer        *casbin.Enforcer
 }
 
-func NewAuthMiddleware(customerService service.CustomerService, employeeService service.EmployeeService) AuthMiddleware {
+func NewAuthMiddleware(customerService service.CustomerService,
+	employeeService service.EmployeeService,
+	enforcer *casbin.Enforcer) AuthMiddleware {
 	return AuthMiddleware{
 		CustomerService: customerService,
 		EmployeeService: employeeService,
+		Enforcer:        enforcer,
 	}
 }
 
@@ -78,32 +84,22 @@ func (auth *AuthMiddleware) EmployeeAuthMiddleware() gin.HandlerFunc {
 			return
 		}
 		role := employee.Role.RoleName
-		switch c.FullPath() {
-		case "/api/v1/employee/create",
-			"/api/v1/roles/all",
-			"/api/v1/employee/role",
-			"/api/v1/employee/delete/:id",
-			"/api/v1/screening/add":
-			if role != "manager" {
-				c.JSON(http.StatusUnauthorized, gin.H{"error": "employee unathorized to use this feature"})
-				c.Abort()
-				return
-			}
-		case "/api/v1/screening/sellTicket",
-			"/api/v1/employee/info",
-			"/api/v1/employee/password",
-			"/api/v1/employee/info/:username":
-			if role != "wagie" && role != "manager" {
-				c.JSON(http.StatusUnauthorized, gin.H{"error": "employee unathorized to use this feature"})
-				c.Abort()
-				return
-			}
-		default:
-			c.JSON(http.StatusUnauthorized, gin.H{"error": "user unathorized to use this feature"})
+
+		ok, err := auth.Enforcer.Enforce(role, c.Request.URL.Path, c.Request.Method)
+		if err != nil {
+			log.Printf("%v\n", err)
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err})
 			c.Abort()
 			return
 		}
-		c.Next()
+		if ok {
+			c.Next()
+			return
+		} else {
+			c.JSON(http.StatusForbidden, gin.H{"error": "user unathorized to use this feature"})
+			c.Abort()
+			return
+		}
 	}
 }
 
@@ -118,6 +114,23 @@ func (auth *AuthMiddleware) GetEmployeeFromRequest(r *http.Request) (*model.Empl
 	}
 	id := claims["identitykey"].(float64)
 	employee, err := auth.EmployeeService.FindEmployeeById(uint(id))
+	if err != nil {
+		return nil, err
+	}
+	return employee, nil
+}
+
+func (auth *AuthMiddleware) GetEmployeeInfoFromRequest(r *http.Request) (*model.EmployeeInfo, error) {
+	token, err := auth.VerifyToken(r, "EmployeeSecret")
+	if err != nil {
+		return nil, err
+	}
+	claims, ok := token.Claims.(jwt.MapClaims)
+	if !ok && !token.Valid {
+		return nil, err
+	}
+	id := claims["identitykey"].(float64)
+	employee, err := auth.EmployeeService.FindEmployeeInfoById(uint(id))
 	if err != nil {
 		return nil, err
 	}
