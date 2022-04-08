@@ -1,8 +1,8 @@
-import axios, { AxiosRequestHeaders } from 'axios';
+import axios from 'axios';
 import { SignUpValues } from '../components/forms/SignUpForm';
 import { SignInValues } from '../components/forms/SignInForm';
-import { AccountValues } from '../customer_components/CustomerAccount';
-import { ChangePasswordValues } from '../customer_components/CustomerChangePassword';
+import { AccountValues } from '../components/customer_components/CustomerAccount';
+import { ChangePasswordValues } from '../components/customer_components/CustomerChangePassword';
 
 const instance = axios.create({
   baseURL: "http://localhost:4000/api/v1/customer"

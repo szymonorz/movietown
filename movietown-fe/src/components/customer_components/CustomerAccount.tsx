@@ -1,12 +1,12 @@
 import { Typography, Grid, Button } from '@material-ui/core';
 import { Formik, Form } from 'formik';
 import React, { useEffect, useState } from 'react';
-import { Navigate } from 'react-router-dom';
-import { getCustomerInfo } from '../api/CustomerApi';
-import MTextField from '../components/forms/formComponents/TextField';
+import { Navigate, useNavigate } from 'react-router-dom';
+import { getCustomerInfo } from '../../api/CustomerApi';
+import MTextField from '../forms/formComponents/TextField';
 import { makeStyles } from '@material-ui/styles';
 import * as Yup from 'yup';
-import { updateCustomerInfo } from '../api/CustomerApi';
+import { updateCustomerInfo } from '../../api/CustomerApi';
 
 
 export interface AccountValues {
@@ -35,9 +35,14 @@ const accountFormValidator = Yup.object().shape({
 
 })
 
+interface CustomerAccountProps{
+    loginState: boolean,
+    setLoginState: (arg: boolean) => void
+}
 
-const CustomerAccount: React.FC<{}> = () => {
-    const [loginStatus, setLoginStatus] = useState<boolean>(true)
+
+const CustomerAccount: React.FC<CustomerAccountProps> = ({loginState, setLoginState}) => {
+    // const [loginStatus, setLoginStatus] = useState<boolean>(true)
     const [accountValues, setAccountValues] = useState<AccountValues>({
         id: 0,
         name: '',
@@ -55,24 +60,28 @@ const CustomerAccount: React.FC<{}> = () => {
         if (token) {
             const infoPromise = getCustomerInfo(token)
             infoPromise.then(({ status, data }) => {
-                if (status == 200) {
+                if (status === 200) {
                     console.log(data)
                     setAccountValues(data)
-                } else if (status == 401) {
-                    setAuthorized(false)
-                    setLoginStatus(false)
                 } else {
                     console.error("Shit broke")
                 }
             }).catch((err) => {
-                console.error(err)
+                console.error(err.response.status)
+                if(err.response.status === 401){
+                    setAuthorized(false)
+                    setLoginState(false)
+                    localStorage.removeItem("token")
+                    console.log("hello?")
+                    // navigate({pathname: "../../"})
+                }
             })
         }
     }, [])
 
     return (
         <div>
-            {(!loginStatus && !authorized) && <Navigate replace to={"/"} />}
+            {(!loginState && !authorized) && <Navigate replace to={"/"} />}
             <Formik
                 enableReinitialize
                 initialValues={accountValues}

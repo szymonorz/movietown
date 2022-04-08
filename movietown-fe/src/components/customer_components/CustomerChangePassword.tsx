@@ -1,7 +1,7 @@
 import { Formik, Form } from 'formik';
 import React from 'react';
 import * as Yup from 'yup';
-import MTextField from '../components/forms/formComponents/TextField';
+import MTextField from '../forms/formComponents/TextField';
 
 export interface ChangePasswordValues {
     old_password: string,
