@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { getQueriedMovies } from '../../api/MovieApi';
-import MovieCard, { movie } from '../MovieCard'
+import MovieCard, { movie } from '../MovieCard';
+import {List} from '@material-ui/core'
 
 interface MovieListProps {
     query: string
@@ -24,9 +25,7 @@ const MovieListPage: React.FC<{}> = () => {
     const displayMovies = () => {
         return movies.map((movie, index) => {
             return (
-                <div>
-                    <MovieCard key={index} movie={movie} />
-                </div>
+                <MovieCard key={index} movie={movie} />
             )
         })
     }
@@ -34,7 +33,9 @@ const MovieListPage: React.FC<{}> = () => {
     return (
         <div>
             <h1>Wyniki wyszukiwania dla "{query}"</h1>
-            {displayMovies()}
+            <List>
+                {displayMovies()}
+            </List>
         </div>
     )
 }
