@@ -7,8 +7,8 @@ import (
 type Screening struct {
 	ID                 uint `gorm:"primaryKey,foreignKey=screening_id"`
 	MovieId            *uint
-	Movie              Movie `gorm:"foreignKey:MovieId"`
+	Movie              Movie `gorm:"foreignKey:MovieId" json:"movie"`
 	MovieHallId        *uint
-	MovieHall          MovieHall `gorm:"foreignKey:MovieHallId"`
-	Start_of_screening time.Time
+	MovieHall          MovieHall `gorm:"foreignKey:MovieHallId" json:"movie_hall"` 
+	Start_of_screening time.Time `json:"start_of_screening"`
 }

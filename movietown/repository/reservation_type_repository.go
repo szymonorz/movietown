@@ -24,3 +24,9 @@ func (r *ReservationTypeRepository) FindById(id uint) (model.ReservationType, er
 	result := r.db.Find(&reservation_type, model.ReservationType{ID: id})
 	return reservation_type, result.Error
 }
+
+func (r *ReservationTypeRepository) FindAll() ([]model.ReservationType, error) {
+	var reservation_types []model.ReservationType
+	err := r.db.Find(&reservation_types).Error
+	return reservation_types, err
+}

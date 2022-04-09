@@ -946,6 +946,32 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/v1/reservations/types": {
+            "get": {
+                "description": "Show reservations types",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "reservations"
+                ],
+                "summary": "Show reservations types",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/definitions/model.ReservationType"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/screening": {
             "get": {
                 "description": "get []Screening",
@@ -1611,14 +1637,14 @@ const docTemplate = `{
                 "movie": {
                     "$ref": "#/definitions/model.Movie"
                 },
-                "movieHall": {
-                    "$ref": "#/definitions/model.MovieHall"
-                },
                 "movieHallId": {
                     "type": "integer"
                 },
                 "movieId": {
                     "type": "integer"
+                },
+                "movie_hall": {
+                    "$ref": "#/definitions/model.MovieHall"
                 },
                 "start_of_screening": {
                     "type": "string"

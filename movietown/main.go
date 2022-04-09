@@ -55,6 +55,12 @@ func InitializeAuthMiddleware(database *gorm.DB, enforcer *casbin.Enforcer) auth
 	return auth.NewAuthMiddleware(customerService, employeeServce, enforcer)
 }
 
+func InitializeReservationTypeHandler(database *gorm.DB) api.ReservationTypeHandler {
+	reservationTypeRepo := repository.NewReservationTypeRepository(database)
+	reservationTypeService := service.NewReservationTypeService(reservationTypeRepo)
+	return api.NewReservationTypeHandler(reservationTypeService)
+}
+
 // @title           MovieTown API
 // @version         0.1-alpha
 // @description     This is a mistake.
@@ -79,6 +85,7 @@ func main() {
 	customerHandler := InitializeCustomerHandler(auth)
 	employeeHandler := InitializeEmployeeHandler(auth)
 	reservationHandler := InitializeReservationHandler(db, auth)
+	reservationTypeHandler := InitializeReservationTypeHandler(db)
 
 	gin.SetMode(gin.DebugMode)
 	router := gin.Default()
@@ -128,6 +135,7 @@ func main() {
 			reservationApi.POST("/employee/create", auth.EmployeeAuthMiddleware(), reservationHandler.EmployeeCreateReservation)
 			reservationApi.POST("/customer/create", auth.CustomerAuthMiddleware(), reservationHandler.CustomerCreateReservation)
 			reservationApi.POST("/guest/create", reservationHandler.GuestCreateReservation)
+			reservationApi.GET("/types", reservationTypeHandler.GetReservationTypes)
 		}
 	}
 

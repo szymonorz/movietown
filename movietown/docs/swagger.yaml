@@ -339,7 +339,7 @@ definitions:
         type: integer
       movie:
         $ref: '#/definitions/model.Movie'
-      movieHall:
+      movie_hall:
         $ref: '#/definitions/model.MovieHall'
       movieHallId:
         type: integer
@@ -988,6 +988,23 @@ paths:
               type: array
             type: array
       summary: Show reservations
+      tags:
+      - reservations
+  /api/v1/reservations/types:
+    get:
+      description: Show reservations types
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              items:
+                $ref: '#/definitions/model.ReservationType'
+              type: array
+            type: array
+      summary: Show reservations types
       tags:
       - reservations
   /api/v1/screening:
