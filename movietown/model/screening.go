@@ -6,9 +6,9 @@ import (
 
 type Screening struct {
 	ID                 uint `gorm:"primaryKey,foreignKey=screening_id"`
-	MovieId            *uint
-	Movie              Movie `gorm:"foreignKey:MovieId" json:"movie"`
+	MovieMovieTypeId   *uint
+	MovieMovieType     MovieMovieType `gorm:"foreignKey:MovieMovieTypeId" json:"mm_type"`
 	MovieHallId        *uint
-	MovieHall          MovieHall `gorm:"foreignKey:MovieHallId" json:"movie_hall"` 
+	MovieHall          MovieHall `gorm:"foreignKey:MovieHallId" json:"movie_hall"`
 	Start_of_screening time.Time `json:"start_of_screening"`
 }

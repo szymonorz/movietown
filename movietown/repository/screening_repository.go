@@ -29,7 +29,7 @@ func (r *ScreeningRepository) FindById(id uint) (model.Screening, error) {
 
 func (r *ScreeningRepository) FindByMovieId(movie_id uint, limit, offset int) ([]model.Screening, error) {
 	var screenings []model.Screening
-	err := r.db.Preload("Movie").Preload("MovieHall").
+	err := r.db.Preload("MovieMovieType").Preload("MovieHall").
 		Where("movie_id = ?", movie_id).
 		Limit(limit).
 		Offset(offset).
@@ -39,7 +39,10 @@ func (r *ScreeningRepository) FindByMovieId(movie_id uint, limit, offset int) ([
 
 func (r *ScreeningRepository) FindBetween(from, to time.Time, limit, offset int) ([]model.Screening, error) {
 	var screenings []model.Screening
-	err := r.db.Preload("Movie").Preload("MovieHall").
+	err := r.db.Preload("MovieMovieType").
+		Preload("MovieHall").
+		Preload("MovieMovieType.Movie").
+		Preload("MovieMovieType.MovieType").
 		Where("start_of_screening between ? and ?", from, to).
 		Limit(limit).
 		Offset(offset).
@@ -50,7 +53,10 @@ func (r *ScreeningRepository) FindBetween(from, to time.Time, limit, offset int)
 
 func (r *ScreeningRepository) FindByMovieIdBetween(movie_id uint, from, to time.Time, limit, offset int) ([]model.Screening, error) {
 	var screenings []model.Screening
-	err := r.db.Preload("Movie", "MovieHall").
+	err := r.db.Preload("MovieMovieType").
+		Preload("MovieHall").
+		Preload("MovieMovieType.Movie").
+		Preload("MovieMovieType.MovieType").
 		Where("movie_id = ?", movie_id).
 		Where("start_of_screening between ? and ?", from, to).
 		Limit(limit).

@@ -246,10 +246,10 @@ definitions:
         type: integer
       length:
         type: integer
-      movie_type:
-        $ref: '#/definitions/model.MovieType'
-      movie_type_id:
-        type: integer
+      movie_types:
+        items:
+          $ref: '#/definitions/model.MovieType'
+        type: array
       title:
         type: string
     type: object
@@ -260,6 +260,19 @@ definitions:
       name:
         type: string
       number_of_seats:
+        type: integer
+    type: object
+  model.MovieMovieType:
+    properties:
+      id:
+        type: integer
+      movie:
+        $ref: '#/definitions/model.Movie'
+      movie_type:
+        $ref: '#/definitions/model.MovieType'
+      movieId:
+        type: integer
+      movieTypeId:
         type: integer
     type: object
   model.MovieType:
@@ -337,13 +350,13 @@ definitions:
     properties:
       id:
         type: integer
-      movie:
-        $ref: '#/definitions/model.Movie'
+      mm_type:
+        $ref: '#/definitions/model.MovieMovieType'
       movie_hall:
         $ref: '#/definitions/model.MovieHall'
       movieHallId:
         type: integer
-      movieId:
+      movieMovieTypeID:
         type: integer
       start_of_screening:
         type: string

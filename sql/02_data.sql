@@ -23,7 +23,7 @@ INSERT INTO movie_movie_types(movie_id, movie_type_id) VALUES(1,2);
 INSERT INTO movie_movie_types(movie_id, movie_type_id) VALUES(2,1);
 INSERT INTO movie_movie_types(movie_id, movie_type_id) VALUES(2,2);
 
-INSERT INTO screenings(movie_id, movie_hall_id, start_of_screening) 
+INSERT INTO screenings(movie_movie_type_id, movie_hall_id, start_of_screening) 
 VALUES (1,1,'2022-04-25T15:30:00');
 
 

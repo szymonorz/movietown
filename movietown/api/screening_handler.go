@@ -140,7 +140,7 @@ func (h *ScreeningHandler) AddScreening(c *gin.Context) {
 	}
 
 	screening := model.Screening{
-		MovieId:            &request.MovieId,
+		MovieMovieTypeId:   &request.MovieId,
 		MovieHallId:        &request.MovieHallId,
 		Start_of_screening: request.Start_of_screening,
 	}

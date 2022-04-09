@@ -63,13 +63,13 @@ CREATE TABLE IF NOT EXISTS movie_halls(
 
 CREATE TABLE IF NOT EXISTS screenings(
     id SERIAL,
-    movie_id INT NOT NULL,
+    movie_movie_type_id INT NOT NULL,
     movie_hall_id INT NOT NULL,
     start_of_screening   TIMESTAMP,
     CONSTRAINT screening_id_k PRIMARY KEY(id),
     CONSTRAINT fk_screening_movie
-        FOREIGN KEY(movie_id)
-            REFERENCES movies(id),
+        FOREIGN KEY(movie_movie_type_id)
+            REFERENCES movie_movie_types(id),
     CONSTRAINT fk_screening_movie_hall
         FOREIGN KEY(movie_hall_id)
             REFERENCES movie_halls(id)

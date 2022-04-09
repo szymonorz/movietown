@@ -1494,11 +1494,11 @@ const docTemplate = `{
                 "length": {
                     "type": "integer"
                 },
-                "movie_type": {
-                    "$ref": "#/definitions/model.MovieType"
-                },
-                "movie_type_id": {
-                    "type": "integer"
+                "movie_types": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.MovieType"
+                    }
                 },
                 "title": {
                     "type": "string"
@@ -1516,6 +1516,26 @@ const docTemplate = `{
                 },
                 "number_of_seats": {
                     "type": "integer"
+                }
+            }
+        },
+        "model.MovieMovieType": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "movie": {
+                    "$ref": "#/definitions/model.Movie"
+                },
+                "movieId": {
+                    "type": "integer"
+                },
+                "movieTypeId": {
+                    "type": "integer"
+                },
+                "movie_type": {
+                    "$ref": "#/definitions/model.MovieType"
                 }
             }
         },
@@ -1634,13 +1654,13 @@ const docTemplate = `{
                 "id": {
                     "type": "integer"
                 },
-                "movie": {
-                    "$ref": "#/definitions/model.Movie"
+                "mm_type": {
+                    "$ref": "#/definitions/model.MovieMovieType"
                 },
                 "movieHallId": {
                     "type": "integer"
                 },
-                "movieId": {
+                "movieMovieTypeID": {
                     "type": "integer"
                 },
                 "movie_hall": {
