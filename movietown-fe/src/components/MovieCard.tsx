@@ -12,7 +12,7 @@ export interface movie {
     director: string,
     description: string,
     length: number,
-    type: movie_type
+    movie_types: movie_type[]
 }
 
 interface MovieCardProps {
@@ -34,12 +34,18 @@ const useStyles = makeStyles(() => ({
         fontSize: "15px",
         textAlign: "left",
         padding: "5px"
+    },
+    types: {
+        textAlign: "left",
+        color: "grey"
     }
 }))
 
 const MovieCard: React.FC<MovieCardProps> = ({ movie }) => {
-    const { card, title, description } = useStyles()
-
+    const { card, title, description, types } = useStyles()
+    const movieTypeString = () => {
+        return movie.movie_types.map(mtype => {return mtype.type}).toString()
+    }
     return (
         <div className={card}>
             <Typography className={title}>
@@ -47,6 +53,9 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie }) => {
             </Typography>
             <Typography className={description}>
                 {movie.description}
+            </Typography>
+            <Typography className={types}>
+                {movieTypeString()}
             </Typography>
             <Divider />
         </div>

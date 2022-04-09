@@ -1,10 +1,16 @@
 import axios from 'axios'
-import { movie } from '../components/MovieCard'
+import { movie, movie_type } from '../components/MovieCard'
 
 
 export interface screeningParams {
     from: Date,
     to: Date
+}
+
+interface mm_type{
+    id: number,
+    movie: movie,
+    movie_type: movie_type
 }
 
 interface movie_hall{
@@ -13,7 +19,7 @@ interface movie_hall{
 }
 
 export interface screening{
-    movie: movie,
+    mm_type: mm_type,
     movie_hall: movie_hall,
     start_of_screening: Date,
 }

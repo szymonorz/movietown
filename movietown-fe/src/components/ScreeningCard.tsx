@@ -19,7 +19,7 @@ interface ScreeningCardProps{
     values: screening
 }
 
-const ScreeningCard: React.FC<ScreeningCardProps> = ({values: {movie, movie_hall, start_of_screening}}) => {
+const ScreeningCard: React.FC<ScreeningCardProps> = ({values: {mm_type: {movie}, movie_hall, start_of_screening}}) => {
     const {timeLabel} = useStyles()
     const time = new Date(start_of_screening)
     
