@@ -12,7 +12,7 @@ let headersData = [
     },
     {
         label: "Repertuar",
-        href: "/screenings"
+        href: "/screening"
     }
 ]
 

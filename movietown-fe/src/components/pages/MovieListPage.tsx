@@ -16,21 +16,16 @@ const MovieListPage: React.FC<{}> = () => {
     useEffect(() => {
         getQueriedMovies(query)
             .then(({ data }) => {
-                const n = data as movie[]
-                console.log("AAAA", n[0])
-                setMovies(movies => [...movies, ...n])
+                setMovies(movies => [...data])
             })
             .catch((err) => console.error(err))
     }, [query])
 
     const displayMovies = () => {
-        console.log(movies)
         return movies.map((movie, index) => {
-            // console.log("deez", movie, index)
             return (
                 <div>
-                    <MovieCard movie={movie} />
-
+                    <MovieCard key={index} movie={movie} />
                 </div>
             )
         })
