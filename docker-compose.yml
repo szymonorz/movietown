@@ -1,0 +1,30 @@
+version: '3'
+services:
+    movietown-db:
+        container_name: movietown-db
+        image: postgres
+        ports:
+            - "5432:5432"
+        env_file:
+            - .env
+        volumes:
+            - postgres_data:/var/lib/postgresql/data
+            - "./sql:/docker-entrypoint-initdb.d/"
+        networks:
+            - apps-network
+    movietown-be:
+        build:
+            context: .
+            dockerfile: ./cinema-be/Dockerfile
+        ports:
+            - "8080:8080"
+        networks:
+            - apps-network
+
+networks:
+    apps-network:
+        driver: bridge
+
+volumes:
+    postgres_data:
+        driver: local
