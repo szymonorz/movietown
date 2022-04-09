@@ -679,8 +679,8 @@ const docTemplate = `{
                     },
                     {
                         "type": "integer",
-                        "description": "page",
-                        "name": "page",
+                        "description": "limit",
+                        "name": "limit",
                         "in": "query"
                     },
                     {
@@ -854,6 +854,29 @@ const docTemplate = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/model.Reservation"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/reservations/discounts": {
+            "get": {
+                "description": "Shows all discount available",
+                "tags": [
+                    "reservations"
+                ],
+                "summary": "Shows all discount available",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/definitions/model.DiscountType"
+                                }
+                            }
                         }
                     }
                 }
@@ -1660,7 +1683,7 @@ const docTemplate = `{
                 "movieHallId": {
                     "type": "integer"
                 },
-                "movieMovieTypeID": {
+                "movieMovieTypeId": {
                     "type": "integer"
                 },
                 "movie_hall": {

@@ -23,12 +23,12 @@ func NewMovieHandler(service service.MovieService) MovieHandler {
 // @Accept       json
 // @Produce      json
 // @Param		 title	query		string false "title"
-// @Param 		 page    query     int  false  "page"
+// @Param 		 limit    query     int  false  "limit"
 // @Param 		 offset    query     int  false  "offset"
 // @Success      200  {object}  []model.Movie
 // @Router       /api/v1/movies [get]
 func (h *MovieHandler) GetMovies(c *gin.Context) {
-	page, err := strconv.ParseInt(c.Query("page"), 10, 0)
+	limit, err := strconv.ParseInt(c.Query("limit"), 10, 0)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -39,7 +39,7 @@ func (h *MovieHandler) GetMovies(c *gin.Context) {
 		return
 	}
 	pattern := c.Query("title")
-	movies, err := h.service.FindByPattern(pattern, int(page), int(offset))
+	movies, err := h.service.FindByPattern(pattern, int(limit), int(offset))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

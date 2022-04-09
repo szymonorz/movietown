@@ -61,6 +61,12 @@ func InitializeReservationTypeHandler(database *gorm.DB) api.ReservationTypeHand
 	return api.NewReservationTypeHandler(reservationTypeService)
 }
 
+func InitializeDiscountHandler(database *gorm.DB) api.DiscountHandler {
+	discountRepo := repository.NewDiscountRepository(database)
+	discountService := service.NewDiscountService(discountRepo)
+	return api.NewDiscountHandler(discountService)
+}
+
 // @title           MovieTown API
 // @version         0.1-alpha
 // @description     This is a mistake.
@@ -86,6 +92,7 @@ func main() {
 	employeeHandler := InitializeEmployeeHandler(auth)
 	reservationHandler := InitializeReservationHandler(db, auth)
 	reservationTypeHandler := InitializeReservationTypeHandler(db)
+	discountHandler := InitializeDiscountHandler(db)
 
 	gin.SetMode(gin.DebugMode)
 	router := gin.Default()
@@ -136,6 +143,7 @@ func main() {
 			reservationApi.POST("/customer/create", auth.CustomerAuthMiddleware(), reservationHandler.CustomerCreateReservation)
 			reservationApi.POST("/guest/create", reservationHandler.GuestCreateReservation)
 			reservationApi.GET("/types", reservationTypeHandler.GetReservationTypes)
+			reservationApi.GET("/discounts", discountHandler.GetAllDiscounts)
 		}
 	}
 

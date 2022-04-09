@@ -1,7 +1,7 @@
 package model
 
 type DiscountType struct {
-	ID       uint `gorm:"primaryKey"`
-	Type     string
-	Discount uint
+	ID       uint   `gorm:"primaryKey" json:"id"`
+	Type     string `json:"type"`
+	Discount uint   `json:"discount"`
 }
