@@ -39,7 +39,8 @@ const SignInPage: React.FC<SignInPageProps> = ({loginState, setLoginState}) => {
     const [registerError, setRegisterError] = useState<boolean>(false)
     useEffect(() => {
         const token = localStorage.getItem("token")
-        if (token) {
+        console.log(token)
+        if (token && token != "") {
           setLoginState(true)
           console.log("Logged in")
         }
@@ -60,11 +61,12 @@ const SignInPage: React.FC<SignInPageProps> = ({loginState, setLoginState}) => {
     }
 
     const register = async (values: SignUpValues) => {
-
         try {
             const {data} = await registerCustomer(values)
             const token = data as AccessToken
             console.log(token.access_token)
+            localStorage.setItem("token", token.access_token)
+            setLoginState(true)
         } catch (err) {
             setRegisterError(true)
             console.log(err)
@@ -73,9 +75,7 @@ const SignInPage: React.FC<SignInPageProps> = ({loginState, setLoginState}) => {
 
     return (
         <div className={container}>
-
             {loginState && <Navigate replace to="/"/>} 
-
             <SignInForm
                 loginError={loginError}
                 className={containerElement}
