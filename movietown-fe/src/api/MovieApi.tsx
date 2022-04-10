@@ -4,13 +4,25 @@ const instance = axios.create({
     baseURL: "http://localhost:4000/api/v1/movies"
 })
 
+export interface movie_type {
+    price: number,
+    type: string
+}
 
+export interface movie {
+    id: number,
+    title: string,
+    director: string,
+    description: string,
+    length: number,
+    movie_types: movie_type[]
+}
 
-export const getQueriedMovies = (query: string, page: number = 5, offset: number = 0) => {
+export const getQueriedMovies = (query: string, limit: number = 5, offset: number = 0) => {
     return instance.get("/", {
         params: {
             title: query,
-            page: page,
+            limit: limit,
             offset: offset
         }
     })

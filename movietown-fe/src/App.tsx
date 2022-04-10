@@ -8,6 +8,7 @@ import CustomerPage from './components/pages/CustomerPage';
 import CustomerChangePassword from './components/customer_components/CustomerChangePassword';
 import MovieListPage from './components/pages/MovieListPage';
 import ScreeningListPage from './components/pages/ScreeningListPage';
+import MakeReservationPage from './components/pages/MakeReservationPage';
 function App() {
   const [loginState, setLoginState] = useState<boolean>(false)
 
@@ -31,6 +32,7 @@ function App() {
         </Route>
         <Route path="search" element={<MovieListPage/>}/>
         <Route path="screening" element={<ScreeningListPage/>}/>
+        <Route path="reservation" element={<MakeReservationPage/>}/>
       </Routes>
     </div>
   );

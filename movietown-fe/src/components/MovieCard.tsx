@@ -1,19 +1,7 @@
 import React from 'react'
 import { Typography, makeStyles, Divider } from '@material-ui/core'
+import {movie} from '../api/MovieApi'
 
-export interface movie_type {
-    price: number,
-    type: string
-}
-
-export interface movie {
-    id: number,
-    title: string,
-    director: string,
-    description: string,
-    length: number,
-    movie_types: movie_type[]
-}
 
 interface MovieCardProps {
     movie: movie

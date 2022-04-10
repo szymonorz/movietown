@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { getQueriedMovies } from '../../api/MovieApi';
-import MovieCard, { movie } from '../MovieCard';
+import { getQueriedMovies, movie } from '../../api/MovieApi';
+import MovieCard from '../MovieCard';
 import {List} from '@material-ui/core'
 
 interface MovieListProps {

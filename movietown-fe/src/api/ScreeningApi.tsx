@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { movie, movie_type } from '../components/MovieCard'
+import { movie, movie_type } from './MovieApi'
 
 
 export interface screeningParams {
@@ -13,7 +13,7 @@ interface mm_type{
     movie_type: movie_type
 }
 
-interface movie_hall{
+export interface movie_hall{
     name: string,
     number_of_seats: number
 }
@@ -28,6 +28,9 @@ const instance = axios.create({
     baseURL: "http://localhost:4000/api/v1/screening"
 })
 
+export const getScreeningById = async (id: number) => {
+    return await instance.get(`/s/${id}`)
+}
 
 export const getDaysScreenings = async ({from, to}: screeningParams, limit: number = 5, offset: number = 0) => {
     return await instance.get("/", {
