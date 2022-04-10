@@ -62,6 +62,31 @@ func (h *ScreeningHandler) GetScreeningsByTime(c *gin.Context) {
 	c.JSON(http.StatusOK, screenings)
 }
 
+// GetScreeningById godoc
+// @Summary      Show screenings
+// @Description  get Screening by id
+// @Tags         screening
+// @Accept       json
+// @Produce      json
+// @Param        id    path     int  false  "screening search by id"  Format(int)
+// @Success      200  {object}  model.Screening
+// @Router       /api/v1/screening/s/{id} [get]
+func (h *ScreeningHandler) GetScreeningById(c *gin.Context) {
+	screening_id, err := strconv.ParseUint(c.Param("id"), 10, 0)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	screening, err := h.service.GetScreeningById(uint(screening_id))
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, screening)
+}
+
 // GetMovieScreeningsByTime godoc
 // @Summary      Show screenings
 // @Description  get []Screening by movie_id

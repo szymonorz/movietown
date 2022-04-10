@@ -14,6 +14,10 @@ func NewScreeningService(repo repository.ScreeningRepository) ScreeningService {
 	return ScreeningService{repository: repo}
 }
 
+func (s *ScreeningService) GetScreeningById(id uint) (model.Screening, error) {
+	return s.repository.FindById(id)
+}
+
 func (s *ScreeningService) AddScreening(screening *model.Screening) error {
 	return s.repository.Create(screening)
 }

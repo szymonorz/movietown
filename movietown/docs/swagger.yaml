@@ -86,8 +86,8 @@ definitions:
     type: object
   api.customerGuestReservation:
     properties:
-      discount_id:
-        type: integer
+      discounts:
+        $ref: '#/definitions/model.RequestSeats'
       email:
         type: string
       name:
@@ -121,8 +121,8 @@ definitions:
     type: object
   api.customerReservation:
     properties:
-      discount_id:
-        type: integer
+      discounts:
+        $ref: '#/definitions/model.RequestSeats'
       reservation_type_id:
         type: integer
       screening_id:
@@ -283,6 +283,17 @@ definitions:
         type: number
       type:
         type: string
+    type: object
+  model.RequestSeats:
+    properties:
+      children_seats:
+        type: integer
+      elderly_seats:
+        type: integer
+      normal_seats:
+        type: integer
+      student_seats:
+        type: integer
     type: object
   model.Reservation:
     properties:
@@ -1138,6 +1149,27 @@ paths:
             additionalProperties: true
             type: object
       summary: Add new screening
+      tags:
+      - screening
+  /api/v1/screening/s/{id}:
+    get:
+      consumes:
+      - application/json
+      description: get Screening by id
+      parameters:
+      - description: screening search by id
+        format: int
+        in: path
+        name: id
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Screening'
+      summary: Show screenings
       tags:
       - screening
 swagger: "2.0"

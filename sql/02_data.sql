@@ -8,8 +8,9 @@ INSERT INTO roles(role_name) VALUES('wagie');
 INSERT INTO movie_types(type, price) VALUES('2D',12.50);
 INSERT INTO movie_types(type, price) VALUES('3D', 15.00);
 
+INSERT INTO discount_types(type, discount) VALUES('normal', 0);
 INSERT INTO discount_types(type, discount) VALUES('student', 20);
-INSERT INTO discount_types(type, discount) VALUES('kid', 15);
+INSERT INTO discount_types(type, discount) VALUES('dziecko', 15);
 INSERT INTO discount_types(type, discount) VALUES('senior', 30);
 
 INSERT INTO movie_halls(name, number_of_seats) VALUES('DN',100);

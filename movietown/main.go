@@ -131,6 +131,7 @@ func main() {
 		{
 			screeningApi.GET("/:movie_id", screeningHandler.GetMovieScreeningsByTime)
 			screeningApi.GET("/", screeningHandler.GetScreeningsByTime)
+			screeningApi.GET("/s/:id", screeningHandler.GetScreeningById)
 			screeningApi.Use(auth.EmployeeAuthMiddleware())
 			screeningApi.POST("/add", screeningHandler.AddScreening)
 		}

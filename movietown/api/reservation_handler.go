@@ -74,10 +74,10 @@ func (h *ReservationHandler) GetCustomerReservationsFromId(c *gin.Context) {
 }
 
 type customerReservation struct {
-	SeatsId           []uint `json:"seats_id" validate:"required"`
-	ScreeningId       uint   `json:"screening_id" validate:"required"`
-	ReservationTypeId uint   `json:"reservation_type_id" validate:"required"`
-	DiscountId        uint   `json:"discount_id"`
+	SeatsId           []uint             `json:"seats_id" validate:"required"`
+	ScreeningId       uint               `json:"screening_id" validate:"required"`
+	ReservationTypeId uint               `json:"reservation_type_id" validate:"required"`
+	Discounts         model.RequestSeats `json:"discounts"`
 }
 
 type customerGuestReservation struct {
@@ -114,7 +114,7 @@ func (h *ReservationHandler) GuestCreateReservation(c *gin.Context) {
 		Active:            true,
 		ReservationTypeId: &request.ReservationTypeId,
 	}
-	seats, err := h.reservedSeatService.GuestReserveSeats(request.SeatsId, request.DiscountId, &customer, &reservation)
+	seats, err := h.reservedSeatService.GuestReserveSeats(request.SeatsId, request.Discounts, &customer, &reservation)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -149,7 +149,7 @@ func (h *ReservationHandler) CustomerCreateReservation(c *gin.Context) {
 		ReservationTypeId: &request.ReservationTypeId,
 		CustomerId:        &customer.ID,
 	}
-	seats, err := h.reservedSeatService.RegularReserveSeats(request.SeatsId, request.DiscountId, &reservation)
+	seats, err := h.reservedSeatService.RegularReserveSeats(request.SeatsId, request.Discounts, &reservation)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -185,7 +185,7 @@ func (h *ReservationHandler) EmployeeCreateReservation(c *gin.Context) {
 		EmployeeId:        &employee.ID,
 	}
 
-	seats, err := h.reservedSeatService.RegularReserveSeats(request.SeatsId, request.DiscountId, &reservation)
+	seats, err := h.reservedSeatService.RegularReserveSeats(request.SeatsId, request.Discounts, &reservation)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

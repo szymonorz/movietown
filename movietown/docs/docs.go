@@ -1095,6 +1095,38 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/v1/screening/s/{id}": {
+            "get": {
+                "description": "get Screening by id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "screening"
+                ],
+                "summary": "Show screenings",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "format": "int",
+                        "description": "screening search by id",
+                        "name": "id",
+                        "in": "path"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.Screening"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/screening/{movie_id}": {
             "get": {
                 "description": "get []Screening by movie_id",
@@ -1292,8 +1324,8 @@ const docTemplate = `{
                 "username"
             ],
             "properties": {
-                "discount_id": {
-                    "type": "integer"
+                "discounts": {
+                    "$ref": "#/definitions/model.RequestSeats"
                 },
                 "email": {
                     "type": "string"
@@ -1335,8 +1367,8 @@ const docTemplate = `{
                 "seats_id"
             ],
             "properties": {
-                "discount_id": {
-                    "type": "integer"
+                "discounts": {
+                    "$ref": "#/definitions/model.RequestSeats"
                 },
                 "reservation_type_id": {
                     "type": "integer"
@@ -1573,6 +1605,23 @@ const docTemplate = `{
                 },
                 "type": {
                     "type": "string"
+                }
+            }
+        },
+        "model.RequestSeats": {
+            "type": "object",
+            "properties": {
+                "children_seats": {
+                    "type": "integer"
+                },
+                "elderly_seats": {
+                    "type": "integer"
+                },
+                "normal_seats": {
+                    "type": "integer"
+                },
+                "student_seats": {
+                    "type": "integer"
                 }
             }
         },

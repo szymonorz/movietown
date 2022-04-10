@@ -11,3 +11,10 @@ type ReservedSeat struct {
 	ReservationId  *uint
 	Reservation    Reservation `gorm:"foreignKey:ReservationId"`
 }
+
+type RequestSeats struct {
+	NormalSeats   uint `json:"normal_seats"`
+	ChildrenSeats uint `json:"children_seats"`
+	StudentSeats  uint `json:"student_seats"`
+	ElderlySeats  uint `json:"elderly_seats"`
+}
