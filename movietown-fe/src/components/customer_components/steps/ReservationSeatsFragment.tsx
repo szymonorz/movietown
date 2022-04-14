@@ -1,12 +1,19 @@
 import { Grid, Typography, TextField } from '@material-ui/core';
-import React, { useState, useEffect } from 'react';
+import { privateDecrypt } from 'crypto';
+import React, { useState, useEffect, useContext } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { movie, movie_type } from '../../../api/MovieApi';
-import { getScreeningById, screening, movie_hall } from '../../../api/ScreeningApi';
+import { customerReservation, discounts, CustomerReservationContext } from '../../../api/ReservationApi';
+import { getScreeningById, screening } from '../../../api/ScreeningApi';
 import DiscountForm from './steps_components/DiscountForm';
 
 
-const ChooseMovieType: React.FC<{}> = () => {
+interface ChooseMovieTypeProps {
+    customerReservation: customerReservation,
+    setCustomerReservation: (arg: customerReservation) => void
+
+}
+
+const ReservationSeatsFragment: React.FC<ChooseMovieTypeProps> = ({ customerReservation, setCustomerReservation }) => {
     const [screeningId, setScreeningId] = useState(0)
     const [screening, setScreening] = useState<screening>({
         mm_type: {
@@ -31,7 +38,9 @@ const ChooseMovieType: React.FC<{}> = () => {
         start_of_screening: new Date(),
     })
     const [startString, setStartString] = useState("")
-    const [numberOfSeats, setNumberOfSeats] = useState('')
+    const provider = useContext(CustomerReservationContext)
+    const [numberOfSeats, setNumberOfSeats] = useState<number>(0)
+    const discountSeats = provider!.customerReservation.discounts
     const [query] = useSearchParams()
     useEffect(() => {
         const id = query.get("id")
@@ -41,28 +50,27 @@ const ChooseMovieType: React.FC<{}> = () => {
     }, [])
 
     useEffect(() => {
+        setCustomerReservation({
+            ...customerReservation,
+            screening_id: screeningId
+        })
         getScreeningById(screeningId)
             .then(({ data }) => setScreening(data))
             .catch((err) => console.error(err))
     }, [screeningId])
 
     useEffect(() => {
+        console.log("yeeehaw")
+        setCustomerReservation({
+            ...customerReservation,
+            discounts: discountSeats
+        })
+    }, [discountSeats])
+
+    useEffect(() => {
         const date = new Date(screening.start_of_screening)
         setStartString(`${date.getFullYear()}-${date.getMonth()}-${date.getDate()} ${date.getHours()}:${date.getMinutes()}`)
     }, [screening])
-
-    // const generateSelectList = (n: number) => {
-
-    //     var i:number = 0;
-    //     const indents = []
-    //     if(n>100){
-    //         return []
-    //     }
-    //     for(;i<n; i++){
-    //         indents.push(<SelectDiscount key={i} onChange={(e) => console.log(e)}/>)
-    //     }
-    //     return indents
-    // }
 
     return (
         <div>
@@ -91,24 +99,36 @@ const ChooseMovieType: React.FC<{}> = () => {
                     <div>
                         <TextField
                             value={numberOfSeats}
+                            type='number'
                             onChange={(e) => {
-                                const regex = /^([0-9]){1,3}$/i;
-                                if(e.currentTarget.value === '' || regex.test(e.currentTarget.value)){
-                                    setNumberOfSeats(e.currentTarget.value)
-                                }
+                               
+                                setNumberOfSeats(parseInt(e.currentTarget.value))
+                                const number = parseInt(e.currentTarget.value)
+                                provider!.setCustomerReservation((prev: customerReservation) => {
+                                    // console.log("pain")
+                                    return {
+                                        ...prev,
+                                        discounts: {
+                                            normal_seats: number,
+                                            children_seats: 0,
+                                            student_seats: 0,
+                                            elderly_seats: 0
+                                        }
+                                    }
+                                })
                             }
-                        }
+                            }
                         />
                     </div>
                 </Grid>
                 <Grid item xs={4}>
                 </Grid>
                 <Grid item xs={4}>
-                   <DiscountForm/>
+                    <DiscountForm setNumberOfSeats={setNumberOfSeats} />
                 </Grid>
             </Grid>
         </div>
     )
 }
 
-export default ChooseMovieType
+export default ReservationSeatsFragment

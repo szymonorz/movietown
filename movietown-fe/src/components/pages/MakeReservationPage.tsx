@@ -1,7 +1,8 @@
 import { Stepper, Step, StepLabel, Button } from '@material-ui/core'
-import React, { useState } from 'react'
-import ChooseMovieType from '../customer_components/steps/ChooseMovieType'
+import React, { useMemo, useState } from 'react'
+import ReservationSeatsFragment from '../customer_components/steps/ReservationSeatsFragment'
 import { MakeReservationStep } from '../customer_components/steps/common'
+import { CustomerReservationContext } from '../../api/ReservationApi'
 
 const steps: MakeReservationStep[] = [
     {
@@ -17,6 +18,20 @@ const steps: MakeReservationStep[] = [
 
 const MakeReservationPage: React.FC<{}> = () => {
     const [activeStep, setActiveStep] = useState(0)
+    const [customerReservation, setCustomerReservation] = useState({
+        seat_id: 0,
+        screening_id: 0,
+        reservation_type_id: 0,
+        discounts: {
+            normal_seats: 0,
+            children_seats: 0,
+            student_seats: 0,
+            elderly_seats: 0
+        }
+    })
+
+    const provider = useMemo(() => ({ customerReservation, setCustomerReservation }),
+        [customerReservation, setCustomerReservation])
 
     const handleNext = () => {
         setActiveStep(prevStep => prevStep + 1)
@@ -47,14 +62,21 @@ const MakeReservationPage: React.FC<{}> = () => {
                 disabled={activeStep === steps.length - 1}
                 onClick={handleNext}
             >Next</Button>
-            {activeStep === steps.length - 1 && (
-                <div>Finished</div>
-            )}
-            {activeStep === 0 && (
-                <div>
-                    <ChooseMovieType />
-                </div>
-            )}
+            <CustomerReservationContext.Provider value={provider}>
+                {activeStep === steps.length - 1 && (
+                    <div>Finished</div>
+                )}
+                {activeStep === 0 && (
+                    <div>
+                        <ReservationSeatsFragment
+                            customerReservation={customerReservation}
+                            setCustomerReservation={setCustomerReservation} />
+                    </div>
+                )}
+                {activeStep === 1 && (
+                    <div>Second</div>
+                )}
+            </CustomerReservationContext.Provider>
 
         </div>
     )

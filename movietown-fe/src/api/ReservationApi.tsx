@@ -1,4 +1,5 @@
 import axios from 'axios'
+import React, { createContext } from 'react'
 
 
 const instance = axios.create({
@@ -24,6 +25,13 @@ export interface discount {
     type: string,
     discount: number
 }
+
+export interface IAMGOINGTOLOSEMYFUCKINGMIND{
+    customerReservation: customerReservation,
+    setCustomerReservation: React.Dispatch<React.SetStateAction<customerReservation>>
+}
+
+export const CustomerReservationContext = createContext<IAMGOINGTOLOSEMYFUCKINGMIND | null>(null)
 
 export const getReservationTypes = async () => {
     return await instance.get("/types");

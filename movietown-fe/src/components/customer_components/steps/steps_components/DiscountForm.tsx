@@ -1,73 +1,216 @@
-import React, { useEffect, useState } from 'react'
-import { discount, getDiscounts } from '../../../../api/ReservationApi'
+import React, { useContext, useEffect, useState } from 'react'
+import { CustomerReservationContext, discount, discounts, getDiscounts } from '../../../../api/ReservationApi'
 import { Formik, Form } from 'formik'
 import * as Yup from 'yup';
-import { Input, TextField } from '@material-ui/core';
+import { TextField, Typography, makeStyles, Grid } from '@material-ui/core';
 
-interface DiscountFormProps {
-    onChange: (discountId: number) => void,
-}
+// interface DiscountFormProps {
+//     discountSeats: discounts,
+//     setDiscountSeats: (arg: discounts) => void
+// }
 
 const validateSeatForm = () => Yup.object().shape({
-    normalSeats: Yup.number().positive("Number cannot be negative").required("Required"),
-    childrenSeats: Yup.number().positive("Number cannot be negative").required("Required"),
-    studentSeats: Yup.number().positive("Number cannot be negative").required("Required"),
-    elderlySeats: Yup.number().positive("Number cannot be negative").required("Required")
+    normal_seats: Yup.number().positive("Number cannot be negative").required("Required"),
+    children_seats: Yup.number().positive("Number cannot be negative").required("Required"),
+    student_seats: Yup.number().positive("Number cannot be negative").required("Required"),
+    elderly_seats: Yup.number().positive("Number cannot be negative").required("Required")
 })
 
-const DiscountForm: React.FC<{}> = () => {
-    const [discounts, setDiscounts] = useState<Array<discount>>([])
+const useStyles = makeStyles(() => ({
+    form: {
+        display: "flex",
+        flexDirection: "column"
+    },
+    input: {
+        display: "flex",
+        flexDirection: "row"
+    },
+    label: {
+        margin: "8px 10px 0 10px",
+        float: "left"
+    }
+
+
+}))
+
+interface DiscountFormProps {
+    setNumberOfSeats: (arg: number) => void
+}
+
+const DiscountForm: React.FC<DiscountFormProps> = ({ setNumberOfSeats }) => {
+    const { form, input, label } = useStyles()
+    const provider = useContext(CustomerReservationContext)
+    const discountSeats = provider!.customerReservation.discounts
     useEffect(() => {
-        getDiscounts()
-            .then(({ data }) => setDiscounts([...data]))
-            .catch((err) => console.error(err))
-    }, [])
+        //I HATE JAVASCRIPT I HATE JAVASCRIPT I HATE JAVASCRIPT
+        const sum = +discountSeats.normal_seats
+            + +discountSeats.children_seats
+            + +discountSeats.student_seats
+            + +discountSeats.elderly_seats
+        setNumberOfSeats(sum)
+        provider?.setCustomerReservation({
+            ...provider.customerReservation,
+            discounts: discountSeats
+        })
+    }, [discountSeats])
 
     return (
         <Formik
-            initialValues={{
-                normalSeats: 0,
-                childrenSeats: 0,
-                studentSeats: 0,
-                elderlySeats: 0
-            }}
+            initialValues={provider!.customerReservation.discounts}
             validationSchema={validateSeatForm}
             onSubmit={(values) => console.log(values)}
         >
-            {({ values, handleChange, handleBlur }) => (
-                <Form>
-                    <TextField
-                        name='normalSeats'
-                        type='number'
-                        InputProps={{inputProps: {min: 0, max: 100}}}
-                        value={values.normalSeats}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                    />
-                    <TextField
-                        name='childrenSeats'
-                        type='number'
-                        InputProps={{inputProps: {min: 0, max: 100}}}
-                        value={values.childrenSeats}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                    />
-                    <TextField
-                        name='studentSeats'
-                        type='number'
-                        InputProps={{inputProps: {min: 0, max: 100}}}
-                        value={values.studentSeats}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                    />
-                    <TextField
-                        name='elderlySeats'
-                        type='number'
-                        InputProps={{inputProps: {min: 0, max: 100}}}
-                        value={values.elderlySeats}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                    />
+            {({ handleBlur }) => (
+                <Form className={form}>
+                    <div className={input}>
+                        <Grid item xs={4}>
+                            <Typography className={label}>
+                                Zwykłe:
+                            </Typography>
+
+                        </Grid>
+                        <Grid item xs={4}>
+                            <TextField
+                                name='normal_seats'
+                                type='number'
+                                InputProps={{ inputProps: { min: 0, max: 100 } }}
+                                value={discountSeats.normal_seats}
+                                onChange={(event) => {
+                                    const val = parseInt(event.target.value)
+                                    if(isNaN(val)){
+                                        console.log("AAAA")
+                                    }else{
+                                        provider!.setCustomerReservation(prev => {
+                                            return {
+                                                ...prev,
+                                                discounts: {
+                                                    ...prev.discounts,
+                                                    normal_seats: val
+                                                }
+                                            }
+                                        })
+
+                                    }
+                                    // setDiscountSeats({ ...discountSeats, normal_seats: val })
+                                }
+                                }
+                                onBlur={handleBlur}
+                            />
+
+                        </Grid>
+
+                    </div>
+                    <div className={input}>
+                        <Grid item xs={4}>
+                            <Typography className={label}>
+                                Dziecięce:
+                            </Typography>
+
+                        </Grid>
+                        <Grid item xs={4}>
+                            <TextField
+                                name='children_seats'
+                                type='number'
+                                InputProps={{ inputProps: { min: 0, max: 100 } }}
+                                value={discountSeats.children_seats}
+                                onChange={(event) => {
+                                    const val = parseInt(event.target.value)
+                                    if(isNaN(val)){
+                                        console.log("AAAA")
+                                    }else{
+                                        provider!.setCustomerReservation(prev => {
+                                            return {
+                                                ...prev,
+                                                discounts: {
+                                                    ...prev.discounts,
+                                                    children_seats: val
+                                                }
+                                            }
+                                        })
+
+                                    }
+                                    // setDiscountSeats({ ...discountSeats, children_seats: val })
+                                }
+                                }
+                                onBlur={handleBlur}
+                            />
+
+                        </Grid>
+                    </div>
+                    <div className={input}>
+                        <Grid item xs={4}>
+                            <Typography className={label}>
+                                Studenckie:
+                            </Typography>
+
+                        </Grid>
+                        <Grid item xs={4}>
+                            <TextField
+                                name='student_seats'
+                                type='number'
+                                InputProps={{ inputProps: { min: 0, max: 100 } }}
+                                value={discountSeats.student_seats}
+                                onChange={(event) => {
+                                    const val = parseInt(event.target.value)
+                                    if (isNaN(val)) {
+                                        console.log("AAAA")
+                                    } else {
+                                        provider!.setCustomerReservation(prev => {
+                                            return {
+                                                ...prev,
+                                                discounts: {
+                                                    ...prev.discounts,
+                                                    student_seats: val
+                                                }
+                                            }
+                                        })
+
+                                    }
+
+                                }
+                                }
+                                onBlur={handleBlur}
+                            />
+
+                        </Grid>
+                    </div>
+                    <div className={input}>
+                        <Grid item xs={4}>
+                            <Typography className={label}>
+                                Seniorskie
+                            </Typography>
+
+                        </Grid>
+                        <Grid item xs={4}>
+                            <TextField
+                                name='elderly_seats'
+                                type='number'
+                                InputProps={{ inputProps: { min: 0, max: 100 } }}
+                                value={discountSeats.elderly_seats}
+                                onChange={(event) => {
+                                    const val = parseInt(event.target.value)
+                                    if (isNaN(val)) {
+                                        console.log("AAAA")
+                                    } else {
+                                        provider!.setCustomerReservation(prev => {
+                                            return {
+                                                ...prev,
+                                                discounts: {
+                                                    ...prev.discounts,
+                                                    elderly_seats: val
+                                                }
+                                            }
+                                        })
+
+                                    }
+                                    // setDiscountSeats({ ...discountSeats, elderly_seats: val })
+                                }
+                                }
+                                onBlur={handleBlur}
+                            />
+
+                        </Grid>
+                    </div>
                 </Form>
 
             )}
