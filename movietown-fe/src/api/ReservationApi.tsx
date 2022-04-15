@@ -14,16 +14,24 @@ export interface discounts {
 }
 
 export interface customerReservation {
-    seat_id: number,
+    seat_ids: number[],
     screening_id: number,
     reservation_type_id: number,
-    discounts: discounts
+    discounts: discounts,
+    seatsToChoose: number
 }
 
 export interface discount {
     id: number,
     type: string,
     discount: number
+}
+
+export interface seat{
+    id: number,
+    row: number,
+    col: number,
+    movie_hall_id: number
 }
 
 export interface IAMGOINGTOLOSEMYFUCKINGMIND{

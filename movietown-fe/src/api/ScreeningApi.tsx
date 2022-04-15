@@ -14,6 +14,7 @@ interface mm_type{
 }
 
 export interface movie_hall{
+    id: number,
     name: string,
     number_of_seats: number
 }

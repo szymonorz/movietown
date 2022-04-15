@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import { CustomerReservationContext, discount, discounts, getDiscounts } from '../../../../api/ReservationApi'
 import { Formik, Form } from 'formik'
 import * as Yup from 'yup';
@@ -42,16 +42,11 @@ const DiscountForm: React.FC<DiscountFormProps> = ({ setNumberOfSeats }) => {
     const provider = useContext(CustomerReservationContext)
     const discountSeats = provider!.customerReservation.discounts
     useEffect(() => {
-        //I HATE JAVASCRIPT I HATE JAVASCRIPT I HATE JAVASCRIPT
         const sum = +discountSeats.normal_seats
             + +discountSeats.children_seats
             + +discountSeats.student_seats
             + +discountSeats.elderly_seats
         setNumberOfSeats(sum)
-        provider?.setCustomerReservation({
-            ...provider.customerReservation,
-            discounts: discountSeats
-        })
     }, [discountSeats])
 
     return (
@@ -77,9 +72,9 @@ const DiscountForm: React.FC<DiscountFormProps> = ({ setNumberOfSeats }) => {
                                 value={discountSeats.normal_seats}
                                 onChange={(event) => {
                                     const val = parseInt(event.target.value)
-                                    if(isNaN(val)){
+                                    if (isNaN(val)) {
                                         console.log("AAAA")
-                                    }else{
+                                    } else {
                                         provider!.setCustomerReservation(prev => {
                                             return {
                                                 ...prev,
@@ -115,9 +110,9 @@ const DiscountForm: React.FC<DiscountFormProps> = ({ setNumberOfSeats }) => {
                                 value={discountSeats.children_seats}
                                 onChange={(event) => {
                                     const val = parseInt(event.target.value)
-                                    if(isNaN(val)){
+                                    if (isNaN(val)) {
                                         console.log("AAAA")
-                                    }else{
+                                    } else {
                                         provider!.setCustomerReservation(prev => {
                                             return {
                                                 ...prev,

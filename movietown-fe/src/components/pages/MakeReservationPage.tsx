@@ -1,8 +1,12 @@
 import { Stepper, Step, StepLabel, Button } from '@material-ui/core'
-import React, { useMemo, useState } from 'react'
+import React, { useMemo, useState, useEffect } from 'react'
 import ReservationSeatsFragment from '../customer_components/steps/ReservationSeatsFragment'
 import { MakeReservationStep } from '../customer_components/steps/common'
 import { CustomerReservationContext } from '../../api/ReservationApi'
+import { useSearchParams } from 'react-router-dom';
+import { getScreeningById, screening } from '../../api/ScreeningApi';
+import SeatsGrid from '../customer_components/steps/SeatsGrid'
+import SelectSeatsFragment from '../customer_components/steps/SelectSeatsFragment'
 
 const steps: MakeReservationStep[] = [
     {
@@ -18,8 +22,34 @@ const steps: MakeReservationStep[] = [
 
 const MakeReservationPage: React.FC<{}> = () => {
     const [activeStep, setActiveStep] = useState(0)
+    const [screeningId, setScreeningId] = useState(0)
+
+    const [screening, setScreening] = useState<screening>({
+        mm_type: {
+            id: 0,
+            movie: {
+                id: 0,
+                title: '',
+                director: '',
+                description: '',
+                length: 0,
+                movie_types: []
+            },
+            movie_type: {
+                price: 0,
+                type: ''
+            }
+        },
+        movie_hall: {
+            id: 0,
+            name: '',
+            number_of_seats: 0
+        },
+        start_of_screening: new Date(),
+    })
+
     const [customerReservation, setCustomerReservation] = useState({
-        seat_id: 0,
+        seat_ids: [] as number[],
         screening_id: 0,
         reservation_type_id: 0,
         discounts: {
@@ -27,11 +57,14 @@ const MakeReservationPage: React.FC<{}> = () => {
             children_seats: 0,
             student_seats: 0,
             elderly_seats: 0
-        }
+        },
+        seatsToChoose: 0
     })
 
     const provider = useMemo(() => ({ customerReservation, setCustomerReservation }),
         [customerReservation, setCustomerReservation])
+    const discountSeats = provider!.customerReservation.discounts
+    const [query] = useSearchParams()
 
     const handleNext = () => {
         setActiveStep(prevStep => prevStep + 1)
@@ -42,6 +75,32 @@ const MakeReservationPage: React.FC<{}> = () => {
             setActiveStep(currStep => currStep - 1)
         }
     }
+
+    useEffect(() => {
+        const id = query.get("id")
+        if (id) {
+            setScreeningId(parseInt(id))
+        }
+    }, [])
+
+    useEffect(() => {
+        setCustomerReservation({
+            ...customerReservation,
+            screening_id: screeningId
+        })
+        getScreeningById(screeningId)
+            .then(({ data }) => setScreening(data))
+            .catch((err) => console.error(err))
+    }, [screeningId])
+
+    useEffect(() => {
+        setCustomerReservation({
+            ...customerReservation,
+            discounts: discountSeats
+        })
+    }, [discountSeats])
+
+
 
     return (
         <div>
@@ -69,12 +128,17 @@ const MakeReservationPage: React.FC<{}> = () => {
                 {activeStep === 0 && (
                     <div>
                         <ReservationSeatsFragment
+                            screening={screening}
                             customerReservation={customerReservation}
                             setCustomerReservation={setCustomerReservation} />
                     </div>
                 )}
                 {activeStep === 1 && (
-                    <div>Second</div>
+                    <div>
+                        <SelectSeatsFragment 
+                        numberOfSeats={screening.movie_hall.number_of_seats}
+                        />
+                    </div>
                 )}
             </CustomerReservationContext.Provider>
 
