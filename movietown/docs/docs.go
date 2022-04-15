@@ -969,6 +969,38 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/v1/reservations/seats/{screening_id}": {
+            "get": {
+                "description": "get takenSeats by customer_id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "reservations"
+                ],
+                "summary": "Show reserved seats for screening",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "format": "int",
+                        "description": "search reserved seats for screening_id",
+                        "name": "screening_id",
+                        "in": "path"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/api.takenSeats"
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/reservations/types": {
             "get": {
                 "description": "Show reservations types",
@@ -1430,6 +1462,17 @@ const docTemplate = `{
                 }
             }
         },
+        "api.takenSeats": {
+            "type": "object",
+            "properties": {
+                "taken_seat_ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                }
+            }
+        },
         "model.Customer": {
             "type": "object",
             "properties": {
@@ -1729,14 +1772,14 @@ const docTemplate = `{
                 "mm_type": {
                     "$ref": "#/definitions/model.MovieMovieType"
                 },
-                "movieHallId": {
-                    "type": "integer"
-                },
                 "movieMovieTypeId": {
                     "type": "integer"
                 },
                 "movie_hall": {
                     "$ref": "#/definitions/model.MovieHall"
+                },
+                "movie_hall_id": {
+                    "type": "integer"
                 },
                 "start_of_screening": {
                     "type": "string"
@@ -1746,7 +1789,7 @@ const docTemplate = `{
         "model.Seat": {
             "type": "object",
             "properties": {
-                "column": {
+                "col": {
                     "type": "integer"
                 },
                 "id": {
@@ -1755,10 +1798,7 @@ const docTemplate = `{
                 "movieHall": {
                     "$ref": "#/definitions/model.MovieHall"
                 },
-                "movieHallId": {
-                    "type": "integer"
-                },
-                "number": {
+                "movie_hall_id": {
                     "type": "integer"
                 },
                 "row": {

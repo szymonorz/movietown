@@ -16,6 +16,12 @@ func NewReservedSeatRepository(database *gorm.DB) ReservedSeatRepository {
 	return ReservedSeatRepository{db: database}
 }
 
+func (r *ReservedSeatRepository) FindAllByScreeningId(screening_id uint) ([]model.ReservedSeat, error) {
+	var reserved_seats []model.ReservedSeat
+	err := r.db.Where("screening_id = ?", screening_id).Find(&reserved_seats).Error
+	return reserved_seats, err
+}
+
 func (r *ReservedSeatRepository) CreateForGuest(
 	seats *[]model.ReservedSeat,
 	guest *model.Customer,

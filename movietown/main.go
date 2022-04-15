@@ -145,6 +145,7 @@ func main() {
 			reservationApi.POST("/guest/create", reservationHandler.GuestCreateReservation)
 			reservationApi.GET("/types", reservationTypeHandler.GetReservationTypes)
 			reservationApi.GET("/discounts", discountHandler.GetAllDiscounts)
+			reservationApi.GET("/seats/:screening_id", reservationHandler.GetReservedSeatsForScreening)
 		}
 	}
 

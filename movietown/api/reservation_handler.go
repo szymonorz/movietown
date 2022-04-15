@@ -29,6 +29,36 @@ func NewReservationHandler(reservationService service.ReservationService,
 	}
 }
 
+type takenSeats struct {
+	SeatIds []uint `json:"taken_seat_ids"`
+}
+
+// GetReservedSeatsForScreening godoc
+// @Summary      Show reserved seats for screening
+// @Description  get takenSeats by customer_id
+// @Tags         reservations
+// @Accept       json
+// @Produce      json
+// @Param        screening_id    path     string  false  "search reserved seats for screening_id"  Format(int)
+// @Success      200  {object}  takenSeats
+// @Router       /api/v1/reservations/seats/{screening_id} [get]
+func (h *ReservationHandler) GetReservedSeatsForScreening(c *gin.Context) {
+	screening_id, err := strconv.ParseUint(c.Param("screening_id"), 10, 0)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, err)
+		return
+	}
+	seats, err := h.reservedSeatService.GetAllTakesSeatIds(uint(screening_id))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, err)
+		return
+	}
+	var ts takenSeats
+	ts.SeatIds = seats
+
+	c.JSON(http.StatusOK, ts)
+}
+
 // GetCustomerReservations godoc
 // @Summary      Show reservations
 // @Description  get []Reservation by customer_id

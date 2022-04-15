@@ -168,6 +168,13 @@ definitions:
     - surname
     - username
     type: object
+  api.takenSeats:
+    properties:
+      taken_seat_ids:
+        items:
+          type: integer
+        type: array
+    type: object
   model.Customer:
     properties:
       email:
@@ -365,7 +372,7 @@ definitions:
         $ref: '#/definitions/model.MovieMovieType'
       movie_hall:
         $ref: '#/definitions/model.MovieHall'
-      movieHallId:
+      movie_hall_id:
         type: integer
       movieMovieTypeId:
         type: integer
@@ -374,16 +381,14 @@ definitions:
     type: object
   model.Seat:
     properties:
-      column:
+      col:
         type: integer
       id:
         type: integer
+      movie_hall_id:
+        type: integer
       movieHall:
         $ref: '#/definitions/model.MovieHall'
-      movieHallId:
-        type: integer
-      number:
-        type: integer
       row:
         type: integer
     type: object
@@ -1027,6 +1032,27 @@ paths:
               type: array
             type: array
       summary: Show reservations
+      tags:
+      - reservations
+  /api/v1/reservations/seats/{screening_id}:
+    get:
+      consumes:
+      - application/json
+      description: get takenSeats by customer_id
+      parameters:
+      - description: search reserved seats for screening_id
+        format: int
+        in: path
+        name: screening_id
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.takenSeats'
+      summary: Show reserved seats for screening
       tags:
       - reservations
   /api/v1/reservations/types:
