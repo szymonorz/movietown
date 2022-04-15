@@ -1,6 +1,6 @@
-import React, { useContext, useEffect, useState } from 'react'
-import { CustomerReservationContext, discounts } from '../../../api/ReservationApi'
-import SeatsGrid from './SeatsGrid'
+import React, { useContext, useEffect } from 'react'
+import { CustomerReservationContext } from '../../../api/ReservationApi'
+import SeatsGrid from './steps_components/SeatsGrid'
 
 interface SelectSeatsFragmentProps {
     numberOfSeats: number,

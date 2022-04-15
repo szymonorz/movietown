@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useRef, useState } from 'react'
-import { CustomerReservationContext } from '../../../api/ReservationApi';
+import { CustomerReservationContext } from '../../../../api/ReservationApi';
 
 interface SeatsGridProps {
     numberOfSeats: number,
