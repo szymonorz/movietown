@@ -1,10 +1,9 @@
 package model
 
 type Seat struct {
-	ID          uint `gorm:"primaryKey"`
-	Number      uint
-	Row         uint
-	Column      uint
-	MovieHallId *uint
+	ID          uint      `gorm:"primaryKey" json:"id"`
+	Row         uint      `json:"row"`
+	Column      uint      `json:"col"`
+	MovieHallId *uint     `json:"movie_hall_id"`
 	MovieHall   MovieHall `gorm:"foreignKey:MovieHallId"`
 }
