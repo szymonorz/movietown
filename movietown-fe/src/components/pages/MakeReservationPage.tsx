@@ -5,8 +5,8 @@ import { MakeReservationStep } from '../customer_components/steps/common'
 import { CustomerReservationContext } from '../../api/ReservationApi'
 import { useSearchParams } from 'react-router-dom';
 import { getScreeningById, screening } from '../../api/ScreeningApi';
-import SeatsGrid from '../customer_components/steps/SeatsGrid'
 import SelectSeatsFragment from '../customer_components/steps/SelectSeatsFragment'
+import SummaryStep from '../customer_components/steps/SummaryStep'
 
 const steps: MakeReservationStep[] = [
     {
@@ -123,7 +123,7 @@ const MakeReservationPage: React.FC<{}> = () => {
             >Next</Button>
             <CustomerReservationContext.Provider value={provider}>
                 {activeStep === steps.length - 1 && (
-                    <div>Finished</div>
+                    <SummaryStep screening={screening}/>
                 )}
                 {activeStep === 0 && (
                     <div>
