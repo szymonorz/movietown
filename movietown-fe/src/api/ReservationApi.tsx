@@ -49,6 +49,10 @@ export const getDiscounts = async () => {
     return await instance.get("/discounts")
 }
 
+export const getTakenSeats = async(screeningId: number) => {
+    return await instance.get(`/seats/${screeningId}`)
+}
+
 export const createReservation = async (token: string, values: customerReservation) => {
     return await instance.post("/customer/create", {
         seat_ids: values.seat_ids,

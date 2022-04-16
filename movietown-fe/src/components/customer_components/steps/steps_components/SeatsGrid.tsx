@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useRef, useState } from 'react'
-import { CustomerReservationContext } from '../../../../api/ReservationApi';
+import { CustomerReservationContext, getTakenSeats } from '../../../../api/ReservationApi';
 
 interface SeatsGridProps {
     numberOfSeats: number,
@@ -10,8 +10,17 @@ const SeatsGrid: React.FC<SeatsGridProps> = ({ setNextDisabled, numberOfSeats })
     const canvasRef = useRef<HTMLCanvasElement>(null)
     const provider = useContext(CustomerReservationContext)
     const [seatsIds, setSeatsIds] = useState<number[]>(provider!.customerReservation.seat_ids)
+    const [takenSeatsIds, setTakenSeatsIds] = useState<number[]>([])
     const seatsToChoose = provider!.customerReservation.seatsToChoose
-
+    useEffect(() => {
+        const screeningId = provider!.customerReservation.screening_id
+        getTakenSeats(screeningId)
+        .then(({data}) => {
+            console.log(data)
+            setTakenSeatsIds(prev => [...data["taken_seat_ids"]])
+        })
+        .catch((err) => console.error(err))
+    }, [])
     // do not change anything down there otherwise the entire thing will explode
     // this is a threat
     const boxSize = 40;
@@ -78,8 +87,11 @@ const SeatsGrid: React.FC<SeatsGridProps> = ({ setNextDisabled, numberOfSeats })
                 for (let row = 1; row <= numOfRows; row++) {
                     for (let col = 0; col < 10; col++) {
                         if (seatsIds.includes(index)) {
-                            context.fillStyle = "#990000";
+                            context.fillStyle = "#990000"
                             // console.log(index);
+                        }
+                        if(takenSeatsIds.includes(index)){
+                            context.fillStyle = "#1f1f1f"
                         }
                         context.beginPath()
                         context.strokeStyle = "#efefef"
@@ -106,7 +118,7 @@ const SeatsGrid: React.FC<SeatsGridProps> = ({ setNextDisabled, numberOfSeats })
                 }
             }
         }
-    }, [seatsIds])
+    }, [seatsIds, takenSeatsIds])
 
 
     return <canvas ref={canvasRef} width={500} height={500} onClick={handleClick} />
