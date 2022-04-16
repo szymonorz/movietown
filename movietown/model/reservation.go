@@ -2,7 +2,7 @@ package model
 
 type Reservation struct {
 	ID                uint `gorm:"primaryKey"`
-	ScreeningId       *uint
+	ScreeningId       uint
 	Screening         Screening `gorm:"foreignKey:ScreeningId"`
 	CustomerId        *uint
 	Customer          Customer `gorm:"foreignKey:CustomerId"`
@@ -11,6 +11,6 @@ type Reservation struct {
 	Active            bool
 	EmployeeId        *uint
 	Employee          Employee `gorm:"foreignKey:EmployeeId"`
-	ReservationTypeId *uint
+	ReservationTypeId uint
 	ReservationType   ReservationType `gorm:"foreignKey:ReservationTypeId"`
 }

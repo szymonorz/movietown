@@ -2,13 +2,13 @@ package model
 
 type ReservedSeat struct {
 	ID             uint `gorm:"primaryKey"`
-	SeatId         *uint
+	SeatId         uint
 	Seat           Seat `gorm:"foreignKey:SeatId"`
-	ScreeningId    *uint
+	ScreeningId    uint
 	Screening      Screening `gorm:"foreignKey:ScreeningId"`
-	DiscountTypeId *uint
+	DiscountTypeId uint
 	DiscountType   DiscountType `gorm:"foreignKey:DiscountTypeId"`
-	ReservationId  *uint
+	ReservationId  uint
 	Reservation    Reservation `gorm:"foreignKey:ReservationId"`
 }
 
