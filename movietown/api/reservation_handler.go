@@ -1,7 +1,9 @@
 package api
 
 import (
+	"errors"
 	"movietown/auth"
+	"movietown/merror"
 	"movietown/model"
 	"movietown/service"
 	"net/http"
@@ -104,7 +106,7 @@ func (h *ReservationHandler) GetCustomerReservationsFromId(c *gin.Context) {
 }
 
 type customerReservation struct {
-	SeatsId           []uint             `json:"seats_id" validate:"required"`
+	SeatsId           []uint             `json:"seat_ids" validate:"required"`
 	ScreeningId       uint               `json:"screening_id" validate:"required"`
 	ReservationTypeId uint               `json:"reservation_type_id" validate:"required"`
 	Discounts         model.RequestSeats `json:"discounts"`
@@ -139,10 +141,10 @@ func (h *ReservationHandler) GuestCreateReservation(c *gin.Context) {
 		Phone_number: request.Phone_number,
 	}
 	reservation := model.Reservation{
-		ScreeningId:       &request.ScreeningId,
+		ScreeningId:       request.ScreeningId,
 		Reserved:          true,
 		Active:            true,
-		ReservationTypeId: &request.ReservationTypeId,
+		ReservationTypeId: request.ReservationTypeId,
 	}
 	seats, err := h.reservedSeatService.GuestReserveSeats(request.SeatsId, request.Discounts, &customer, &reservation)
 	if err != nil {
@@ -161,7 +163,7 @@ func (h *ReservationHandler) GuestCreateReservation(c *gin.Context) {
 // @Produce      json
 // @Param		 Authorization	header string true "Authorization"
 // @Param		 guestReservation body 	customerReservation true "guest reservation DTO"
-// @Success      200  {array}  []model.ReservedSeat
+// @Success      200  integer	int
 // @Router       /api/v1/reservations/customer/create [post]
 func (h *ReservationHandler) CustomerCreateReservation(c *gin.Context) {
 	customer, err := h.auth.GetCustomerFromRequest(c.Request)
@@ -175,17 +177,21 @@ func (h *ReservationHandler) CustomerCreateReservation(c *gin.Context) {
 		return
 	}
 	reservation := model.Reservation{
-		ScreeningId:       &request.ScreeningId,
-		ReservationTypeId: &request.ReservationTypeId,
+		ScreeningId:       request.ScreeningId,
+		ReservationTypeId: request.ReservationTypeId,
 		CustomerId:        &customer.ID,
 	}
-	seats, err := h.reservedSeatService.RegularReserveSeats(request.SeatsId, request.Discounts, &reservation)
+	err = h.reservedSeatService.RegularReserveSeats(request.SeatsId, request.Discounts, &reservation)
 	if err != nil {
+		if errors.Is(err, merror.ErrSeatTaken) {
+			c.JSON(http.StatusConflict, gin.H{"error": err.Error()})
+			return
+		}
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusOK, seats)
+	c.JSON(http.StatusOK, reservation.ID)
 }
 
 // GuestCreateReservation godoc
@@ -196,7 +202,7 @@ func (h *ReservationHandler) CustomerCreateReservation(c *gin.Context) {
 // @Produce      json
 // @Param		 Authorization	header string true "Authorization"
 // @Param		 guestReservation body 	customerReservation true "customer reservation DTO"
-// @Success      200  {array}  []model.ReservedSeat
+// @Success      200  integer  int
 // @Router       /api/v1/reservations/employee/create [post]
 func (h *ReservationHandler) EmployeeCreateReservation(c *gin.Context) {
 	employee, err := h.auth.GetEmployeeFromRequest(c.Request)
@@ -210,18 +216,18 @@ func (h *ReservationHandler) EmployeeCreateReservation(c *gin.Context) {
 		return
 	}
 	reservation := model.Reservation{
-		ScreeningId:       &request.ScreeningId,
-		ReservationTypeId: &request.ReservationTypeId,
+		ScreeningId:       request.ScreeningId,
+		ReservationTypeId: request.ReservationTypeId,
 		EmployeeId:        &employee.ID,
 	}
 
-	seats, err := h.reservedSeatService.RegularReserveSeats(request.SeatsId, request.Discounts, &reservation)
+	err = h.reservedSeatService.RegularReserveSeats(request.SeatsId, request.Discounts, &reservation)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusOK, seats)
+	c.JSON(http.StatusOK, reservation.ID)
 
 	//TODO
 }

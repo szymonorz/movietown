@@ -100,7 +100,7 @@ definitions:
         type: integer
       screening_id:
         type: integer
-      seats_id:
+      seat_ids:
         items:
           type: integer
         type: array
@@ -115,7 +115,7 @@ definitions:
     - phone_number
     - reservation_type_id
     - screening_id
-    - seats_id
+    - seat_ids
     - surname
     - username
     type: object
@@ -127,14 +127,14 @@ definitions:
         type: integer
       screening_id:
         type: integer
-      seats_id:
+      seat_ids:
         items:
           type: integer
         type: array
     required:
     - reservation_type_id
     - screening_id
-    - seats_id
+    - seat_ids
     type: object
   api.newScreening:
     properties:
@@ -954,11 +954,7 @@ paths:
         "200":
           description: OK
           schema:
-            items:
-              items:
-                $ref: '#/definitions/model.ReservedSeat'
-              type: array
-            type: array
+            type: integer
       summary: Customer makes a seat reservation for screening
       tags:
       - reservations
@@ -1000,11 +996,7 @@ paths:
         "200":
           description: OK
           schema:
-            items:
-              items:
-                $ref: '#/definitions/model.ReservedSeat'
-              type: array
-            type: array
+            type: integer
       summary: Employee makes a reservation for a customer
       tags:
       - reservations

@@ -21,7 +21,7 @@ func (s *ReservedSeatService) GetAllTakesSeatIds(screening_id uint) ([]uint, err
 	}
 	var seat_ids []uint
 	for _, e := range seats {
-		seat_ids = append(seat_ids, *e.SeatId)
+		seat_ids = append(seat_ids, e.SeatId)
 	}
 	return seat_ids, nil
 }
@@ -49,9 +49,9 @@ func (s *ReservedSeatService) GuestReserveSeats(seat_ids []uint, discounts model
 		}
 
 		s := model.ReservedSeat{
-			SeatId:         &seat,
+			SeatId:         seat,
 			ScreeningId:    reservation.ScreeningId,
-			DiscountTypeId: &discount_id,
+			DiscountTypeId: discount_id,
 		}
 		seats = append(seats, s)
 		log.Printf("%v\n", s)
@@ -63,11 +63,11 @@ func (s *ReservedSeatService) GuestReserveSeats(seat_ids []uint, discounts model
 	}
 	customer.Password = hash
 
-	err = s.repository.CreateForGuest(&seats, customer, reservation)
+	err = s.repository.CreateForGuest(seats, customer, reservation)
 	return seats, err
 }
 
-func (s *ReservedSeatService) RegularReserveSeats(seat_ids []uint, discounts model.RequestSeats, reservation *model.Reservation) ([]model.ReservedSeat, error) {
+func (s *ReservedSeatService) RegularReserveSeats(seat_ids []uint, discounts model.RequestSeats, reservation *model.Reservation) error {
 	var seats []model.ReservedSeat
 	normalSeatCount := discounts.NormalSeats
 	childrenSeatCount := discounts.ChildrenSeats
@@ -75,6 +75,7 @@ func (s *ReservedSeatService) RegularReserveSeats(seat_ids []uint, discounts mod
 	elderlySeatCount := discounts.ElderlySeats
 	for _, seat := range seat_ids {
 		var discount_id uint
+		// log.Println(seat)
 		if normalSeatCount != 0 {
 			discount_id = 1
 			normalSeatCount--
@@ -88,16 +89,17 @@ func (s *ReservedSeatService) RegularReserveSeats(seat_ids []uint, discounts mod
 			discount_id = 4
 			elderlySeatCount--
 		}
-
+		copy := new(uint)
+		*copy = seat
 		s := model.ReservedSeat{
-			SeatId:         &seat,
+			SeatId:         seat,
 			ScreeningId:    reservation.ScreeningId,
-			DiscountTypeId: &discount_id,
+			DiscountTypeId: discount_id,
 		}
 		seats = append(seats, s)
-		log.Printf("%v\n", s)
+		// log.Println(*seats[i].SeatId)
 	}
 
-	err := s.repository.CreateForCustomer(&seats, reservation)
-	return seats, err
+	err := s.repository.CreateForCustomer(seats, reservation)
+	return err
 }

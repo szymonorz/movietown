@@ -3,6 +3,7 @@ package repository
 import (
 	"errors"
 	"log"
+	"movietown/merror"
 	"movietown/model"
 
 	"gorm.io/gorm"
@@ -23,7 +24,7 @@ func (r *ReservedSeatRepository) FindAllByScreeningId(screening_id uint) ([]mode
 }
 
 func (r *ReservedSeatRepository) CreateForGuest(
-	seats *[]model.ReservedSeat,
+	seats []model.ReservedSeat,
 	guest *model.Customer,
 	reservation *model.Reservation) error {
 
@@ -57,7 +58,8 @@ func (r *ReservedSeatRepository) CreateForGuest(
 		return err
 	}
 
-	for _, v := range *seats {
+	log.Println("Everything went well :^)")
+	for _, v := range seats {
 		if err := tx.Model(&model.Seat{}).Where("movie_hall_id = ?", screening.MovieHallId).
 			Where("id = ?", v.SeatId).First(&model.Seat{}).Error; err != nil {
 			tx.Rollback()
@@ -66,23 +68,21 @@ func (r *ReservedSeatRepository) CreateForGuest(
 	}
 
 	log.Printf("%d\n", reservation.ID)
-	for i := range *seats {
-		(*seats)[i].ReservationId = &reservation.ID
-		log.Printf("%d\n", (*seats)[i].ReservationId)
+	for i := range seats {
+		seats[i].ReservationId = reservation.ID
 	}
 	if err := tx.Model(&model.ReservedSeat{}).Create(seats).Error; err != nil {
 		tx.Rollback()
 		return err
 	}
-
+	log.Println("Everything went well :^)")
 	return tx.Commit().Error
 }
 
 func (r *ReservedSeatRepository) CreateForCustomer(
-	seats *[]model.ReservedSeat,
+	seats []model.ReservedSeat,
 	reservation *model.Reservation) error {
 	tx := r.db.Begin()
-
 	defer func() {
 		if r := recover(); r != nil {
 			tx.Rollback()
@@ -108,28 +108,39 @@ func (r *ReservedSeatRepository) CreateForCustomer(
 		return err
 	}
 
-	for _, v := range *seats {
+	for _, v := range seats {
+		var tmps model.Seat
 		if err := tx.Model(&model.Seat{}).Where("movie_hall_id = ?", screening.MovieHallId).
-			Where("id = ?", v.SeatId).First(&model.Seat{}).Error; !errors.Is(err, gorm.ErrRecordNotFound) {
+			Where("id = ?", v.SeatId).Find(&tmps).Error; err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
 			tx.Rollback()
+			log.Println(err.Error())
 			return err
 		}
+		if tmps.ID == 0 {
+			tx.Rollback()
+			return merror.ErrSeatNotExists
+		}
 
+		var tmp model.ReservedSeat
 		if err := tx.Model(&model.ReservedSeat{}).
 			Where("screening_id = ?", reservation.ScreeningId).
-			Where("seat_id = ?", v.SeatId).First(&model.ReservedSeat{}).Error; !errors.Is(err, gorm.ErrRecordNotFound) {
+			Where("seat_id = ?", v.SeatId).Find(&tmp).Error; err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
 			tx.Rollback()
 			return err
 		}
-	}
+		if tmp.ID != 0 {
+			tx.Rollback()
+			return merror.ErrSeatTaken
+		}
 
-	for _, v := range *seats {
-		v.ReservationId = &reservation.ID
+	}
+	for i := range seats {
+		seats[i].ReservationId = reservation.ID
+		log.Println(seats[i].SeatId)
 	}
 	if err := tx.Model(&model.ReservedSeat{}).Create(seats).Error; err != nil {
 		tx.Rollback()
 		return err
 	}
-
 	return tx.Commit().Error
 }

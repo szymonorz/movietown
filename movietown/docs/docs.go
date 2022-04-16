@@ -808,13 +808,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "type": "array",
-                                "items": {
-                                    "$ref": "#/definitions/model.ReservedSeat"
-                                }
-                            }
+                            "type": "integer"
                         }
                     }
                 }
@@ -917,13 +911,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "type": "array",
-                                "items": {
-                                    "$ref": "#/definitions/model.ReservedSeat"
-                                }
-                            }
+                            "type": "integer"
                         }
                     }
                 }
@@ -1351,7 +1339,7 @@ const docTemplate = `{
                 "phone_number",
                 "reservation_type_id",
                 "screening_id",
-                "seats_id",
+                "seat_ids",
                 "surname",
                 "username"
             ],
@@ -1377,7 +1365,7 @@ const docTemplate = `{
                 "screening_id": {
                     "type": "integer"
                 },
-                "seats_id": {
+                "seat_ids": {
                     "type": "array",
                     "items": {
                         "type": "integer"
@@ -1396,7 +1384,7 @@ const docTemplate = `{
             "required": [
                 "reservation_type_id",
                 "screening_id",
-                "seats_id"
+                "seat_ids"
             ],
             "properties": {
                 "discounts": {
@@ -1408,7 +1396,7 @@ const docTemplate = `{
                 "screening_id": {
                     "type": "integer"
                 },
-                "seats_id": {
+                "seat_ids": {
                     "type": "array",
                     "items": {
                         "type": "integer"
