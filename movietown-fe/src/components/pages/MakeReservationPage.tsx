@@ -52,7 +52,7 @@ const MakeReservationPage: React.FC<{}> = () => {
     const [customerReservation, setCustomerReservation] = useState({
         seat_ids: [] as number[],
         screening_id: 0,
-        reservation_type_id: 0,
+        reservation_type_id: 1,
         discounts: {
             normal_seats: 0,
             children_seats: 0,

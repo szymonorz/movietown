@@ -50,7 +50,12 @@ export const getDiscounts = async () => {
 }
 
 export const createReservation = async (token: string, values: customerReservation) => {
-    return await instance.post("/customer/create", values, {
+    return await instance.post("/customer/create", {
+        seat_ids: values.seat_ids,
+        screening_id: values.screening_id,
+        reservation_type_id: values.reservation_type_id,
+        discounts: values.discounts,
+    }, {
         headers: {
             Authorization: `Bearer ${token}`
         }
