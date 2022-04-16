@@ -6,7 +6,8 @@ import TicketList from './steps_components/TicketList'
 
 interface SummaryStepProps {
     screening: screening,
-    setNextDisabled: React.Dispatch<React.SetStateAction<boolean>>
+    setNextDisabled: React.Dispatch<React.SetStateAction<boolean>>,
+    setReservationId: React.Dispatch<React.SetStateAction<number | null>>
 }
 
 const useStyles = makeStyles(() => ({
@@ -27,24 +28,25 @@ const useStyles = makeStyles(() => ({
     }
 }))
 
-const SummaryStep: React.FC<SummaryStepProps> = ({ setNextDisabled, screening }) => {
+const SummaryStep: React.FC<SummaryStepProps> = ({ setNextDisabled, screening, setReservationId }) => {
     const { parent, list, element } = useStyles()
     const provider = useContext(CustomerReservationContext)
     const [discountTypes, setDiscountTypes] = useState<discount[]>([])
+    const [error, setError] = useState<string | null>(null)
     const price = screening.mm_type.movie_type.price
     const seats = provider!.customerReservation.discounts
     useEffect(() => {
         setNextDisabled(true)
         getDiscounts()
             .then(({ data }) => setDiscountTypes([...data]))
-            .catch((err) => console.error(err))
+            .catch((err) => setError(err.response.data))
     }, [])
 
     const makeReservation = () => {
         const token = localStorage.getItem("token") || ""
         createReservation(token, provider!.customerReservation)
-            .then(({ data }) => console.log(data))
-            .catch((err) => console.error(err))
+            .then(({ data }) => setReservationId(data))
+            .catch((err) => setError(err.response.data["error"]))
     }
 
     const getSum = () => {
@@ -117,6 +119,12 @@ const SummaryStep: React.FC<SummaryStepProps> = ({ setNextDisabled, screening })
             <Divider />
             <div>Podsumowanie: {getSum()} PLN</div>
             <Button onClick={() => makeReservation()}>Złóż zamówienie</Button>
+            {error && (
+                <div>
+                    Coś poszło nie tak :^(
+                    <div>{JSON.stringify(error)}</div>
+                </div>
+            )}
         </div>
     )
 }

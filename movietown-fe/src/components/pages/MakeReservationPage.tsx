@@ -24,6 +24,7 @@ const MakeReservationPage: React.FC<{}> = () => {
     const [activeStep, setActiveStep] = useState(0)
     const [screeningId, setScreeningId] = useState(0)
     const [nextDisabled, setNextDisabled] = useState<boolean>(true)
+    const [reservationId, setReservationId] = useState<number | null>(null)
 
     const [screening, setScreening] = useState<screening>({
         mm_type: {
@@ -105,46 +106,57 @@ const MakeReservationPage: React.FC<{}> = () => {
 
     return (
         <div>
-            <Stepper activeStep={activeStep}>
-                {steps.map((step, index) => {
-                    return (
-                        <Step key={step.label}>
-                            <StepLabel>{step.label}</StepLabel>
-                        </Step>
-                    )
-                })}
-            </Stepper>
-            <Button
-                disabled={activeStep === 0}
-                onClick={handleBack}
-            >Back</Button>
-            <Button
-                disabled={nextDisabled}
-                onClick={handleNext}
-            >Next</Button>
-            <CustomerReservationContext.Provider value={provider}>
-                {activeStep === 0 && (
-                    <div>
-                        <ReservationSeatsFragment
-                            setNextDisabled={setNextDisabled}
-                            screening={screening}
-                        />
-                    </div>
-                )}
-                {activeStep === 1 && (
-                    <div>
-                        <SelectSeatsFragment
-                            setNextDisabled={setNextDisabled}
-                            numberOfSeats={screening.movie_hall.number_of_seats}
-                        />
-                    </div>
-                )}
-                {activeStep === steps.length - 1 && (
-                    <SummaryStep
-                        setNextDisabled={setNextDisabled}
-                        screening={screening} />
-                )}
-            </CustomerReservationContext.Provider>
+            {reservationId == null && (
+                <div>
+                    <Stepper activeStep={activeStep}>
+                        {steps.map((step, index) => {
+                            return (
+                                <Step key={step.label}>
+                                    <StepLabel>{step.label}</StepLabel>
+                                </Step>
+                            )
+                        })}
+                    </Stepper>
+                    <Button
+                        disabled={activeStep === 0}
+                        onClick={handleBack}
+                    >Back</Button>
+                    <Button
+                        disabled={nextDisabled}
+                        onClick={handleNext}
+                    >Next</Button>
+                    <CustomerReservationContext.Provider value={provider}>
+                        {activeStep === 0 && (
+                            <div>
+                                <ReservationSeatsFragment
+                                    setNextDisabled={setNextDisabled}
+                                    screening={screening}
+                                />
+                            </div>
+                        )}
+                        {activeStep === 1 && (
+                            <div>
+                                <SelectSeatsFragment
+                                    setNextDisabled={setNextDisabled}
+                                    numberOfSeats={screening.movie_hall.number_of_seats}
+                                />
+                            </div>
+                        )}
+                        {activeStep === steps.length - 1 && (
+                            <SummaryStep
+                                setNextDisabled={setNextDisabled}
+                                screening={screening}
+                                setReservationId={setReservationId} />
+                        )}
+                    </CustomerReservationContext.Provider>
+                </div>
+            )}
+            {reservationId && (
+                <div>
+                    <div>Dziękujemy za twoje zamówienie. Do zobaczenia w krótce</div>
+                    <div>Numer twojego zamówienia: {reservationId}</div>
+                </div>
+            )}
 
         </div>
     )
