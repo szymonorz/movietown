@@ -6,13 +6,14 @@ import DiscountForm from './steps_components/DiscountForm';
 
 
 interface ChooseMovieTypeProps {
-    customerReservation: customerReservation,
+    // customerReservation: customerReservation,
     screening: screening,
-    setCustomerReservation: (arg: customerReservation) => void
+    // setCustomerReservation: (arg: customerReservation) => void,
+    setNextDisabled: React.Dispatch<React.SetStateAction<boolean>>
 
 }
 
-const ReservationSeatsFragment: React.FC<ChooseMovieTypeProps> = ({ customerReservation, screening, setCustomerReservation }) => {
+const ReservationSeatsFragment: React.FC<ChooseMovieTypeProps> = ({ setNextDisabled, screening,  }) => {
 
 
     const provider = useContext(CustomerReservationContext)
@@ -40,7 +41,9 @@ const ReservationSeatsFragment: React.FC<ChooseMovieTypeProps> = ({ customerRese
             + +discountSeats.student_seats
             + +discountSeats.elderly_seats
         setNumberOfSeats(sum)
-    }, [])
+        if(sum) setNextDisabled(false)
+        else setNextDisabled(true)
+    }, [discountSeats])
 
     useEffect(() => {
         provider!.setCustomerReservation(prev => {
@@ -82,6 +85,7 @@ const ReservationSeatsFragment: React.FC<ChooseMovieTypeProps> = ({ customerRese
                         <TextField
                             value={numberOfSeats}
                             type='number'
+                            InputProps={{ inputProps: { min: 0, max: screening.movie_hall.number_of_seats } }}
                             onChange={(e) => {
 
                                 setNumberOfSeats(parseInt(e.currentTarget.value))

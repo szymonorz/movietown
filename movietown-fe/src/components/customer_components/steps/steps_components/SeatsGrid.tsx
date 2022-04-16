@@ -3,9 +3,10 @@ import { CustomerReservationContext } from '../../../../api/ReservationApi';
 
 interface SeatsGridProps {
     numberOfSeats: number,
+    setNextDisabled: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-const SeatsGrid: React.FC<SeatsGridProps> = ({ numberOfSeats }) => {
+const SeatsGrid: React.FC<SeatsGridProps> = ({ setNextDisabled, numberOfSeats }) => {
     const canvasRef = useRef<HTMLCanvasElement>(null)
     const provider = useContext(CustomerReservationContext)
     const [seatsIds, setSeatsIds] = useState<number[]>(provider!.customerReservation.seat_ids)
@@ -55,6 +56,8 @@ const SeatsGrid: React.FC<SeatsGridProps> = ({ numberOfSeats }) => {
 
     useEffect(() => {
         const canvas = canvasRef.current
+        if(!provider!.customerReservation.seatsToChoose) setNextDisabled(false)
+        else setNextDisabled(true)
         provider!.setCustomerReservation(prev => {
             return {
                 ...prev,

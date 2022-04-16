@@ -4,15 +4,17 @@ import { CustomerReservationContext, discount, getDiscounts } from '../../../api
 import { screening } from '../../../api/ScreeningApi'
 
 interface SummaryStepProps {
-    screening: screening
+    screening: screening,
+    setNextDisabled: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-const SummaryStep: React.FC<SummaryStepProps> = ({ screening }) => {
+const SummaryStep: React.FC<SummaryStepProps> = ({ setNextDisabled, screening }) => {
     const provider = useContext(CustomerReservationContext)
     const [discountTypes, setDiscountTypes] = useState<discount[]>([])
     const price = screening.mm_type.movie_type.price
     const seats = provider!.customerReservation.discounts
     useEffect(() => {
+        setNextDisabled(true)
         getDiscounts()
             .then(({ data }) => setDiscountTypes([...data]))
             .catch((err) => console.error(err))

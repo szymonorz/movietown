@@ -4,9 +4,10 @@ import SeatsGrid from './steps_components/SeatsGrid'
 
 interface SelectSeatsFragmentProps {
     numberOfSeats: number,
+    setNextDisabled: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-const SelectSeatsFragment: React.FC<SelectSeatsFragmentProps> = ({ numberOfSeats }) => {
+const SelectSeatsFragment: React.FC<SelectSeatsFragmentProps> = ({ setNextDisabled, numberOfSeats }) => {
     const provider = useContext(CustomerReservationContext)
     const seats = provider!.customerReservation.seatsToChoose
 
@@ -21,7 +22,7 @@ const SelectSeatsFragment: React.FC<SelectSeatsFragmentProps> = ({ numberOfSeats
             ) : (
                 <div>Wybrano wszystkie miejsca, przejdz dalej</div>
             )}
-            <SeatsGrid numberOfSeats={numberOfSeats}/>
+            <SeatsGrid setNextDisabled={setNextDisabled} numberOfSeats={numberOfSeats}/>
         </div>
     )
 }

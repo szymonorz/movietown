@@ -23,6 +23,7 @@ const steps: MakeReservationStep[] = [
 const MakeReservationPage: React.FC<{}> = () => {
     const [activeStep, setActiveStep] = useState(0)
     const [screeningId, setScreeningId] = useState(0)
+    const [nextDisabled, setNextDisabled] = useState<boolean>(true)
 
     const [screening, setScreening] = useState<screening>({
         mm_type: {
@@ -118,27 +119,30 @@ const MakeReservationPage: React.FC<{}> = () => {
                 onClick={handleBack}
             >Back</Button>
             <Button
-                disabled={activeStep === steps.length - 1}
+                disabled={nextDisabled}
                 onClick={handleNext}
             >Next</Button>
             <CustomerReservationContext.Provider value={provider}>
-                {activeStep === steps.length - 1 && (
-                    <SummaryStep screening={screening}/>
-                )}
                 {activeStep === 0 && (
                     <div>
                         <ReservationSeatsFragment
+                            setNextDisabled={setNextDisabled}
                             screening={screening}
-                            customerReservation={customerReservation}
-                            setCustomerReservation={setCustomerReservation} />
+                        />
                     </div>
                 )}
                 {activeStep === 1 && (
                     <div>
-                        <SelectSeatsFragment 
-                        numberOfSeats={screening.movie_hall.number_of_seats}
+                        <SelectSeatsFragment
+                            setNextDisabled={setNextDisabled}
+                            numberOfSeats={screening.movie_hall.number_of_seats}
                         />
                     </div>
+                )}
+                {activeStep === steps.length - 1 && (
+                    <SummaryStep
+                        setNextDisabled={setNextDisabled}
+                        screening={screening} />
                 )}
             </CustomerReservationContext.Provider>
 
