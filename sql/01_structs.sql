@@ -10,25 +10,6 @@ CREATE TABLE IF NOT EXISTS customers(
     CONSTRAINT customer_id_k PRIMARY KEY(id)
 );
 
-CREATE TABLE IF NOT EXISTS roles(
-	id SERIAL,
-	role_name VARCHAR(32) NOT NULL UNIQUE,
-	CONSTRAINT role_id_k PRIMARY KEY(id)
-);
-
-CREATE TABLE IF NOT EXISTS employees(
-    id SERIAL,
-    name VARCHAR(32) NOT NULL,
-    surname VARCHAR(32) NOT NULL,
-    phone_number NUMERIC(10) NOT NULL UNIQUE,
-    email VARCHAR(40) NOT NULL,
-    username VARCHAR(32) NOT NULL,
-    password VARCHAR(256) NOT NULL UNIQUE,
-    role_id INT NOT NULL,
-    CONSTRAINT employee_id_k PRIMARY KEY(id),
-    FOREIGN KEY(role_id) REFERENCES roles(id)
-);
-
 CREATE TABLE IF NOT EXISTS movie_types(
 	id SERIAL,
 	type VARCHAR(34) NOT NULL UNIQUE,
@@ -106,12 +87,8 @@ CREATE TABLE IF NOT EXISTS reservations(
     reserved BOOLEAN,
     paid BOOLEAN,
     active BOOLEAN NOT NULL,
-    employee_id INT,
     reservation_type_id INT NOT NULL,
     CONSTRAINT reservation_id_k PRIMARY KEY(id),
-    FOREIGN KEY(employee_id) 
-	REFERENCES employees(id)
-		ON DELETE SET NULL,
     CONSTRAINT fk_reservation_screening
         FOREIGN KEY(screening_id)
             REFERENCES screenings(id),

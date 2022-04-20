@@ -9,8 +9,6 @@ type Reservation struct {
 	Reserved          bool
 	Paid              bool
 	Active            bool
-	EmployeeId        *uint
-	Employee          Employee `gorm:"foreignKey:EmployeeId"`
 	ReservationTypeId uint
 	ReservationType   ReservationType `gorm:"foreignKey:ReservationTypeId"`
 }

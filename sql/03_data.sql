@@ -2,9 +2,6 @@ INSERT INTO reservation_types(type) VALUES('online');
 INSERT INTO reservation_types(type) VALUES('przez telefon');
 INSERT INTO reservation_types(type) VALUES('na miejscu');
 
-INSERT INTO roles(role_name) VALUES('manager');
-INSERT INTO roles(role_name) VALUES('wagie');
-
 INSERT INTO movie_types(type, price) VALUES('2D',12.50);
 INSERT INTO movie_types(type, price) VALUES('3D', 15.00);
 
@@ -27,7 +24,3 @@ INSERT INTO movie_movie_types(movie_id, movie_type_id) VALUES(2,2);
 INSERT INTO screenings(movie_movie_type_id, movie_hall_id, start_of_screening) 
 VALUES (1,1,'2022-04-25T15:30:00');
 
-
---password is deeznutz
-INSERT INTO employees(name, surname, phone_number, email, username, password, role_id)
-VALUES ('daft','cunt',987123456,'dsadsa','zzzz','$2y$15$zOnUUBDaeNo0c10.h.O0bedXi/h7CH.AoFMeBHsYebPBHq1ZwPjXi',1);
