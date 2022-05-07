@@ -1,6 +1,8 @@
 import React from 'react'
 import { Typography, makeStyles, Divider } from '@material-ui/core'
 import {movie} from '../api/MovieApi'
+import {Link} from 'react-router-dom'
+import { black } from 'material-ui/styles/colors'
 
 
 interface MovieCardProps {
@@ -16,7 +18,10 @@ const useStyles = makeStyles(() => ({
     },
     title: {
         fontSize: "20px",
+        color: 'black',
+        textDecoration: 'none',
         textAlign: "left"
+
     },
     description: {
         fontSize: "15px",
@@ -36,7 +41,12 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie }) => {
     }
     return (
         <div className={card}>
-            <Typography className={title}>
+            <Typography {...{
+                className: title,
+                component: Link,
+                to: `/movie/${movie.id}`
+
+            }}>
                 {movie.title}
             </Typography>
             <Typography className={description}>

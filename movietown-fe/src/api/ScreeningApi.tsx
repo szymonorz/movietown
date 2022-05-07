@@ -20,6 +20,7 @@ export interface movie_hall{
 }
 
 export interface screening{
+    id: number,
     mm_type: mm_type,
     movie_hall: movie_hall,
     start_of_screening: Date,
@@ -35,6 +36,17 @@ export const getScreeningById = async (id: number) => {
 
 export const getDaysScreenings = async ({from, to}: screeningParams, limit: number = 5, offset: number = 0) => {
     return await instance.get("/", {
+        params: {
+            from: from,
+            to: to,
+            limit: limit,
+            offset: offset
+        }
+    })
+}
+
+export const getScreeningByMovieId = async (movieId: number, {from, to}: screeningParams, limit: number = 5, offset: number = 0) => {
+    return await instance.get(`/${movieId}`, {
         params: {
             from: from,
             to: to,

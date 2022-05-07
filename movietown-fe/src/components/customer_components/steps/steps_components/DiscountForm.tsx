@@ -209,8 +209,6 @@ const DiscountForm: React.FC<DiscountFormProps> = ({ setNumberOfSeats }) => {
                 </Form>
 
             )}
-
-
         </Formik>
 
     )

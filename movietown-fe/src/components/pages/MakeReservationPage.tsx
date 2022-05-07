@@ -27,6 +27,7 @@ const MakeReservationPage: React.FC<{}> = () => {
     const [reservationId, setReservationId] = useState<number | null>(null)
 
     const [screening, setScreening] = useState<screening>({
+        id: 0,
         mm_type: {
             id: 0,
             movie: {

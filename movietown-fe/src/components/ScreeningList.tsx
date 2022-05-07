@@ -13,13 +13,12 @@ const ScreeningList: React.FC<ScreeningListProps> = ({screenings}) => {
     const showScreenings = (screenings: screening[]) => {
         return screenings.map( (screening, index) => {
             return (
-                <div>
+                <List>
                     <ScreeningCard key={index} values={screening}/>
-                </div>
+                </List>
             )
         })
     }
-
     
     return(
         <div>

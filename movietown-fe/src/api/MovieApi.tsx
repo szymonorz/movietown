@@ -27,3 +27,7 @@ export const getQueriedMovies = (query: string, limit: number = 5, offset: numbe
         }
     })
 }
+
+export const getMovieById = (id: number) => {
+    return instance.get(`/${id}`)
+}
