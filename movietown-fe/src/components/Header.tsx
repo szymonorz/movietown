@@ -10,11 +10,11 @@ let headersData = [
         href: "/signin"
     },
     {
-        label: "Repertuar",
+        label: "Screenings",
         href: "/screening"
     },
     {
-        label: "Logout",
+        label: "Log out",
         href: "/logout"
     }
 ]
@@ -22,7 +22,7 @@ let headersData = [
 const useStyles = makeStyles(() => ({
     header: {
         marginBottom: "30px",
-        backgroundColor: "#282c34",
+        backgroundColor: "#282c34"
     },
     logo: {
         fontFamily: "Helvetica",
@@ -83,25 +83,8 @@ const Header: React.FC<HeaderProps> = ({ loggedIn }) => {
             if (loggedIn && href === "/signin") {
                 href = "/account/info"
                 label = "My account"
-            } else if (loggedIn && href === "/logout"){
                 return (
                     <Button
-                        {...{
-                            key: label,
-                            color: "inherit",
-                            className: menuButton
-                        }}
-                        onClick={() => {
-                            localStorage.removeItem("token")
-
-                        }}
-                    >
-                        {label}
-                    </Button>
-                )
-            }
-            return (
-                <Button
                     {...{
                         key: label,
                         color: "inherit",
@@ -110,8 +93,38 @@ const Header: React.FC<HeaderProps> = ({ loggedIn }) => {
                         component: Link
                     }}>
                     {label}
+                    </Button>
+                )
+            } else if(loggedIn && href === "/logout"){
+                return (
+                    <Button
+                    {...{
+                        key: "Logout",
+                        color: "inherit",
+                        className: menuButton
+                    }}
+                    onClick={() => {
+                        localStorage.removeItem("token")
+
+                    }}
+                >
+                    Log out
                 </Button>
-            )
+                )
+            }else if( href !== "/logout"){
+                return (
+                    <Button
+                        {...{
+                            key: label,
+                            color: "inherit",
+                            to: href,
+                            className: menuButton,
+                            component: Link
+                        }}>
+                        {label}
+                    </Button>
+                )
+            }
         })
     }
 
@@ -133,7 +146,6 @@ const Header: React.FC<HeaderProps> = ({ loggedIn }) => {
     const navigate = useNavigate()
     useEffect(() => {
         if (searchQuery != "") {
-
             navigate({
                 pathname: '/search',
                 search: `?title=${searchQuery}`
