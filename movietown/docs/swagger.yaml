@@ -32,41 +32,6 @@ definitions:
     - surname
     - username
     type: object
-  api.apiEmployeeLogin:
-    properties:
-      password:
-        type: string
-      username:
-        type: string
-    required:
-    - password
-    - username
-    type: object
-  api.apiEmployeeRegister:
-    properties:
-      email:
-        type: string
-      name:
-        type: string
-      password:
-        type: string
-      phone_number:
-        type: string
-      role_id:
-        type: integer
-      surname:
-        type: string
-      username:
-        type: string
-    required:
-    - email
-    - name
-    - password
-    - phone_number
-    - role_id
-    - surname
-    - username
-    type: object
   api.changePasswordBody:
     properties:
       new_password:
@@ -76,13 +41,6 @@ definitions:
     required:
     - new_password
     - old_passowrd
-    type: object
-  api.changeRole:
-    properties:
-      employee_id:
-        type: integer
-      new_role_id:
-        type: integer
     type: object
   api.customerGuestReservation:
     properties:
@@ -203,46 +161,6 @@ definitions:
       type:
         type: string
     type: object
-  model.Employee:
-    properties:
-      email:
-        type: string
-      id:
-        type: integer
-      name:
-        type: string
-      password:
-        type: string
-      phone_number:
-        type: string
-      role:
-        $ref: '#/definitions/model.Role'
-      roleId:
-        type: integer
-      surname:
-        type: string
-      username:
-        type: string
-    type: object
-  model.EmployeeInfo:
-    properties:
-      email:
-        type: string
-      id:
-        type: integer
-      name:
-        type: string
-      phone_number:
-        type: string
-      role:
-        $ref: '#/definitions/model.Role'
-      role_id:
-        type: integer
-      surname:
-        type: string
-      username:
-        type: string
-    type: object
   model.Movie:
     properties:
       description:
@@ -310,10 +228,6 @@ definitions:
         $ref: '#/definitions/model.Customer'
       customerId:
         type: integer
-      employee:
-        $ref: '#/definitions/model.Employee'
-      employeeId:
-        type: integer
       id:
         type: integer
       paid:
@@ -356,13 +270,6 @@ definitions:
         $ref: '#/definitions/model.Seat'
       seatId:
         type: integer
-    type: object
-  model.Role:
-    properties:
-      id:
-        type: integer
-      role_name:
-        type: string
     type: object
   model.Screening:
     properties:
@@ -575,260 +482,6 @@ paths:
       summary: Creates new customer
       tags:
       - customer
-  /api/v1/employee/create:
-    post:
-      consumes:
-      - application/json
-      description: register new employee
-      parameters:
-      - description: Authorization
-        in: header
-        name: Authorization
-        required: true
-        type: string
-      - description: create employee
-        in: body
-        name: employee
-        required: true
-        schema:
-          $ref: '#/definitions/api.apiEmployeeRegister'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            type: type
-        "400":
-          description: Bad Request
-          schema:
-            additionalProperties: true
-            type: object
-      summary: Creates new employee
-      tags:
-      - employee
-  /api/v1/employee/delete/{id}:
-    delete:
-      consumes:
-      - application/json
-      description: Delete employee of sepcified id
-      parameters:
-      - description: Authorization
-        in: header
-        name: Authorization
-        required: true
-        type: string
-      - description: delete employee of :id
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            additionalProperties: true
-            type: object
-        "404":
-          description: Not Found
-          schema:
-            additionalProperties: true
-            type: object
-      summary: Delete Employee
-      tags:
-      - employee
-  /api/v1/employee/info:
-    get:
-      consumes:
-      - application/json
-      description: get employee's info
-      parameters:
-      - description: Authorization
-        in: header
-        name: Authorization
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            type: type
-        "400":
-          description: Bad Request
-          schema:
-            additionalProperties: true
-            type: object
-        "404":
-          description: Not Found
-          schema:
-            additionalProperties: true
-            type: object
-      summary: Gets information about employee with specified username
-      tags:
-      - employee
-    put:
-      consumes:
-      - application/json
-      description: update employee's info
-      parameters:
-      - description: Authorization
-        in: header
-        name: Authorization
-        required: true
-        type: string
-      - description: updated employee information
-        in: body
-        name: employee
-        required: true
-        schema:
-          $ref: '#/definitions/model.EmployeeInfo'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            type: type
-        "404":
-          description: Not Found
-          schema:
-            additionalProperties: true
-            type: object
-      summary: Updates employees information
-      tags:
-      - employee
-  /api/v1/employee/info/{username}:
-    get:
-      consumes:
-      - application/json
-      description: get employee's info
-      parameters:
-      - description: Authorization
-        in: header
-        name: Authorization
-        required: true
-        type: string
-      - description: Employee's username
-        in: path
-        name: username
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            type: type
-        "400":
-          description: Bad Request
-          schema:
-            additionalProperties: true
-            type: object
-        "404":
-          description: Not Found
-          schema:
-            additionalProperties: true
-            type: object
-      summary: Gets information about employee with specified username
-      tags:
-      - employee
-  /api/v1/employee/login:
-    post:
-      consumes:
-      - application/json
-      description: Login as a employee and return AccessToken (not yet implemented)
-      parameters:
-      - description: login employee DTO
-        in: body
-        name: employee
-        required: true
-        schema:
-          $ref: '#/definitions/api.apiEmployeeLogin'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/model.Employee'
-        "400":
-          description: Bad Request
-          schema:
-            additionalProperties: true
-            type: object
-      summary: Login as an employee
-      tags:
-      - employee
-  /api/v1/employee/password:
-    put:
-      consumes:
-      - application/json
-      description: Employee changes their own password by themselfs
-      parameters:
-      - description: Authorization
-        in: header
-        name: Authorization
-        required: true
-        type: string
-      - description: change employee password
-        in: body
-        name: employee
-        required: true
-        schema:
-          $ref: '#/definitions/api.changePasswordBody'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            additionalProperties: true
-            type: object
-        "404":
-          description: Not Found
-          schema:
-            additionalProperties: true
-            type: object
-      summary: ChangePassword
-      tags:
-      - employee
-  /api/v1/employee/role:
-    put:
-      consumes:
-      - application/json
-      description: update employee_id's role with
-      parameters:
-      - description: Authorization
-        in: header
-        name: Authorization
-        required: true
-        type: string
-      - description: change employee's role
-        in: body
-        name: employee
-        required: true
-        schema:
-          $ref: '#/definitions/api.changeRole'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            type: type
-        "404":
-          description: Not Found
-          schema:
-            additionalProperties: true
-            type: object
-      summary: Updates employees role
-      tags:
-      - employee
   /api/v1/movies:
     get:
       consumes:
@@ -971,33 +624,6 @@ paths:
               type: array
             type: array
       summary: Shows all discount available
-      tags:
-      - reservations
-  /api/v1/reservations/employee/create:
-    post:
-      consumes:
-      - application/json
-      description: reservation
-      parameters:
-      - description: Authorization
-        in: header
-        name: Authorization
-        required: true
-        type: string
-      - description: customer reservation DTO
-        in: body
-        name: guestReservation
-        required: true
-        schema:
-          $ref: '#/definitions/api.customerReservation'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            type: integer
-      summary: Employee makes a reservation for a customer
       tags:
       - reservations
   /api/v1/reservations/guest/create:

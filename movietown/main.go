@@ -43,16 +43,10 @@ func InitializeCustomerHandler(auth auth.AuthMiddleware) api.CustomerHandler {
 	return api.NewCustomerHandler(auth)
 }
 
-func InitializeEmployeeHandler(auth auth.AuthMiddleware) api.EmployeeHandler {
-	return api.NewEmployeeHandler(auth)
-}
-
 func InitializeAuthMiddleware(database *gorm.DB, enforcer *casbin.Enforcer) auth.AuthMiddleware {
-	employeeRepo := repository.NewEmployeeRepository(database)
-	employeeServce := service.NewEmployeeService(employeeRepo)
 	customerRepo := repository.NewCustomerRepository(database)
 	customerService := service.NewCustomerService(customerRepo)
-	return auth.NewAuthMiddleware(customerService, employeeServce, enforcer)
+	return auth.NewAuthMiddleware(customerService, enforcer)
 }
 
 func InitializeReservationTypeHandler(database *gorm.DB) api.ReservationTypeHandler {
@@ -89,7 +83,6 @@ func main() {
 	screeningHandler := InitializeScreeningHandler(db)
 	movieHandler := IntitializeMovieHandler(db)
 	customerHandler := InitializeCustomerHandler(auth)
-	employeeHandler := InitializeEmployeeHandler(auth)
 	reservationHandler := InitializeReservationHandler(db, auth)
 	reservationTypeHandler := InitializeReservationTypeHandler(db)
 	discountHandler := InitializeDiscountHandler(db)
@@ -110,18 +103,6 @@ func main() {
 			customerApi.PUT("/password", customerHandler.ChangeCustomerPassword)
 			customerApi.DELETE("/delete", customerHandler.DeleteCustomer)
 		}
-		employeeApi := v1.Group("/employee")
-		{
-			employeeApi.POST("/login", employeeHandler.LoginEmployee)
-			employeeApi.Use(auth.EmployeeAuthMiddleware())
-			employeeApi.POST("/create", employeeHandler.RegisterNewEmployee)
-			employeeApi.GET("/info", employeeHandler.GetCurrentEmployeeInfo)
-			employeeApi.GET("/info/:username", employeeHandler.GetEmployeeInfo)
-			employeeApi.PUT("/role", employeeHandler.ChangeEmployeeRole)
-			employeeApi.PUT("/info", employeeHandler.UpdateEmployeeInfo)
-			employeeApi.PUT("/password", employeeHandler.ChangePassword)
-			employeeApi.DELETE("/delete/:id", employeeHandler.DeleteEmployee)
-		}
 		movieApi := v1.Group("/movies")
 		{
 			movieApi.GET("/", movieHandler.GetMovies)
@@ -132,15 +113,12 @@ func main() {
 			screeningApi.GET("/:movie_id", screeningHandler.GetMovieScreeningsByTime)
 			screeningApi.GET("/", screeningHandler.GetScreeningsByTime)
 			screeningApi.GET("/s/:id", screeningHandler.GetScreeningById)
-			screeningApi.Use(auth.EmployeeAuthMiddleware())
 			screeningApi.POST("/add", screeningHandler.AddScreening)
 		}
 
 		reservationApi := v1.Group("/reservations")
 		{
 			reservationApi.GET("/", reservationHandler.GetCustomerReservations)
-			reservationApi.GET("/:customer_id", auth.EmployeeAuthMiddleware(), reservationHandler.GetCustomerReservationsFromId)
-			reservationApi.POST("/employee/create", auth.EmployeeAuthMiddleware(), reservationHandler.EmployeeCreateReservation)
 			reservationApi.POST("/customer/create", auth.CustomerAuthMiddleware(), reservationHandler.CustomerCreateReservation)
 			reservationApi.POST("/guest/create", reservationHandler.GuestCreateReservation)
 			reservationApi.GET("/types", reservationTypeHandler.GetReservationTypes)
