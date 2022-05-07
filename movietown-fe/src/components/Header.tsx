@@ -1,8 +1,7 @@
 import { Button, Toolbar, Typography, makeStyles } from '@material-ui/core'
 import { useEffect, useState } from 'react';
-import { createSearchParams, Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import SearchBar from './SearchBar';
-import { getQueriedMovies } from '../api/MovieApi';
 
 
 let headersData = [
@@ -13,19 +12,28 @@ let headersData = [
     {
         label: "Repertuar",
         href: "/screening"
+    },
+    {
+        label: "Logout",
+        href: "/logout"
     }
 ]
 
 const useStyles = makeStyles(() => ({
     header: {
         marginBottom: "30px",
+        backgroundColor: "#282c34",
     },
     logo: {
         fontFamily: "Helvetica",
         fontWeight: "bold",
         textDecoration: "none",
-        color: "#A51272",
-        background: "white"
+        color: "white",
+        textShadow: `-2px 2px 2px #A51272,
+                      2px 2px 2px #A51272,
+                      2px -2px 2px #A51272,
+                      -2px -2px 10px #A51272`,
+        background: "#282c34"
     },
     toolbar: {
         display: "flex",
@@ -34,12 +42,11 @@ const useStyles = makeStyles(() => ({
 
     menuButton: {
         fontWeight: "bold",
-        size: "24px",
-        fontSize: "18px",
+        height: "50px",
+        fontSize: "13px",
         background: "#A51272",
         '&:hover': {
-            background: "white",
-            color: "#A51272",
+            backgroundColor: "#A51272",
         },
         color: "white",
         margin: "0 5px 0 5px"
@@ -48,6 +55,9 @@ const useStyles = makeStyles(() => ({
         display: "flex",
         flexDirection: "row",
         justifyContent: "spaceBetween"
+    },
+    search: {
+        background: "white"
     }
 }))
 
@@ -56,7 +66,7 @@ interface HeaderProps {
 }
 
 const Header: React.FC<HeaderProps> = ({ loggedIn }) => {
-    const { header, logo, toolbar, menuButton, pain } = useStyles()
+    const { header, logo, toolbar, menuButton, pain, search } = useStyles()
 
     const movieTownLogo = (
         <Typography
@@ -73,6 +83,22 @@ const Header: React.FC<HeaderProps> = ({ loggedIn }) => {
             if (loggedIn && href === "/signin") {
                 href = "/account/info"
                 label = "My account"
+            } else if (loggedIn && href === "/logout"){
+                return (
+                    <Button
+                        {...{
+                            key: label,
+                            color: "inherit",
+                            className: menuButton
+                        }}
+                        onClick={() => {
+                            localStorage.removeItem("token")
+
+                        }}
+                    >
+                        {label}
+                    </Button>
+                )
             }
             return (
                 <Button
@@ -87,19 +113,6 @@ const Header: React.FC<HeaderProps> = ({ loggedIn }) => {
                 </Button>
             )
         })
-        // } else {
-        //     return (
-        //         <Button
-        //             {...{
-        //                 className: menuButton,
-        //                 to: "/account/info",
-        //                 component: Link
-        //             }}>
-        //             My account
-        //         </Button>
-        //     )
-        // }
-
     }
 
     const displayButtons = () => {
@@ -110,7 +123,6 @@ const Header: React.FC<HeaderProps> = ({ loggedIn }) => {
                 </Link>
                 <div className={pain}>
                     <SearchBar
-                        // setSubmitQuery={(val: string) => console.log(val)}
                         onSubmit={setSearchQuery} />
                     {makeButtons()}
                 </div>
