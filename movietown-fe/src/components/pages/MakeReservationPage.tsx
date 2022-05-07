@@ -1,4 +1,4 @@
-import { Stepper, Step, StepLabel, Button } from '@material-ui/core'
+import { Stepper, Step, StepLabel, Button, makeStyles, styled, StepConnector } from '@material-ui/core'
 import React, { useMemo, useState, useEffect } from 'react'
 import ReservationSeatsFragment from '../customer_components/steps/ReservationSeatsFragment'
 import { MakeReservationStep } from '../customer_components/steps/common'
@@ -7,6 +7,7 @@ import { useSearchParams } from 'react-router-dom';
 import { getScreeningById, screening } from '../../api/ScreeningApi';
 import SelectSeatsFragment from '../customer_components/steps/SelectSeatsFragment'
 import SummaryStep from '../customer_components/steps/SummaryStep'
+import { stepConnectorClasses } from '@mui/material'
 
 const steps: MakeReservationStep[] = [
     {
@@ -16,11 +17,51 @@ const steps: MakeReservationStep[] = [
         label: 'second'
     },
     {
-        label: 'thirs'
+        label: 'third'
     }
 ]
 
+const useStyles = makeStyles(() => ({
+    thing: {
+        color: "white",
+        backgroundColor: "#282c34",
+    },
+    input: {
+        color: "white",
+        '&:disabled': {
+            color: "grey"
+        }
+    }
+   
+}))
+
+const Connector = styled(StepConnector)(({ theme }) => ({
+    [`&.${stepConnectorClasses.alternativeLabel}`]: {
+      top: 10,
+      backgroundColor: "black",
+      left: 'calc(-50% + 16px)',
+      right: 'calc(50% + 16px)',
+    },
+    [`&.${stepConnectorClasses.active}`]: {
+      [`& .${stepConnectorClasses.line}`]: {
+        borderColor: '#784af4',
+      },
+    },
+    [`&.${stepConnectorClasses.completed}`]: {
+      [`& .${stepConnectorClasses.line}`]: {
+       
+      backgroundColor: "black",
+      },
+    },
+    [`& .${stepConnectorClasses.line}`]: {
+      borderColor: theme.palette.grey[800],
+      borderTopWidth: 3,
+      borderRadius: 1,
+    },
+  }));
+
 const MakeReservationPage: React.FC<{}> = () => {
+    const {thing, input} = useStyles()
     const [activeStep, setActiveStep] = useState(0)
     const [screeningId, setScreeningId] = useState(0)
     const [nextDisabled, setNextDisabled] = useState<boolean>(true)
@@ -106,23 +147,25 @@ const MakeReservationPage: React.FC<{}> = () => {
 
 
     return (
-        <div>
+        <div className={thing}>
             {reservationId == null && (
                 <div>
-                    <Stepper activeStep={activeStep}>
+                    <Stepper activeStep={activeStep} connector={<Connector/>} style={{background: "none"}}>
                         {steps.map((step, index) => {
                             return (
-                                <Step key={step.label}>
-                                    <StepLabel>{step.label}</StepLabel>
+                                <Step key={index}>
+                                    <StepLabel/>
                                 </Step>
                             )
                         })}
                     </Stepper>
                     <Button
+                        className={input}
                         disabled={activeStep === 0}
                         onClick={handleBack}
                     >Back</Button>
                     <Button
+                        className={input}
                         disabled={nextDisabled}
                         onClick={handleNext}
                     >Next</Button>

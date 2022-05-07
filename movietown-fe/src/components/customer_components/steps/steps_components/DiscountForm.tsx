@@ -4,11 +4,6 @@ import { Formik, Form } from 'formik'
 import * as Yup from 'yup';
 import { TextField, Typography, makeStyles, Grid } from '@material-ui/core';
 
-// interface DiscountFormProps {
-//     discountSeats: discounts,
-//     setDiscountSeats: (arg: discounts) => void
-// }
-
 const validateSeatForm = () => Yup.object().shape({
     normal_seats: Yup.number().positive("Number cannot be negative").required("Required"),
     children_seats: Yup.number().positive("Number cannot be negative").required("Required"),
@@ -23,7 +18,8 @@ const useStyles = makeStyles(() => ({
     },
     input: {
         display: "flex",
-        flexDirection: "row"
+        flexDirection: "row",
+        color: "white"
     },
     label: {
         margin: "8px 10px 0 10px",
@@ -68,7 +64,7 @@ const DiscountForm: React.FC<DiscountFormProps> = ({ setNumberOfSeats }) => {
                             <TextField
                                 name='normal_seats'
                                 type='number'
-                                InputProps={{ inputProps: { min: 0, max: 100 } }}
+                                InputProps={{ inputProps: { min: 0, max: 100 }, className: input }}
                                 value={discountSeats.normal_seats}
                                 onChange={(event) => {
                                     const val = parseInt(event.target.value)
@@ -86,7 +82,6 @@ const DiscountForm: React.FC<DiscountFormProps> = ({ setNumberOfSeats }) => {
                                         })
 
                                     }
-                                    // setDiscountSeats({ ...discountSeats, normal_seats: val })
                                 }
                                 }
                                 onBlur={handleBlur}
@@ -106,7 +101,7 @@ const DiscountForm: React.FC<DiscountFormProps> = ({ setNumberOfSeats }) => {
                             <TextField
                                 name='children_seats'
                                 type='number'
-                                InputProps={{ inputProps: { min: 0, max: 100 } }}
+                                InputProps={{ inputProps: { min: 0, max: 100 }, className: input }}
                                 value={discountSeats.children_seats}
                                 onChange={(event) => {
                                     const val = parseInt(event.target.value)
@@ -124,7 +119,6 @@ const DiscountForm: React.FC<DiscountFormProps> = ({ setNumberOfSeats }) => {
                                         })
 
                                     }
-                                    // setDiscountSeats({ ...discountSeats, children_seats: val })
                                 }
                                 }
                                 onBlur={handleBlur}
@@ -143,7 +137,7 @@ const DiscountForm: React.FC<DiscountFormProps> = ({ setNumberOfSeats }) => {
                             <TextField
                                 name='student_seats'
                                 type='number'
-                                InputProps={{ inputProps: { min: 0, max: 100 } }}
+                                InputProps={{ inputProps: { min: 0, max: 100 }, className: input }}
                                 value={discountSeats.student_seats}
                                 onChange={(event) => {
                                     const val = parseInt(event.target.value)
@@ -180,7 +174,7 @@ const DiscountForm: React.FC<DiscountFormProps> = ({ setNumberOfSeats }) => {
                             <TextField
                                 name='elderly_seats'
                                 type='number'
-                                InputProps={{ inputProps: { min: 0, max: 100 } }}
+                                InputProps={{ inputProps: { min: 0, max: 100 }, className: input }}
                                 value={discountSeats.elderly_seats}
                                 onChange={(event) => {
                                     const val = parseInt(event.target.value)
@@ -198,7 +192,6 @@ const DiscountForm: React.FC<DiscountFormProps> = ({ setNumberOfSeats }) => {
                                         })
 
                                     }
-                                    // setDiscountSeats({ ...discountSeats, elderly_seats: val })
                                 }
                                 }
                                 onBlur={handleBlur}

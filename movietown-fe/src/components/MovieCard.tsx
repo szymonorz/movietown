@@ -14,11 +14,12 @@ const useStyles = makeStyles(() => ({
         padding: "18px",
         display: "flex",
         flexDirection: "column",
+        color: "white",
         margin: "0 25% 0 25%"
     },
     title: {
         fontSize: "20px",
-        color: 'black',
+        color: "white",
         textDecoration: 'none',
         textAlign: "left"
 
@@ -31,11 +32,14 @@ const useStyles = makeStyles(() => ({
     types: {
         textAlign: "left",
         color: "grey"
+    },
+    divider: {
+        backgroundColor: "grey"
     }
 }))
 
 const MovieCard: React.FC<MovieCardProps> = ({ movie }) => {
-    const { card, title, description, types } = useStyles()
+    const { card, title, description, types, divider } = useStyles()
     const movieTypeString = () => {
         return movie.movie_types.map(mtype => {return mtype.type}).toString()
     }
@@ -55,7 +59,7 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie }) => {
             <Typography className={types}>
                 {movieTypeString()}
             </Typography>
-            <Divider />
+            <Divider className={divider}/>
         </div>
     )
 }

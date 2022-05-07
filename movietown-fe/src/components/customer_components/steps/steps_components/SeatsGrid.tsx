@@ -77,7 +77,7 @@ const SeatsGrid: React.FC<SeatsGridProps> = ({ setNextDisabled, numberOfSeats })
         if (canvas) {
             const context = canvas!.getContext("2d")
             if (context) {
-                context.fillStyle = "#efefef"
+                context.fillStyle = "#414348"
                 context.fillRect(0, 0, context.canvas.width, context.canvas.height)
                 context.font = "bold 10pt Courier"
 
@@ -94,7 +94,7 @@ const SeatsGrid: React.FC<SeatsGridProps> = ({ setNextDisabled, numberOfSeats })
                             context.fillStyle = "#1f1f1f"
                         }
                         context.beginPath()
-                        context.strokeStyle = "#efefef"
+                        context.strokeStyle = "#414348"
                         context.lineWidth = 10
                         context.rect(
                             col * boxSize + 40,

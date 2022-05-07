@@ -26,10 +26,10 @@ const useStyles = makeStyles(() => ({
     submitButton: {
         marginTop: "20px",
         fontWeight: 'bold',
-        backgroundColor: "#0B87E6",
+        backgroundColor: "#A51272",
         color: "#FFFFFF",
         "&:hover": {
-            backgroundColor: "#0B87E6"
+            backgroundColor: "#A51272"
         }
     }
 }))

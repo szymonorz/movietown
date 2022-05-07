@@ -8,7 +8,8 @@ const useStyles = makeStyles(() => ({
     },
     textLabel: {
         float: "left",
-        fontWeight: 200
+        fontWeight: 200,
+        padding: "10px"
     }
 }))
 

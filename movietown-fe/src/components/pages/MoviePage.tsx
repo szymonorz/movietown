@@ -1,4 +1,4 @@
-import { Grid, makeStyles, Typography } from '@material-ui/core'
+import { Divider, Grid, makeStyles, Typography } from '@material-ui/core'
 import { TextField } from '@mui/material';
 import { DatePicker, LocalizationProvider } from '@mui/lab';
 import React, { useEffect, useState } from 'react'
@@ -9,10 +9,19 @@ import ScreeningList from '../ScreeningList'
 import DateAdapter from '@mui/lab/AdapterDateFns'
 
 const useStyles = makeStyles(() => ({
-
+    datePickerLabel: {
+        backgroundColor: "white",
+        borderRadius: "8px",
+        margin: "0 40% 0 40%"
+    },
+    entire: {
+        color: "white",
+        backgroundColor: "#282c34"
+    }
 }))
 
 const MoviePage: React.FC<{}> = () => {
+    const { datePickerLabel, entire } = useStyles()
     const { id } = useParams()
     const [movieData, setMovieData] = useState<null | movie>(null)
     const [screenings, setScreenings] = useState<screening[]>([])
@@ -83,22 +92,23 @@ const MoviePage: React.FC<{}> = () => {
                     </Typography>
                 </Grid>
             </Grid>
-            <LocalizationProvider dateAdapter={DateAdapter}>
-                <DatePicker
-                    label="Data seansu"
-                    value={date}
-                    onChange={(newDate) => {
-                        setDate(newDate)
-                    }}
-                    renderInput={(params) => <TextField {...params} />}
-                />
-
-            </LocalizationProvider>
+            <Divider/>
+            <div className={datePickerLabel}>
+                <LocalizationProvider dateAdapter={DateAdapter}>
+                    <DatePicker
+                        value={date}
+                        onChange={(newDate) => {
+                            setDate(newDate)
+                        }}
+                        renderInput={(params) => <TextField {...params} />}
+                    />
+                </LocalizationProvider>
+            </div>
             <ScreeningList screenings={screenings} />
         </div>
     }
 
-    return <div>
+    return <div className={entire}>
         {error == null ? showMovieInfo(movieData) : showError(error)}
 
     </div>

@@ -18,18 +18,24 @@ const useStyles = makeStyles(() => ({
         marginLeft: "10%",
         display: "flex",
         flexDirection: "column",
-        paddingTop: "25%"
+        paddingTop: "15%"
     },
     element: {
         display: "flex",
         justifyContent: "space-between",
         alignItems: "left",
         columnGap: "0.5em"
+    },
+    input: {
+        color: "white",
+        '&:disabled': {
+            color: "grey"
+        }
     }
 }))
 
 const SummaryStep: React.FC<SummaryStepProps> = ({ setNextDisabled, screening, setReservationId }) => {
-    const { parent, list, element } = useStyles()
+    const { parent, list, element, input } = useStyles()
     const provider = useContext(CustomerReservationContext)
     const [discountTypes, setDiscountTypes] = useState<discount[]>([])
     const [error, setError] = useState<string | null>(null)
@@ -118,7 +124,7 @@ const SummaryStep: React.FC<SummaryStepProps> = ({ setNextDisabled, screening, s
             </div>
             <Divider />
             <div>Podsumowanie: {getSum()} PLN</div>
-            <Button onClick={() => makeReservation()}>Złóż zamówienie</Button>
+            <Button className={input} onClick={() => makeReservation()}>Złóż zamówienie</Button>
             {error && (
                 <div>
                     Coś poszło nie tak :^(

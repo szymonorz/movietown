@@ -11,10 +11,11 @@ const useStyles = makeStyles(() => ({
     container: {
         display: "flex",
         flexDirection: "row",
+        color: "white",
         padding: "10px",
-        border: "2px solid #B69BAA",
-        boxShadow: "3px 3px 3px #B69BAA",
-        backgroundColor: "#DBC2D0",
+        border: "2px solid #282c34",
+        boxShadow: "3px 3px 3px #282c34",
+        backgroundColor: "#282c34",
         margin: "100px"
 
     },

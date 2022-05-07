@@ -1,7 +1,7 @@
 import React from 'react';
 import * as Yup from 'yup';
 import { Formik, Form } from 'formik';
-import { Grid, Typography, Button } from '@material-ui/core';
+import { Grid, Typography, Button, makeStyles } from '@material-ui/core';
 import MTextField from './formComponents/TextField';
 
 
@@ -30,8 +30,19 @@ const signUpFormValidator = Yup.object().shape({
 
 })
 
-const SignUpForm: React.FC<SignUpProps> = ({registerError, className, onSubmit }) => {
+const useStyles = makeStyles(() => ({
+    button: {
+        backgroundColor: "#A51272",
+        color: "white",
+        fontWeight: 'bold',
+        '&:hover':{
+            backgroundColor: "#A51272",
+        }
+    }
+}))
 
+const SignUpForm: React.FC<SignUpProps> = ({registerError, className, onSubmit }) => {
+    const {button} = useStyles()
     return (
         <div className={className}>
             <Formik
@@ -99,13 +110,10 @@ const SignUpForm: React.FC<SignUpProps> = ({registerError, className, onSubmit }
                                     placeholder='123456789'
                                 />
                             </Grid>
-                            <Button type={"submit"}>Register</Button>
+                            <Button className={button} type={"submit"}>Register</Button>
                         </Grid>
                     </Form>
                 )}
-
-                
-
             </Formik>
 
             {registerError && (

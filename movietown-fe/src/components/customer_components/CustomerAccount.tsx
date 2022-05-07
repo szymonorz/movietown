@@ -1,7 +1,7 @@
 import { Typography, Grid, Button } from '@material-ui/core';
 import { Formik, Form } from 'formik';
 import React, { useEffect, useState } from 'react';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 import { getCustomerInfo } from '../../api/CustomerApi';
 import MTextField from '../forms/formComponents/TextField';
 import { makeStyles } from '@material-ui/styles';
@@ -22,7 +22,14 @@ export interface AccountValues {
 const useStyles = makeStyles(() => ({
     form: {
         width: "50%",
+        color: "white"
         // marginLeft: "25%"
+    },
+    button: {
+        color: "white",
+        '&:disabled': {
+            color: "grey"
+        }
     }
 }))
 
@@ -55,7 +62,7 @@ const CustomerAccount: React.FC<CustomerAccountProps> = ({loginState, setLoginSt
     const [disabled, setDisabled] = useState<boolean>(true)
     const [authorized, setAuthorized] = useState<boolean>(false)
     const token = localStorage.getItem("token") || ""
-    const { form } = useStyles()
+    const { form, button } = useStyles()
     useEffect(() => {
         if (token) {
             const infoPromise = getCustomerInfo(token)
@@ -139,12 +146,15 @@ const CustomerAccount: React.FC<CustomerAccountProps> = ({loginState, setLoginSt
                         </Grid>
 
                         <Button
+                            className={button}
                             disabled={disabled}
                             type={'submit'}>
                             Zapisz
                         </Button>
 
-                        <Button onClick={() =>
+                        <Button 
+                        className={button}
+                        onClick={() =>
                             setDisabled(!disabled)
                         }>
                             Edytuj

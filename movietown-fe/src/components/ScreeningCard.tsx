@@ -5,6 +5,14 @@ import { movie, movie_type } from '../api/MovieApi'
 import {Link} from 'react-router-dom'
 
 const useStyles = makeStyles(() => ({
+    element: {
+        margin: "0 15% 0 15%",
+    },
+    href: {
+        textDecoration: "none",
+        color: "white",
+        fontWeight: "bold"
+    },
     timeLabel: {
         backgroundColor: "darkMagenta",
 
@@ -13,12 +21,14 @@ const useStyles = makeStyles(() => ({
         color: "white",
         width: "fit-content",
         padding: "10px",
-        borderRadius: "4px"
+        borderRadius: "4px",
     },
     block: {
         display: "flex",
         flexDirection: "row",
-        justifyContent: "space-between"
+        justifyContent: "space-around",
+        color: "white",
+        fontWeight: "bold"
     }
 }))
 
@@ -27,12 +37,13 @@ interface ScreeningCardProps {
 }
 
 const ScreeningCard: React.FC<ScreeningCardProps> = ({ values: { id, mm_type: { movie, movie_type: { type } }, movie_hall, start_of_screening } }) => {
-    const { timeLabel, block } = useStyles()
+    const {href, timeLabel, block, element } = useStyles()
     const time = new Date(start_of_screening)
 
     return (
-        <div>
+        <div className={element}>
             <Typography {...{
+                className: href,
                 color: "inherit",
                 to: `/reservation?id=${id}`,
                 component: Link

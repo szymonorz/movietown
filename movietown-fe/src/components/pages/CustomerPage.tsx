@@ -7,7 +7,21 @@ import { getCustomerInfo } from '../../api/CustomerApi'
 const useStyles = makeStyles(() => ({
     container: {
         display: "flex",
-        flexDirection: "row",
+        flexDirection: "row"
+    },
+    list: {
+        backgroundColor: "#282c34",
+        margin: "0 25% 0 3%",
+        padding: "20px",
+        borderRadius: "10px"
+    },
+    item: {
+        borderBottom: ".5px solid #222222",
+        width: "100%"
+    },
+    link: {
+        color: "white",
+        textDecoration: "none",
     }
 }))
 
@@ -17,7 +31,7 @@ interface CustomerPageProps {
 }
 
 const CustomerPage: React.FC<CustomerPageProps> = ({ setLoginState }) => {
-    const { container } = useStyles()
+    const { container, list, link, item } = useStyles()
 
     useEffect(() => {
         const token = localStorage.getItem("token") || ""
@@ -29,7 +43,6 @@ const CustomerPage: React.FC<CustomerPageProps> = ({ setLoginState }) => {
                     setLoginState(false)
                     localStorage.removeItem("token")
                     console.log("hello?")
-                    // navigate({pathname: "../../"})
                 }
             })
         }
@@ -38,22 +51,16 @@ const CustomerPage: React.FC<CustomerPageProps> = ({ setLoginState }) => {
     return (
         <div>
             <div className={container}>
-                <List>
-                    <ListItem>
-                        <Link replace to="info">
+                <List className={list}>
+                    <ListItem className={item}>
+                        <Link  className={link} replace to="info">
                             Account information
                         </Link>
                     </ListItem>
-                    <ListItem>
-                        <Link replace to="password">
+                    <ListItem className={item}>
+                        <Link className={link} replace to="password">
                             Change password
                         </Link>
-                    </ListItem>
-                    <ListItem>
-                        CCCCCCCCCCC
-                    </ListItem>
-                    <ListItem>
-                        DDDDDDDDDDD
                     </ListItem>
                 </List>
                 <Outlet />

@@ -1,4 +1,4 @@
-import { Grid, Typography, TextField } from '@material-ui/core';
+import { Grid, Typography, TextField, makeStyles } from '@material-ui/core';
 import React, { useState, useEffect, useContext, useRef } from 'react';
 import { customerReservation, CustomerReservationContext } from '../../../api/ReservationApi';
 import { screening } from '../../../api/ScreeningApi';
@@ -6,16 +6,19 @@ import DiscountForm from './steps_components/DiscountForm';
 
 
 interface ChooseMovieTypeProps {
-    // customerReservation: customerReservation,
     screening: screening,
-    // setCustomerReservation: (arg: customerReservation) => void,
     setNextDisabled: React.Dispatch<React.SetStateAction<boolean>>
 
 }
 
+const useStyles = makeStyles(() => ({
+    input: {
+        color: "white"
+    }
+}))
+
 const ReservationSeatsFragment: React.FC<ChooseMovieTypeProps> = ({ setNextDisabled, screening,  }) => {
-
-
+    const {input} = useStyles()
     const provider = useContext(CustomerReservationContext)
     const discountSeats = provider!.customerReservation.discounts
     const getNumberOfSeats = () => {
@@ -83,9 +86,10 @@ const ReservationSeatsFragment: React.FC<ChooseMovieTypeProps> = ({ setNextDisab
                     Ilosc miejsc:
                     <div>
                         <TextField
+                            className={input}
                             value={numberOfSeats}
                             type='number'
-                            InputProps={{ inputProps: { min: 0, max: screening.movie_hall.number_of_seats } }}
+                            InputProps={{ inputProps: { min: 0, max: screening.movie_hall.number_of_seats }, className: input }}
                             onChange={(e) => {
 
                                 setNumberOfSeats(parseInt(e.currentTarget.value))
