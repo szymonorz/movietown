@@ -61,7 +61,8 @@ func (r *ScreeningRepository) FindByMovieIdBetween(movie_id uint, from, to time.
 		Preload("MovieHall").
 		Preload("MovieMovieType.Movie").
 		Preload("MovieMovieType.MovieType").
-		Where("movie_id = ?", movie_id).
+		Joins("JOIN movie_movie_types AS mm_types ON screenings.movie_movie_type_id = mm_types.id").
+		Where("mm_types.movie_id = ?", movie_id).
 		Where("start_of_screening between ? and ?", from, to).
 		Limit(limit).
 		Offset(offset).
