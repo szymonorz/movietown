@@ -19,8 +19,8 @@ CREATE TABLE IF NOT EXISTS movie_types(
 
 CREATE TABLE IF NOT EXISTS movies(
     id SERIAL,
-    title VARCHAR(32) NOT NULL,
-    director VARCHAR(32) NOT NULL,
+    title VARCHAR(256) NOT NULL,
+    director VARCHAR(256) NOT NULL,
     description TEXT,
     length INT NOT NULL,
 	url VARCHAR(256) NOT NULL,
