@@ -21,7 +21,6 @@ export interface AccountValues {
 
 const useStyles = makeStyles(() => ({
     form: {
-        width: "50%",
         color: "white"
         // marginLeft: "25%"
     },
@@ -61,14 +60,13 @@ const CustomerAccount: React.FC<CustomerAccountProps> = ({loginState, setLoginSt
     })
     const [disabled, setDisabled] = useState<boolean>(true)
     const [authorized, setAuthorized] = useState<boolean>(false)
-    const token = localStorage.getItem("token") || ""
+    const token = localStorage.getItem("token")
     const { form, button } = useStyles()
     useEffect(() => {
         if (token) {
             const infoPromise = getCustomerInfo(token)
             infoPromise.then(({ status, data }) => {
                 if (status === 200) {
-                    console.log(data)
                     setAccountValues(data)
                 } else {
                     console.error("Shit broke")
@@ -79,22 +77,22 @@ const CustomerAccount: React.FC<CustomerAccountProps> = ({loginState, setLoginSt
                     setAuthorized(false)
                     setLoginState(false)
                     localStorage.removeItem("token")
-                    console.log("hello?")
-                    // navigate({pathname: "../../"})
                 }
             })
+        }else{
+            setLoginState(false)
         }
     }, [])
 
     return (
-        <div>
-            {(!loginState && !authorized) && <Navigate replace to={"/"} />}
+        <div style={{width: "50%"}}>
+            {(!loginState) && <Navigate replace to={"/"} />}
             <Formik
                 enableReinitialize
                 initialValues={accountValues}
                 validationSchema={accountFormValidator}
                 onSubmit={(values) => {
-                    updateCustomerInfo(token, values)
+                    updateCustomerInfo(token as string, values)
                     .then((response) => console.log(response))
                     .catch((err) => console.error(err))
                 }}

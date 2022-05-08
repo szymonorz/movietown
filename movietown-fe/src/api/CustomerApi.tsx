@@ -41,3 +41,11 @@ export const changeCustomersPassword = (token: string, values: ChangePasswordVal
     }
   })
 }
+
+export const deleteCustomerAccount = (token: string) => {
+  return instance.delete("/delete", {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  })
+}

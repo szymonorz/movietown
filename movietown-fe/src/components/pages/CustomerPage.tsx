@@ -7,17 +7,19 @@ import { getCustomerInfo } from '../../api/CustomerApi'
 const useStyles = makeStyles(() => ({
     container: {
         display: "flex",
-        flexDirection: "row"
+        flexDirection: "row",
+        flexWrap: "wrap"
     },
     list: {
         backgroundColor: "#282c34",
-        margin: "0 25% 0 3%",
+        margin: "0 150px 0 0",
         padding: "20px",
+        width: "150px",
+        height: "500px",
         borderRadius: "10px"
     },
     item: {
-        borderBottom: ".5px solid #222222",
-        width: "100%"
+        borderBottom: ".5px solid #222222"
     },
     link: {
         color: "white",
@@ -51,17 +53,22 @@ const CustomerPage: React.FC<CustomerPageProps> = ({ loginState, setLoginState }
 
     return (
         <div>
-            {!loginState && <Navigate to="/"/>}
+            {!loginState && <Navigate to="/" />}
             <div className={container}>
                 <List className={list}>
                     <ListItem className={item}>
-                        <Link  className={link} replace to="info">
-                            Account information
+                        <Link className={link} replace to="info">
+                            Edytuj informacje konta
                         </Link>
                     </ListItem>
                     <ListItem className={item}>
                         <Link className={link} replace to="password">
-                            Change password
+                            Zmień hasło
+                        </Link>
+                    </ListItem>
+                    <ListItem className={item}>
+                        <Link className={link} replace to="delete">
+                                Usuń konto
                         </Link>
                     </ListItem>
                 </List>

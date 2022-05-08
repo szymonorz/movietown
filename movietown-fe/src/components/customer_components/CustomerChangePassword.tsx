@@ -3,7 +3,6 @@ import React from 'react';
 import * as Yup from 'yup';
 import MTextField from '../forms/formComponents/TextField';
 import { Button, makeStyles } from '@material-ui/core'
-import { white } from 'material-ui/styles/colors';
 import { changeCustomersPassword } from '../../api/CustomerApi';
 
 export interface ChangePasswordValues {

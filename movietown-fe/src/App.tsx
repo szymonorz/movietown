@@ -10,6 +10,7 @@ import MovieListPage from './components/pages/MovieListPage';
 import ScreeningListPage from './components/pages/ScreeningListPage';
 import MakeReservationPage from './components/pages/MakeReservationPage';
 import MoviePage from './components/pages//MoviePage';
+import CustomerDeleteAccount from './components/customer_components/CustomerDeleteAccount';
 function App() {
   const [loginState, setLoginState] = useState<boolean>(false)
 
@@ -30,6 +31,7 @@ function App() {
         <Route path="account" element={<CustomerPage loginState={loginState} setLoginState={setLoginState} />}>
           <Route path="info" element={<CustomerAccount loginState={loginState} setLoginState={setLoginState} />} />
           <Route path="password" element={<CustomerChangePassword/>} />
+          <Route path="delete" element={<CustomerDeleteAccount/>} />
         </Route>
         <Route path="search" element={<MovieListPage/>}/>
         <Route path="movie/:id" element={<MoviePage/>}/>
