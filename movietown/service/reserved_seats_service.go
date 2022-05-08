@@ -14,7 +14,7 @@ func NewReservedSeatService(repository repository.ReservedSeatRepository) Reserv
 	return ReservedSeatService{repository: repository}
 }
 
-func (s *ReservedSeatService) GetAllTakesSeatIds(screening_id uint) ([]uint, error) {
+func (s *ReservedSeatService) GetAllTakenSeatIds(screening_id uint) ([]uint, error) {
 	seats, err := s.repository.FindAllByScreeningId(screening_id)
 	if err != nil {
 		return nil, err

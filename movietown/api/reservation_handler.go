@@ -50,7 +50,7 @@ func (h *ReservationHandler) GetReservedSeatsForScreening(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, err)
 		return
 	}
-	seats, err := h.reservedSeatService.GetAllTakesSeatIds(uint(screening_id))
+	seats, err := h.reservedSeatService.GetAllTakenSeatIds(uint(screening_id))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, err)
 		return
