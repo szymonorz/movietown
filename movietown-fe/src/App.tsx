@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useState } from 'react';
+import React, { useLayoutEffect, useMemo, useState } from 'react';
 import './App.css';
 import Header from './components/Header';
 import { Routes, Route } from 'react-router-dom';
@@ -11,9 +11,10 @@ import ScreeningListPage from './components/pages/ScreeningListPage';
 import MakeReservationPage from './components/pages/MakeReservationPage';
 import MoviePage from './components/pages//MoviePage';
 import CustomerDeleteAccount from './components/customer_components/CustomerDeleteAccount';
+import { LoginStateContext } from './api/CustomerApi';
 function App() {
   const [loginState, setLoginState] = useState<boolean>(false)
-
+  const provider = useMemo(() => ({ loginState, setLoginState }), [loginState, setLoginState])
   useLayoutEffect(() => {
     const token = localStorage.getItem("token")
     if (token) {
@@ -25,18 +26,26 @@ function App() {
 
   return (
     <div className="App">
-      <Header loggedIn={loginState} />
+
+      <LoginStateContext.Provider value={provider}>
+        <Header/>
+        <Routes>
+
+          <Route path="signin" element={<SignInPage />} />
+          <Route path="account" element={<CustomerPage />}>
+            <Route path="info" element={<CustomerAccount />} />
+            <Route path="password" element={<CustomerChangePassword />} />
+            <Route path="delete" element={<CustomerDeleteAccount />} />
+          </Route>
+          <Route path="reservation" element={<MakeReservationPage />} />
+
+        </Routes>
+      </LoginStateContext.Provider>
       <Routes>
-        <Route path="signin" element={<SignInPage loginState={loginState} setLoginState={setLoginState} />} />
-        <Route path="account" element={<CustomerPage loginState={loginState} setLoginState={setLoginState} />}>
-          <Route path="info" element={<CustomerAccount loginState={loginState} setLoginState={setLoginState} />} />
-          <Route path="password" element={<CustomerChangePassword/>} />
-          <Route path="delete" element={<CustomerDeleteAccount/>} />
-        </Route>
-        <Route path="search" element={<MovieListPage/>}/>
-        <Route path="movie/:id" element={<MoviePage/>}/>
-        <Route path="screening" element={<ScreeningListPage/>}/>
-        <Route path="reservation" element={<MakeReservationPage/>}/>
+        <Route path="search" element={<MovieListPage />} />
+        <Route path="movie/:id" element={<MoviePage />} />
+        <Route path="screening" element={<ScreeningListPage />} />
+
       </Routes>
     </div>
   );

@@ -1,7 +1,7 @@
 import { List, ListItem, makeStyles } from '@material-ui/core';
-import React, { useEffect } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { Link, Navigate, Outlet } from 'react-router-dom';
-import { getCustomerInfo } from '../../api/CustomerApi'
+import { getCustomerInfo, LoginStateContext } from '../../api/CustomerApi'
 
 
 const useStyles = makeStyles(() => ({
@@ -28,14 +28,10 @@ const useStyles = makeStyles(() => ({
 }))
 
 
-interface CustomerPageProps {
-    loginState: boolean,
-    setLoginState: (arg: boolean) => void
-}
-
-const CustomerPage: React.FC<CustomerPageProps> = ({ loginState, setLoginState }) => {
+const CustomerPage: React.FC<{}> = () => {
     const { container, list, link, item } = useStyles()
-
+    const provider = useContext(LoginStateContext)
+    const { loginState, setLoginState } = provider!
     useEffect(() => {
         const token = localStorage.getItem("token") || ""
         if (token) {

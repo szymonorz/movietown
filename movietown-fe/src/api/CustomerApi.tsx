@@ -3,11 +3,19 @@ import { SignUpValues } from '../components/forms/SignUpForm';
 import { SignInValues } from '../components/forms/SignInForm';
 import { AccountValues } from '../components/customer_components/CustomerAccount';
 import { ChangePasswordValues } from '../components/customer_components/CustomerChangePassword';
+import { createContext } from 'react';
 
 const instance = axios.create({
   baseURL: "http://localhost:4000/api/v1/customer"
 })
 
+
+export interface LoginStateContextInterface {
+  loginState: boolean,
+  setLoginState: React.Dispatch<React.SetStateAction<boolean>>
+}
+
+export const LoginStateContext = createContext<LoginStateContextInterface | null>(null)
 
 export const loginCustomer = async (values: SignInValues) => {
   return instance.post("/login", values)

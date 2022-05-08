@@ -1,10 +1,10 @@
 import { Divider } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import SignUpForm, { SignUpValues } from '../forms/SignUpForm';
 import SignInForm, { SignInValues } from './../forms/SignInForm';
 import AccessToken from '../../model/AccessToken';
-import {loginCustomer, registerCustomer} from '../../api/CustomerApi';
+import {loginCustomer, LoginStateContext, registerCustomer} from '../../api/CustomerApi';
 import {Navigate} from 'react-router-dom';
 
 const useStyles = makeStyles(() => ({
@@ -28,13 +28,10 @@ const useStyles = makeStyles(() => ({
 
 }))
 
-interface SignInPageProps{
-    loginState: boolean,
-    setLoginState: (arg: boolean) => void
-}
 
-
-const SignInPage: React.FC<SignInPageProps> = ({loginState, setLoginState}) => {
+const SignInPage: React.FC<{}> = () => {
+    const provider = useContext(LoginStateContext)
+    const { loginState, setLoginState } = provider!
     const { container, containerElement } = useStyles()
     const [loginError, setLoginError] = useState<boolean>(false)
     const [registerError, setRegisterError] = useState<boolean>(false)

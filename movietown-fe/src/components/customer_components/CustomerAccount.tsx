@@ -1,8 +1,8 @@
 import { Typography, Grid, Button } from '@material-ui/core';
 import { Formik, Form } from 'formik';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
-import { getCustomerInfo } from '../../api/CustomerApi';
+import { getCustomerInfo, LoginStateContext } from '../../api/CustomerApi';
 import MTextField from '../forms/formComponents/TextField';
 import { makeStyles } from '@material-ui/styles';
 import * as Yup from 'yup';
@@ -41,14 +41,10 @@ const accountFormValidator = Yup.object().shape({
 
 })
 
-interface CustomerAccountProps{
-    loginState: boolean,
-    setLoginState: (arg: boolean) => void
-}
-
-
-const CustomerAccount: React.FC<CustomerAccountProps> = ({loginState, setLoginState}) => {
+const CustomerAccount: React.FC<{}> = () => {
     // const [loginStatus, setLoginStatus] = useState<boolean>(true)
+    const provider = useContext(LoginStateContext)
+    const { loginState, setLoginState } = provider!
     const [accountValues, setAccountValues] = useState<AccountValues>({
         id: 0,
         name: '',

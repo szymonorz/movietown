@@ -1,6 +1,7 @@
 import { Button, Toolbar, Typography, makeStyles } from '@material-ui/core'
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { LoginStateContext } from '../api/CustomerApi';
 import SearchBar from './SearchBar';
 
 
@@ -61,13 +62,10 @@ const useStyles = makeStyles(() => ({
     }
 }))
 
-interface HeaderProps {
-    loggedIn: boolean
-}
-
-const Header: React.FC<HeaderProps> = ({ loggedIn }) => {
+const Header: React.FC<{}> = () => {
     const { header, logo, toolbar, menuButton, pain, search } = useStyles()
-
+    const {loginState, setLoginState} = useContext(LoginStateContext)!
+    const navigate = useNavigate()
     const movieTownLogo = (
         <Typography
             {...{
@@ -80,7 +78,7 @@ const Header: React.FC<HeaderProps> = ({ loggedIn }) => {
     )
     const makeButtons = () => {
         return headersData.map(({ label, href }) => {
-            if (loggedIn && href === "/signin") {
+            if (loginState && href === "/signin") {
                 href = "/account/info"
                 label = "My account"
                 return (
@@ -95,7 +93,7 @@ const Header: React.FC<HeaderProps> = ({ loggedIn }) => {
                     {label}
                     </Button>
                 )
-            } else if(loggedIn && href === "/logout"){
+            } else if(loginState && href === "/logout"){
                 return (
                     <Button
                     {...{
@@ -105,6 +103,9 @@ const Header: React.FC<HeaderProps> = ({ loggedIn }) => {
                     }}
                     onClick={() => {
                         localStorage.removeItem("token")
+                        setLoginState(false)
+                       
+                        navigate("/")
 
                     }}
                 >
@@ -143,7 +144,6 @@ const Header: React.FC<HeaderProps> = ({ loggedIn }) => {
         )
     }
     const [searchQuery, setSearchQuery] = useState("")
-    const navigate = useNavigate()
     useEffect(() => {
         if (searchQuery != "") {
             navigate({
