@@ -2,7 +2,7 @@ import { List, makeStyles } from '@material-ui/core'
 import React, { useContext, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { getCustomerInfo, LoginStateContext } from '../../api/CustomerApi'
-import { customerReservation, getCustomerReservations, reservation } from '../../api/ReservationApi'
+import { getCustomerReservations, reservation } from '../../api/ReservationApi'
 import ReservationCard from './ReservationCard'
 
 const useStyles = makeStyles(() => ({
@@ -11,14 +11,17 @@ const useStyles = makeStyles(() => ({
         padding: "30px",
         borderRadius: "7px",
         width: "60%"
+    },
+    text: {
+        color: "white",
+        fontSize: "30px",
+        fontWeight: "bold"
     }
 }))
 
 const CustomerReservations: React.FC<{}> = () => {
-    const {list} = useStyles()
+    const {list, text} = useStyles()
     const {loginState, setLoginState} = useContext(LoginStateContext)!
-    const [authorized, setAuthorized] = useState<boolean>(true)
-    const [tokenString, setTokenString] = useState<string | null>(null)
     const [customerReservations, setCustomerReservations] = useState<reservation[]>([])
     const navigate = useNavigate()
 
@@ -31,15 +34,12 @@ const CustomerReservations: React.FC<{}> = () => {
 
     useEffect(() => {
         const token = localStorage.getItem("token")
-        // console.log(token)
         if (token) {
-            // console.log(token)
             const infoPromise = getCustomerInfo(token)
             infoPromise.then(() => {
                 showCustomerReservations(token)
             }).catch((err) => {
                     if (err.response.status === 401) {
-                        setAuthorized(false)
                         setLoginState(false)
                         localStorage.removeItem("token")
                         navigate("/")
@@ -47,7 +47,6 @@ const CustomerReservations: React.FC<{}> = () => {
                 })
         } else {
             setLoginState(false)
-            setAuthorized(false)
             navigate("/")
         }
     }, [loginState])
@@ -56,6 +55,11 @@ const CustomerReservations: React.FC<{}> = () => {
         {customerReservations.map((customerReservation, index) => {
             return <ReservationCard reservation={customerReservation} key={index}/>
         })}
+        {customerReservations.length === 0 && (
+           <div className={text}>
+               Brak rezerwacji.
+            </div>
+        )}
     </List>
 }
 

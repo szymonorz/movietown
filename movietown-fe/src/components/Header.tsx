@@ -7,15 +7,15 @@ import SearchBar from './SearchBar';
 
 let headersData = [
     {
-        label: "Sign In",
+        label: "Zaloguj się",
         href: "/signin"
     },
     {
-        label: "Screenings",
+        label: "Seanse",
         href: "/screening"
     },
     {
-        label: "Log out",
+        label: "Wyloguj się",
         href: "/logout"
     }
 ]
@@ -80,7 +80,7 @@ const Header: React.FC<{}> = () => {
         return headersData.map(({ label, href }) => {
             if (loginState && href === "/signin") {
                 href = "/account/info"
-                label = "My account"
+                label = "Moje konto"
                 return (
                     <Button
                     {...{
@@ -97,7 +97,7 @@ const Header: React.FC<{}> = () => {
                 return (
                     <Button
                     {...{
-                        key: "Logout",
+                        key: label,
                         color: "inherit",
                         className: menuButton
                     }}
@@ -109,7 +109,7 @@ const Header: React.FC<{}> = () => {
 
                     }}
                 >
-                    Log out
+                    {label}
                 </Button>
                 )
             }else if( href !== "/logout"){

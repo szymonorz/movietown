@@ -182,12 +182,12 @@ const MakeReservationPage: React.FC<{}> = () => {
                         className={input}
                         disabled={activeStep === 0}
                         onClick={handleBack}
-                    >Back</Button>
+                    >Cofnij</Button>
                     <Button
                         className={input}
                         disabled={nextDisabled}
                         onClick={handleNext}
-                    >Next</Button>
+                    >Dalej</Button>
                     <CustomerReservationContext.Provider value={provider}>
                         {activeStep === 0 && (
                             <div>

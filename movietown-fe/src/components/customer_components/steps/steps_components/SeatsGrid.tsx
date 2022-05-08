@@ -89,7 +89,6 @@ const SeatsGrid: React.FC<SeatsGridProps> = ({ setNextDisabled, numberOfSeats })
                     for (let col = 1; col <= 10; col++) {
                         if (seatsIds.includes(index + 1)) {
                             context.fillStyle = "#990000"
-                            // console.log(index);
                         }
                         if(takenSeatsIds.includes(index + 1)){
                             context.fillStyle = "#1f1f1f"

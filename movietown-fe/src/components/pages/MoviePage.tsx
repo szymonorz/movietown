@@ -16,12 +16,21 @@ const useStyles = makeStyles(() => ({
     },
     entire: {
         color: "white",
+        padding: "20px",
         backgroundColor: "#282c34"
+    },
+    title: {
+        fontSize: "30px",
+        fontWeight: "bold"
+    },
+    description: {
+        textAlign: "left",
+        fontSize: "20px"
     }
 }))
 
 const MoviePage: React.FC<{}> = () => {
-    const { datePickerLabel, entire } = useStyles()
+    const { datePickerLabel, entire, title, description } = useStyles()
     const { id } = useParams()
     const [movieData, setMovieData] = useState<null | movie>(null)
     const [screenings, setScreenings] = useState<screening[]>([])
@@ -84,10 +93,10 @@ const MoviePage: React.FC<{}> = () => {
                     <img src={movieData.url}/>
                 </Grid>
                 <Grid item xs={8}>
-                    <Typography>
+                    <Typography className={title}>
                         {movieData.title}
                     </Typography>
-                    <Typography>
+                    <Typography className={description}>
                         {movieData.description}
                     </Typography>
                 </Grid>

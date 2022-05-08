@@ -25,9 +25,7 @@ const useStyles = makeStyles(() => ({
         padding: "30px",
 
     }
-
 }))
-
 
 const SignInPage: React.FC<{}> = () => {
     const provider = useContext(LoginStateContext)

@@ -7,6 +7,7 @@ import MTextField from '../forms/formComponents/TextField';
 import { makeStyles } from '@material-ui/styles';
 import * as Yup from 'yup';
 import { updateCustomerInfo } from '../../api/CustomerApi';
+import MButton from '../MButton';
 
 
 export interface AccountValues {
@@ -21,8 +22,10 @@ export interface AccountValues {
 
 const useStyles = makeStyles(() => ({
     form: {
-        color: "white"
-        // marginLeft: "25%"
+        color: "white",
+        padding: "30px",
+        backgroundColor: "#282c34",
+        borderRadius: "20px"
     },
     button: {
         color: "white",
@@ -65,7 +68,7 @@ const CustomerAccount: React.FC<{}> = () => {
                 if (status === 200) {
                     setAccountValues(data)
                 } else {
-                    console.error("Shit broke")
+                    console.error("Something broke")
                 }
             }).catch((err) => {
                 console.error(err.response.status)
@@ -91,9 +94,10 @@ const CustomerAccount: React.FC<{}> = () => {
                     updateCustomerInfo(token as string, values)
                     .then((response) => console.log(response))
                     .catch((err) => console.error(err))
+                    setDisabled(true)
                 }}
             >
-                {() => (
+                {({handleSubmit}) => (
                     <Form className={form}>
                         <Grid container spacing={3}>
                             <Grid item xs={12}>
@@ -139,20 +143,17 @@ const CustomerAccount: React.FC<{}> = () => {
                             </Grid>
                         </Grid>
 
-                        <Button
-                            className={button}
+                        <MButton
                             disabled={disabled}
-                            type={'submit'}>
-                            Zapisz
-                        </Button>
+                            label='Zapisz'
+                            onClick={handleSubmit}/>
+                            
 
-                        <Button 
-                        className={button}
+                        <MButton 
+                        label='Edytuj'
                         onClick={() =>
                             setDisabled(!disabled)
-                        }>
-                            Edytuj
-                        </Button>
+                        }/>
                     </Form>
                 )}
 

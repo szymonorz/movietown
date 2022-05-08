@@ -4,6 +4,7 @@ import * as Yup from 'yup';
 import MTextField from '../forms/formComponents/TextField';
 import { Button, makeStyles } from '@material-ui/core'
 import { changeCustomersPassword } from '../../api/CustomerApi';
+import MButton from '../MButton';
 
 export interface ChangePasswordValues {
     old_password: string,
@@ -21,12 +22,14 @@ const PasswordValidation = Yup.object().shape({
 const useStyles = makeStyles(() => ({
     form: {
         color: "white",
-        padding: "10px"
+        padding: "30px",
+        backgroundColor: "#282c34",
+        borderRadius: "20px"
     }
 }))
 
 const CustomerChangePassword: React.FC<{}> = () => {
-    const { form } = useStyles()
+    const { form} = useStyles()
     const token = localStorage.getItem("token") || ""
     return (
         <div>
@@ -44,7 +47,7 @@ const CustomerChangePassword: React.FC<{}> = () => {
                 }}
             >
 
-                {({ values }) => (
+                {({ values, handleSubmit }) => (
                     <Form className={form}>
                         <MTextField
                             value={values.old_password}
@@ -60,9 +63,7 @@ const CustomerChangePassword: React.FC<{}> = () => {
                             type={'password'}>
 
                         </MTextField>
-                        <Button type="submit">
-                            Change password
-                        </Button>
+                        <MButton label='Zmień hasło' onClick={handleSubmit}/>
                     </Form>
                 )}
 

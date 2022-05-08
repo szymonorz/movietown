@@ -10,6 +10,7 @@ const useStyles = makeStyles(() => ({
     },
     href: {
         textDecoration: "none",
+        textAlign: "center",
         color: "white",
         fontWeight: "bold"
     },
