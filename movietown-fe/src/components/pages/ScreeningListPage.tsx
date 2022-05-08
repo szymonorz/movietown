@@ -21,13 +21,16 @@ const ScreeningListPage: React.FC<{}> = () => {
     const [screenings, setScreenings] = useState<screening[]>([])
 
     useEffect(() => {
-        const to = new Date()
-        console.log(date)
-        to.setDate(date!.getDate() + 1)
+
+        const d = date as Date
+        const to = new Date(d)
+        console.log(d)
+        to.setDate(d.getDate() + 1)
         to.setHours(0)
         to.setMinutes(0)
         to.setSeconds(0)
         to.setMilliseconds(0)
+        console.log(to)
         getDaysScreenings({
             from: date as Date,
             to: to
