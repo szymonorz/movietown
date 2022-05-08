@@ -35,10 +35,8 @@ const SignInPage: React.FC<{}> = () => {
     const [registerError, setRegisterError] = useState<boolean>(false)
     useEffect(() => {
         const token = localStorage.getItem("token")
-        console.log(token)
         if (token && token != "") {
           setLoginState(true)
-          console.log("Logged in")
         }
       }, [])
    
@@ -46,13 +44,13 @@ const SignInPage: React.FC<{}> = () => {
     const login = async (values: SignInValues) => {
         try {
             const {data} = await loginCustomer(values)
-            console.log(data)
             const token = data as AccessToken
             localStorage.setItem("token", token.access_token)
             setLoginState(true)
         } catch (err: any) {
             setLoginError(true)
-            console.log(err)
+            setLoginState(false)
+            console.error(err)
         }
     }
 
@@ -60,11 +58,11 @@ const SignInPage: React.FC<{}> = () => {
         try {
             const {data} = await registerCustomer(values)
             const token = data as AccessToken
-            console.log(token.access_token)
             localStorage.setItem("token", token.access_token)
             setLoginState(true)
         } catch (err) {
             setRegisterError(true)
+            setLoginState(false)
             console.log(err)
         }
     }

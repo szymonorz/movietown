@@ -26,12 +26,6 @@ const useStyles = makeStyles(() => ({
         padding: "30px",
         backgroundColor: "#282c34",
         borderRadius: "20px"
-    },
-    button: {
-        color: "white",
-        '&:disabled': {
-            color: "grey"
-        }
     }
 }))
 
@@ -45,7 +39,6 @@ const accountFormValidator = Yup.object().shape({
 })
 
 const CustomerAccount: React.FC<{}> = () => {
-    // const [loginStatus, setLoginStatus] = useState<boolean>(true)
     const provider = useContext(LoginStateContext)
     const { loginState, setLoginState } = provider!
     const [accountValues, setAccountValues] = useState<AccountValues>({
@@ -60,7 +53,7 @@ const CustomerAccount: React.FC<{}> = () => {
     const [disabled, setDisabled] = useState<boolean>(true)
     const [authorized, setAuthorized] = useState<boolean>(false)
     const token = localStorage.getItem("token")
-    const { form, button } = useStyles()
+    const { form } = useStyles()
     useEffect(() => {
         if (token) {
             const infoPromise = getCustomerInfo(token)
@@ -92,9 +85,9 @@ const CustomerAccount: React.FC<{}> = () => {
                 validationSchema={accountFormValidator}
                 onSubmit={(values) => {
                     updateCustomerInfo(token as string, values)
-                    .then((response) => console.log(response))
+                    .then(() => setDisabled(true))
                     .catch((err) => console.error(err))
-                    setDisabled(true)
+                    
                 }}
             >
                 {({handleSubmit}) => (

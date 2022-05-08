@@ -33,7 +33,7 @@ const CustomerPage: React.FC<{}> = () => {
     const provider = useContext(LoginStateContext)
     const { loginState, setLoginState } = provider!
     useEffect(() => {
-        const token = localStorage.getItem("token") || ""
+        const token = localStorage.getItem("token")
         if (token) {
             const infoPromise = getCustomerInfo(token)
             infoPromise.catch((err: { response: { status: number; }; }) => {
@@ -41,9 +41,10 @@ const CustomerPage: React.FC<{}> = () => {
                 if (err.response.status === 401) {
                     setLoginState(false)
                     localStorage.removeItem("token")
-                    console.log("hello?")
                 }
             })
+        }else{
+            setLoginState(false)
         }
     }, [])
 

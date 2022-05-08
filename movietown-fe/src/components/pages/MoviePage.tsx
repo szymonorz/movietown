@@ -54,17 +54,24 @@ const MoviePage: React.FC<{}> = () => {
     useEffect(() => {
         const movieId = Number(id)
         if (!isNaN(movieId)) {
-            const to = new Date()
-            to.setDate(date!.getDate() + 1)
+            const today = new Date
+            const d = today.getDay() === date!.getDay() ? today : date!
+            const to = new Date(d)
+            to.setDate(d.getDate() + 1)
             to.setHours(0)
             to.setMinutes(0)
             to.setSeconds(0)
             to.setMilliseconds(0)
+            if (d.getDay() != today.getDay()) {
+                d.setHours(0)
+                d.setMinutes(0)
+                d.setSeconds(0)
+                d.setMilliseconds(0)
+            }
             getScreeningByMovieId(movieId, {
-                from: date as Date,
+                from: d as Date,
                 to: to
             }).then(({ data }) => {
-                console.log(data)
                 setScreenings(screenings => [...data])
             })
                 .catch((err) => console.error(err))
@@ -90,7 +97,7 @@ const MoviePage: React.FC<{}> = () => {
         return <div>
             <Grid container>
                 <Grid item xs={4}>
-                    <img src={movieData.url}/>
+                    <img src={movieData.url} />
                 </Grid>
                 <Grid item xs={8}>
                     <Typography className={title}>
@@ -101,7 +108,7 @@ const MoviePage: React.FC<{}> = () => {
                     </Typography>
                 </Grid>
             </Grid>
-            <Divider/>
+            <Divider />
             <div className={datePickerLabel}>
                 <LocalizationProvider dateAdapter={DateAdapter}>
                     <DatePicker

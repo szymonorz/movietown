@@ -22,23 +22,26 @@ const ScreeningListPage: React.FC<{}> = () => {
 
     useEffect(() => {
 
-        const d = date as Date
+        const today = new Date     
+        const d = today.getDay() === date!.getDay() ? today : date!
         const to = new Date(d)
-        console.log(d)
         to.setDate(d.getDate() + 1)
         to.setHours(0)
         to.setMinutes(0)
         to.setSeconds(0)
         to.setMilliseconds(0)
-        console.log(to)
+        if(d.getDay() != today.getDay()){
+            d.setHours(0)
+            d.setMinutes(0)
+            d.setSeconds(0)
+            d.setMilliseconds(0)
+        }
         getDaysScreenings({
-            from: date as Date,
+            from: d as Date,
             to: to
         }).then(({ data }) => {
-            console.log(data)
-            setScreenings(screenings => [...data])
-        })
-            .catch((err) => console.error(err))
+            setScreenings([...data])
+        }).catch((err) => console.error(err))
 
     }, [date])
 
@@ -54,7 +57,6 @@ const ScreeningListPage: React.FC<{}> = () => {
                         }}
                         renderInput={(params) => <TextField {...params} />}
                     />
-
                 </LocalizationProvider>
             </div>
             <ScreeningList screenings={screenings} />
