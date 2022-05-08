@@ -34,6 +34,16 @@ export interface seat{
     movie_hall_id: number
 }
 
+export interface reservation {
+    id: number,
+    seat_count: number,
+    movie_title: string,
+    movie_type: string,
+    time_of_screening: string,
+    reservation_type: string,
+    price: number
+}
+
 export interface IAMGOINGTOLOSEMYFUCKINGMIND{
     customerReservation: customerReservation,
     setCustomerReservation: React.Dispatch<React.SetStateAction<customerReservation>>
@@ -60,6 +70,14 @@ export const createReservation = async (token: string, values: customerReservati
         reservation_type_id: values.reservation_type_id,
         discounts: values.discounts,
     }, {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    })
+}
+
+export const getCustomerReservations = async (token: string) => {
+    return await instance.get("", {
         headers: {
             Authorization: `Bearer ${token}`
         }

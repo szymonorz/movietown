@@ -63,6 +63,11 @@ const CustomerPage: React.FC<{}> = () => {
                         </Link>
                     </ListItem>
                     <ListItem className={item}>
+                        <Link className={link} replace to="reservations">
+                            Moje rezerwacje
+                        </Link>
+                    </ListItem>
+                    <ListItem className={item}>
                         <Link className={link} replace to="delete">
                                 Usuń konto
                         </Link>
