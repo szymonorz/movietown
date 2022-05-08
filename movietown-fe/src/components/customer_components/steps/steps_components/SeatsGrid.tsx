@@ -17,7 +17,8 @@ const SeatsGrid: React.FC<SeatsGridProps> = ({ setNextDisabled, numberOfSeats })
         getTakenSeats(screeningId)
         .then(({data}) => {
             console.log(data)
-            setTakenSeatsIds(prev => [...data["taken_seat_ids"]])
+            if(data["taken_seat_ids"])
+                setTakenSeatsIds(prev => [...data["taken_seat_ids"]])
         })
         .catch((err) => console.error(err))
     }, [])
@@ -36,7 +37,7 @@ const SeatsGrid: React.FC<SeatsGridProps> = ({ setNextDisabled, numberOfSeats })
             const data = canvas?.getContext("2d")?.getImageData(x, y, 1, 1)
             const green = data?.data[1]
             const red = data?.data[0]
-            const seatIndex = row * 10 + col;
+            const seatIndex = row * 10 + col + 1;
             if (green === 0x99 || red === 0x99) {
 
                 if (seatsIds.includes(seatIndex)) {
@@ -85,25 +86,25 @@ const SeatsGrid: React.FC<SeatsGridProps> = ({ setNextDisabled, numberOfSeats })
                 context.fillStyle = "#009900"
                 let index = 0;
                 for (let row = 1; row <= numOfRows; row++) {
-                    for (let col = 0; col < 10; col++) {
-                        if (seatsIds.includes(index)) {
+                    for (let col = 1; col <= 10; col++) {
+                        if (seatsIds.includes(index + 1)) {
                             context.fillStyle = "#990000"
                             // console.log(index);
                         }
-                        if(takenSeatsIds.includes(index)){
+                        if(takenSeatsIds.includes(index + 1)){
                             context.fillStyle = "#1f1f1f"
                         }
                         context.beginPath()
                         context.strokeStyle = "#414348"
                         context.lineWidth = 10
                         context.rect(
-                            col * boxSize + 40,
+                            (col - 1) * boxSize + 40,
                             row * boxSize,
                             boxSize,
                             boxSize
                         )
                         context.fillRect(
-                            col * boxSize + 40,
+                            (col - 1) * boxSize + 40,
                             row * boxSize,
                             boxSize,
                             boxSize
@@ -111,7 +112,7 @@ const SeatsGrid: React.FC<SeatsGridProps> = ({ setNextDisabled, numberOfSeats })
                         context.stroke()
                         context.fillStyle = "#FFFFFF"
 
-                        context.fillText(1 + +col + "", col * boxSize + 50, row * boxSize + 25)
+                        context.fillText(+col + "", (col - 1) * boxSize + 50, row * boxSize + 25)
                         context.fillStyle = "#009900"
                         index = index + 1;
                     }
