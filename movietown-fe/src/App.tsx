@@ -12,8 +12,9 @@ import MakeReservationPage from './components/pages/MakeReservationPage';
 import MoviePage from './components/pages//MoviePage';
 import CustomerDeleteAccount from './components/customer_components/CustomerDeleteAccount';
 import { LoginStateContext } from './api/CustomerApi';
+import CustomerReservations from './components/customer_components/CustomerReservations';
 function App() {
-  const [loginState, setLoginState] = useState<boolean>(false)
+  const [loginState, setLoginState] = useState<boolean>(true)
   const provider = useMemo(() => ({ loginState, setLoginState }), [loginState, setLoginState])
   useLayoutEffect(() => {
     const token = localStorage.getItem("token")
@@ -36,6 +37,7 @@ function App() {
             <Route path="info" element={<CustomerAccount />} />
             <Route path="password" element={<CustomerChangePassword />} />
             <Route path="delete" element={<CustomerDeleteAccount />} />
+            <Route path="reservations" element={<CustomerReservations />} />
           </Route>
           <Route path="reservation" element={<MakeReservationPage />} />
 
