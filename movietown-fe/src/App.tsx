@@ -27,7 +27,7 @@ function App() {
       <Header loggedIn={loginState} />
       <Routes>
         <Route path="signin" element={<SignInPage loginState={loginState} setLoginState={setLoginState} />} />
-        <Route path="account" element={<CustomerPage setLoginState={setLoginState} />}>
+        <Route path="account" element={<CustomerPage loginState={loginState} setLoginState={setLoginState} />}>
           <Route path="info" element={<CustomerAccount loginState={loginState} setLoginState={setLoginState} />} />
           <Route path="password" element={<CustomerChangePassword/>} />
         </Route>

@@ -1,6 +1,6 @@
 import { List, ListItem, makeStyles } from '@material-ui/core';
 import React, { useEffect } from 'react';
-import { Link, Outlet } from 'react-router-dom';
+import { Link, Navigate, Outlet } from 'react-router-dom';
 import { getCustomerInfo } from '../../api/CustomerApi'
 
 
@@ -27,10 +27,11 @@ const useStyles = makeStyles(() => ({
 
 
 interface CustomerPageProps {
+    loginState: boolean,
     setLoginState: (arg: boolean) => void
 }
 
-const CustomerPage: React.FC<CustomerPageProps> = ({ setLoginState }) => {
+const CustomerPage: React.FC<CustomerPageProps> = ({ loginState, setLoginState }) => {
     const { container, list, link, item } = useStyles()
 
     useEffect(() => {
@@ -50,6 +51,7 @@ const CustomerPage: React.FC<CustomerPageProps> = ({ setLoginState }) => {
 
     return (
         <div>
+            {!loginState && <Navigate to="/"/>}
             <div className={container}>
                 <List className={list}>
                     <ListItem className={item}>

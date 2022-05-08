@@ -3,11 +3,12 @@ import React, { useMemo, useState, useEffect } from 'react'
 import ReservationSeatsFragment from '../customer_components/steps/ReservationSeatsFragment'
 import { MakeReservationStep } from '../customer_components/steps/common'
 import { CustomerReservationContext } from '../../api/ReservationApi'
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, Navigate } from 'react-router-dom';
 import { getScreeningById, screening } from '../../api/ScreeningApi';
 import SelectSeatsFragment from '../customer_components/steps/SelectSeatsFragment'
 import SummaryStep from '../customer_components/steps/SummaryStep'
 import { stepConnectorClasses } from '@mui/material'
+import { getCustomerInfo } from '../../api/CustomerApi'
 
 const steps: MakeReservationStep[] = [
     {
@@ -66,6 +67,7 @@ const MakeReservationPage: React.FC<{}> = () => {
     const [screeningId, setScreeningId] = useState(0)
     const [nextDisabled, setNextDisabled] = useState<boolean>(true)
     const [reservationId, setReservationId] = useState<number | null>(null)
+    const [loginState, setLoginState] = useState<boolean>(true)
 
     const [screening, setScreening] = useState<screening>({
         id: 0,
@@ -121,10 +123,25 @@ const MakeReservationPage: React.FC<{}> = () => {
     }
 
     useEffect(() => {
-        const id = query.get("id")
-        if (id) {
-            setScreeningId(parseInt(id))
+        const token = localStorage.getItem("token")
+        if (token) {
+            const infoPromise = getCustomerInfo(token)
+            infoPromise.catch((err) => {
+                console.error(err.response.status)
+                if(err.response.status === 401){
+                    setLoginState(false)
+                    localStorage.removeItem("token")
+                    console.log("hello?")
+                }
+            })
+            const id = query.get("id")
+            if (id) {
+                setScreeningId(parseInt(id))
+            }
+        }else{
+            setLoginState(false)
         }
+       
     }, [])
 
     useEffect(() => {
@@ -148,6 +165,7 @@ const MakeReservationPage: React.FC<{}> = () => {
 
     return (
         <div className={thing}>
+            {!loginState && (<Navigate to="/signin"/>)}
             {reservationId == null && (
                 <div>
                     <Stepper activeStep={activeStep} connector={<Connector/>} style={{background: "none"}}>
