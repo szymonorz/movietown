@@ -36,11 +36,11 @@ definitions:
     properties:
       new_password:
         type: string
-      old_passowrd:
+      old_password:
         type: string
     required:
     - new_password
-    - old_passowrd
+    - old_password
     type: object
   api.customerGuestReservation:
     properties:
@@ -125,6 +125,19 @@ definitions:
     - phone_number
     - surname
     - username
+    type: object
+  api.reservationResponse:
+    properties:
+      id:
+        type: integer
+      mm_type:
+        $ref: '#/definitions/model.MovieMovieType'
+      price:
+        type: integer
+      reservation_type:
+        type: string
+      seat_count:
+        type: integer
     type: object
   api.takenSeats:
     properties:
@@ -536,17 +549,12 @@ paths:
     get:
       consumes:
       - application/json
-      description: get []Reservation by customer_id
+      description: get []reservationResponse by customer_id from token
       parameters:
       - description: Authorization
         in: header
         name: Authorization
         required: true
-        type: string
-      - description: reservation search by customer_id
-        format: int
-        in: query
-        name: customer_id
         type: string
       produces:
       - application/json
@@ -554,7 +562,9 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/model.Reservation'
+            items:
+              $ref: '#/definitions/api.reservationResponse'
+            type: array
       summary: Show reservations
       tags:
       - reservations

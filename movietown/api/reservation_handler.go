@@ -2,12 +2,14 @@ package api
 
 import (
 	"errors"
+	"math"
 	"movietown/auth"
 	"movietown/merror"
 	"movietown/model"
 	"movietown/service"
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -61,24 +63,58 @@ func (h *ReservationHandler) GetReservedSeatsForScreening(c *gin.Context) {
 	c.JSON(http.StatusOK, ts)
 }
 
+type reservationResponse struct {
+	ID              uint    `json:"id"`
+	SeatCount       uint    `json:"seat_count"`
+	MovieTitle      string  `json:"movie_title"`
+	MovieType       string  `json:"movie_type"`
+	TimeOfScreening string  `json:"time_of_screening"`
+	ReservationType string  `json:"reservation_type"`
+	Price           float64 `json:"price"`
+}
+
 // GetCustomerReservations godoc
 // @Summary      Show reservations
-// @Description  get []Reservation by customer_id
+// @Description  get []reservationResponse by customer_id from token
 // @Tags         reservations
 // @Accept       json
 // @Produce      json
 // @Param		 Authorization	header string true "Authorization"
-// @Param        customer_id    query     string  false  "reservation search by customer_id"  Format(int)
-// @Success      200  {object}  model.Reservation
+// @Success      200  {object}  []reservationResponse
 // @Router       /api/v1/reservations [get]
 func (h *ReservationHandler) GetCustomerReservations(c *gin.Context) {
 	customer, err := h.auth.GetCustomerInfoFromRequest(c.Request)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, err)
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	reservation, _ := h.reservationService.GetCustomerReservations(customer.ID)
-	c.JSON(http.StatusAccepted, reservation)
+	var response []reservationResponse
+	reservations, _ := h.reservationService.GetCustomerReservations(customer.ID)
+	for _, reservation := range reservations {
+		var tmp reservationResponse
+		tmp.ID = reservation.ID
+		tmp.MovieTitle = reservation.Screening.MovieMovieType.Movie.Title
+		tmp.MovieType = reservation.Screening.MovieMovieType.MovieType.Type
+		tmp.TimeOfScreening = reservation.Screening.Start_of_screening.Format(time.RFC3339)
+		tmp.ReservationType = reservation.ReservationType.Type
+		seats, err := h.reservedSeatService.GetAllSeatsFromReservations(reservation.ID)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+		tmp.SeatCount = uint(len(seats))
+		tmp.Price = calcPrice(seats, reservation.Screening.MovieMovieType.MovieType)
+		response = append(response, tmp)
+	}
+	c.JSON(http.StatusOK, response)
+}
+
+func calcPrice(seats []model.ReservedSeat, movie_type model.MovieType) float64 {
+	var price float64
+	for _, s := range seats {
+		price += movie_type.Price - (movie_type.Price * (float64(s.DiscountType.Discount) * 0.01))
+	}
+	return math.Round(price/0.01) * 0.01
 }
 
 // GetCustomerReservationsFromId godoc

@@ -358,7 +358,7 @@ const docTemplate = `{
         },
         "/api/v1/reservations": {
             "get": {
-                "description": "get []Reservation by customer_id",
+                "description": "get []reservationResponse by customer_id from token",
                 "consumes": [
                     "application/json"
                 ],
@@ -376,20 +376,16 @@ const docTemplate = `{
                         "name": "Authorization",
                         "in": "header",
                         "required": true
-                    },
-                    {
-                        "type": "string",
-                        "format": "int",
-                        "description": "reservation search by customer_id",
-                        "name": "customer_id",
-                        "in": "query"
                     }
                 ],
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/model.Reservation"
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/api.reservationResponse"
+                            }
                         }
                     }
                 }
@@ -839,13 +835,13 @@ const docTemplate = `{
             "type": "object",
             "required": [
                 "new_password",
-                "old_passowrd"
+                "old_password"
             ],
             "properties": {
                 "new_password": {
                     "type": "string"
                 },
-                "old_passowrd": {
+                "old_password": {
                     "type": "string"
                 }
             }
@@ -967,6 +963,26 @@ const docTemplate = `{
                 },
                 "username": {
                     "type": "string"
+                }
+            }
+        },
+        "api.reservationResponse": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "mm_type": {
+                    "$ref": "#/definitions/model.MovieMovieType"
+                },
+                "price": {
+                    "type": "integer"
+                },
+                "reservation_type": {
+                    "type": "string"
+                },
+                "seat_count": {
+                    "type": "integer"
                 }
             }
         },

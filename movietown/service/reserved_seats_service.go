@@ -26,6 +26,10 @@ func (s *ReservedSeatService) GetAllTakenSeatIds(screening_id uint) ([]uint, err
 	return seat_ids, nil
 }
 
+func (s *ReservedSeatService) GetAllSeatsFromReservations(reservation_id uint) ([]model.ReservedSeat, error) {
+	return s.repository.FindAllByReservationId(reservation_id)
+}
+
 func (s *ReservedSeatService) GuestReserveSeats(seat_ids []uint, discounts model.RequestSeats, customer *model.Customer, reservation *model.Reservation) ([]model.ReservedSeat, error) {
 	var seats []model.ReservedSeat
 	normalSeatCount := discounts.NormalSeats

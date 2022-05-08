@@ -27,10 +27,12 @@ func (r *ReservationRepository) FindById(id uint) (model.Reservation, error) {
 
 func (r *ReservationRepository) FindByCustomerId(customer_id uint) ([]model.Reservation, error) {
 	var reservations []model.Reservation
-	result := r.db.Preload("Customer").
+	result := r.db.
 		Preload("Screening").
-		Preload("Screening.Movie").
-		Preload("Screening.MovieHall").
+		Preload("Screening.MovieMovieType").
+		Preload("ReservationType").
+		Preload("Screening.MovieMovieType.Movie").
+		Preload("Screening.MovieMovieType.MovieType").
 		Where(model.Reservation{CustomerId: &customer_id}).
 		Find(&reservations)
 	return reservations, result.Error

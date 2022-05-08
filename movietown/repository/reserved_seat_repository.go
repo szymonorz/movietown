@@ -19,7 +19,18 @@ func NewReservedSeatRepository(database *gorm.DB) ReservedSeatRepository {
 
 func (r *ReservedSeatRepository) FindAllByScreeningId(screening_id uint) ([]model.ReservedSeat, error) {
 	var reserved_seats []model.ReservedSeat
-	err := r.db.Where("screening_id = ?", screening_id).Find(&reserved_seats).Error
+	err := r.db.
+		Where("screening_id = ?", screening_id).
+		Select("id", "seat_id").
+		Find(&reserved_seats).Error
+	return reserved_seats, err
+}
+
+func (r *ReservedSeatRepository) FindAllByReservationId(reservation_id uint) ([]model.ReservedSeat, error) {
+	var reserved_seats []model.ReservedSeat
+	err := r.db.Preload("DiscountType").
+		Where("reservation_id = ?", reservation_id).
+		Find(&reserved_seats).Error
 	return reserved_seats, err
 }
 
