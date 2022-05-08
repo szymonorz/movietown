@@ -81,7 +81,7 @@ const MoviePage: React.FC<{}> = () => {
         return <div>
             <Grid container>
                 <Grid item xs={4}>
-                    Some image there i dont fucking know
+                    <img src={movieData.url}/>
                 </Grid>
                 <Grid item xs={8}>
                     <Typography>

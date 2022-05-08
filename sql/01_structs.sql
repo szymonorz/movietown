@@ -23,6 +23,7 @@ CREATE TABLE IF NOT EXISTS movies(
     director VARCHAR(32) NOT NULL,
     description TEXT,
     length INT NOT NULL,
+	url VARCHAR(256) NOT NULL,
     CONSTRAINT  movie_id_k PRIMARY KEY(id)
 );
 

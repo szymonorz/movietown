@@ -79,6 +79,7 @@ const MakeReservationPage: React.FC<{}> = () => {
                 director: '',
                 description: '',
                 length: 0,
+                url: '',
                 movie_types: []
             },
             movie_type: {

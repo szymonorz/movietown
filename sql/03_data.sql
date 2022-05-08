@@ -13,8 +13,8 @@ INSERT INTO discount_types(type, discount) VALUES('senior', 30);
 INSERT INTO movie_halls(name, number_of_seats) VALUES('DN',100);
 INSERT INTO movie_halls(name, number_of_seats) VALUES('DZ',60);
 
-INSERT INTO movies(title, director, description, length) VALUES('AAAAAAA','AAAA','aa',120);
-INSERT INTO movies(title, director, description, length) VALUES('BBBBBBBB','AAAA','ba',120);
+INSERT INTO movies(title, director, description, length, url) VALUES('AAAAAAA','AAAA','aa',120, 'http://localhost:4000/image/painandsuffering.png');
+INSERT INTO movies(title, director, description, length, url) VALUES('BBBBBBBB','AAAA','ba',120, 'http://localhost:4000/image/painandsuffering.png');
 
 INSERT INTO movie_movie_types(movie_id, movie_type_id) VALUES(1,1);
 INSERT INTO movie_movie_types(movie_id, movie_type_id) VALUES(1,2);

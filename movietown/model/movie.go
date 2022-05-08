@@ -6,5 +6,6 @@ type Movie struct {
 	Director    string      `json:"director"`
 	Description string      `json:"description"`
 	Length      int         `json:"length"`
+	Url         string      `json:"url"`
 	MovieType   []MovieType `gorm:"many2many:movie_movie_types" json:"movie_types"`
 }

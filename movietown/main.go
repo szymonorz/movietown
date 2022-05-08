@@ -127,6 +127,7 @@ func main() {
 		}
 	}
 
+	router.Static("/image", "./static/images")
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	log.Fatal(router.Run(":4000"))
 

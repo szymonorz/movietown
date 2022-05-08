@@ -15,6 +15,7 @@ export interface movie {
     director: string,
     description: string,
     length: number,
+    url: string,
     movie_types: movie_type[]
 }
 
