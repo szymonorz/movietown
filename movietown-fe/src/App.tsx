@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useMemo, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useMemo, useState } from 'react';
 import './App.css';
 import Header from './components/Header';
 import { Routes, Route } from 'react-router-dom';
@@ -16,11 +16,10 @@ import CustomerReservations from './components/customer_components/CustomerReser
 function App() {
   const [loginState, setLoginState] = useState<boolean>(true)
   const provider = useMemo(() => ({ loginState, setLoginState }), [loginState, setLoginState])
-  useLayoutEffect(() => {
+  useEffect(() => {
     const token = localStorage.getItem("token")
-    if (token) {
-      setLoginState(true)
-      console.log("Logged in")
+    if (!token) {
+      setLoginState(false)
     }
   }, [])
 
