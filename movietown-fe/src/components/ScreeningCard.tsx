@@ -1,8 +1,8 @@
 import React from 'react'
-import { makeStyles, Typography, Divider } from '@material-ui/core'
+import { makeStyles, Typography, Divider, Grid } from '@material-ui/core'
 import { screening } from '../api/ScreeningApi'
 import { movie, movie_type } from '../api/MovieApi'
-import {Link} from 'react-router-dom'
+import { Link } from 'react-router-dom'
 
 const useStyles = makeStyles(() => ({
     element: {
@@ -30,6 +30,11 @@ const useStyles = makeStyles(() => ({
         justifyContent: "space-around",
         color: "white",
         fontWeight: "bold"
+    },
+    image: {
+        width: "80px",
+        height: "100px",
+        marginRight: "50%"
     }
 }))
 
@@ -38,23 +43,38 @@ interface ScreeningCardProps {
 }
 
 const ScreeningCard: React.FC<ScreeningCardProps> = ({ values: { id, mm_type: { movie, movie_type: { type } }, movie_hall, start_of_screening } }) => {
-    const {href, timeLabel, block, element } = useStyles()
+    const { href, timeLabel, block, element, image } = useStyles()
     const time = new Date(start_of_screening)
 
     return (
         <div className={element}>
-            <Typography {...{
-                className: href,
-                color: "inherit",
-                to: `/reservation?id=${id}`,
-                component: Link
-            }}>{movie.title}</Typography>
-            <div className={block}>
-                <div className={timeLabel}>{time.getHours()}:{time.getMinutes()}</div>
-                <Typography>Rodzaj: {type}</Typography>
-                <Typography>Sala: {movie_hall.name}</Typography>
-            </div>
+            <Grid container>
+                <Grid item xs={3}>
+                    <Link to={`/movie/${movie.id}`}>
+                        <img src={movie.url} className={image} />
+                    </Link>
+                </Grid>
+                <Grid item xs={9}>
+                    <Typography {...{
+                        className: href,
+                        color: "inherit",
+                        to: `/movie/${movie.id}`,
+                        component: Link
+                    }}>{movie.title}</Typography>
+                    <div className={block}>
+                        <Link to={`/reservation?id=${id}`}>
+                            <div className={timeLabel}>
+                                {time.getHours()}:{time.getMinutes()}
+                            </div>
+                        </Link>
+                        <Typography>Rodzaj: {type}</Typography>
+                        <Typography>Sala: {movie_hall.name}</Typography>
+                    </div>
+
+                </Grid>
+            </Grid>
             <Divider />
+
         </div>
     )
 }

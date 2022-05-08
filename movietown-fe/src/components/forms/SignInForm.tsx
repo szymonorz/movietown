@@ -1,8 +1,9 @@
 import React from 'react';
 import { Formik, Form } from 'formik';
-import { Grid, Typography, Button, makeStyles } from '@material-ui/core';
+import { Grid, Typography, makeStyles } from '@material-ui/core';
 import MTextField from './formComponents/TextField';
 import * as Yup from 'yup';
+import MButton from '../MButton';
 
 
 export interface SignInValues {
@@ -21,21 +22,7 @@ interface SignInFormProps {
     onSubmit: (values: SignInValues) => void;
 }
 
-
-const useStyles = makeStyles(() => ({
-    submitButton: {
-        marginTop: "20px",
-        fontWeight: 'bold',
-        backgroundColor: "#A51272",
-        color: "#FFFFFF",
-        "&:hover": {
-            backgroundColor: "#A51272"
-        }
-    }
-}))
-
 const SignIn: React.FC<SignInFormProps> = ({ loginError, className, onSubmit }) => {
-    const { submitButton } = useStyles()
 
     return (
         <div className={className}>
@@ -47,7 +34,7 @@ const SignIn: React.FC<SignInFormProps> = ({ loginError, className, onSubmit }) 
                 onSubmit={(values) => onSubmit(values)}
                 validationSchema={signInFormValidation}
             >
-                {({ values, handleChange }) => (
+                {({ handleSubmit }) => (
                     <Form>
                         <Grid container spacing={2}>
                             <Grid item xs={12}>
@@ -58,7 +45,6 @@ const SignIn: React.FC<SignInFormProps> = ({ loginError, className, onSubmit }) 
 
                             <Grid item xs={6}>
                                 <MTextField
-                                    // value={values.username}
                                     name='username'
                                     label='Login'
                                     type='text'
@@ -67,20 +53,17 @@ const SignIn: React.FC<SignInFormProps> = ({ loginError, className, onSubmit }) 
 
                             <Grid item xs={6}>
                                 <MTextField
-                                    // value={values.password}
                                     name='password'
-                                    label='Password'
+                                    label='Hasło'
                                     type='password'
                                     placeholder='deez nutz' />
                             </Grid>
 
                         </Grid>
-                        <Button
-                            className={submitButton}
-                            type={'submit'}
-                        >
-                            Login
-                        </Button>
+                        <MButton
+                            label='Zaloguj'
+                            onClick={handleSubmit}
+                        />
                     </Form>
                 )}
 

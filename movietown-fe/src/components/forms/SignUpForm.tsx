@@ -3,6 +3,7 @@ import * as Yup from 'yup';
 import { Formik, Form } from 'formik';
 import { Grid, Typography, Button, makeStyles } from '@material-ui/core';
 import MTextField from './formComponents/TextField';
+import MButton from '../MButton';
 
 
 export interface SignUpValues {
@@ -30,19 +31,7 @@ const signUpFormValidator = Yup.object().shape({
 
 })
 
-const useStyles = makeStyles(() => ({
-    button: {
-        backgroundColor: "#A51272",
-        color: "white",
-        fontWeight: 'bold',
-        '&:hover':{
-            backgroundColor: "#A51272",
-        }
-    }
-}))
-
 const SignUpForm: React.FC<SignUpProps> = ({registerError, className, onSubmit }) => {
-    const {button} = useStyles()
     return (
         <div className={className}>
             <Formik
@@ -57,7 +46,7 @@ const SignUpForm: React.FC<SignUpProps> = ({registerError, className, onSubmit }
                 validationSchema={signUpFormValidator}
                 onSubmit={(values) => onSubmit(values)}
             >
-                {() => (
+                {({handleSubmit}) => (
                     <Form>
                         <Grid container spacing={2}>
                             <Grid item xs={12}>
@@ -110,7 +99,10 @@ const SignUpForm: React.FC<SignUpProps> = ({registerError, className, onSubmit }
                                     placeholder='123456789'
                                 />
                             </Grid>
-                            <Button className={button} type={"submit"}>Register</Button>
+                            <MButton 
+                                label='Zarejestruj'
+                                onClick={handleSubmit}
+                            />
                         </Grid>
                     </Form>
                 )}

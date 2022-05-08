@@ -29,7 +29,7 @@ const useStyles = makeStyles(() => ({
 }))
 
 const CustomerChangePassword: React.FC<{}> = () => {
-    const { form} = useStyles()
+    const { form } = useStyles()
     const token = localStorage.getItem("token") || ""
     return (
         <div>
