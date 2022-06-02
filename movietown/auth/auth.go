@@ -7,8 +7,8 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
+	"github.com/golang-jwt/jwt/v4"
 )
 
 type AuthMiddleware struct {
@@ -24,6 +24,7 @@ func (auth *AuthMiddleware) TokenValid(r *http.Request, secret string) (jwt.MapC
 	if err != nil {
 		return nil, err
 	}
+
 	var claims jwt.MapClaims
 	var ok bool
 	if claims, ok = token.Claims.(jwt.MapClaims); !ok && !token.Valid {

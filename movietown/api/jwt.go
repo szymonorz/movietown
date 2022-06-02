@@ -3,7 +3,7 @@ package api
 import (
 	"time"
 
-	"github.com/dgrijalva/jwt-go"
+	"github.com/golang-jwt/jwt/v4"
 )
 
 func generateTokenPair(id uint, role string) (map[string]string, error) {
