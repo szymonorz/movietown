@@ -1,6 +1,7 @@
 package service
 
 import (
+	"movietown/merror"
 	"movietown/model"
 	"movietown/repository"
 )
@@ -35,6 +36,7 @@ func (s *ReservedSeatService) RegularReserveSeats(seat_ids []uint, discounts mod
 	childrenSeatCount := discounts.ChildrenSeats
 	studentSeatCount := discounts.StudentSeats
 	elderlySeatCount := discounts.ElderlySeats
+	sum := normalSeatCount + childrenSeatCount + studentSeatCount + elderlySeatCount
 	for _, seat := range seat_ids {
 		var discount_id uint
 		// log.Println(seat)
@@ -60,6 +62,9 @@ func (s *ReservedSeatService) RegularReserveSeats(seat_ids []uint, discounts mod
 		}
 		seats = append(seats, s)
 		// log.Println(*seats[i].SeatId)
+	}
+	if int(sum) != len(seats) {
+		return merror.ErrNumberOfSeatsDontMatch
 	}
 
 	err := s.repository.CreateForCustomer(seats, reservation)

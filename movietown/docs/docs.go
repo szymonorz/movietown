@@ -992,10 +992,36 @@ const docTemplate = `{
                 "id": {
                     "type": "integer"
                 },
+                "movieHallRows": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.MovieHallRow"
+                    }
+                },
                 "name": {
                     "type": "string"
                 },
                 "number_of_seats": {
+                    "type": "integer"
+                }
+            }
+        },
+        "model.MovieHallRow": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "movie_hall_id": {
+                    "type": "integer"
+                },
+                "row": {
+                    "$ref": "#/definitions/model.Row"
+                },
+                "row_id": {
+                    "type": "integer"
+                },
+                "row_number": {
                     "type": "integer"
                 }
             }
@@ -1097,35 +1123,20 @@ const docTemplate = `{
                 }
             }
         },
-        "model.ReservedSeat": {
+        "model.Row": {
             "type": "object",
             "properties": {
-                "discountType": {
-                    "$ref": "#/definitions/model.DiscountType"
-                },
-                "discountTypeId": {
-                    "type": "integer"
-                },
                 "id": {
                     "type": "integer"
                 },
-                "reservation": {
-                    "$ref": "#/definitions/model.Reservation"
-                },
-                "reservationId": {
+                "seat_limit": {
                     "type": "integer"
                 },
-                "screening": {
-                    "$ref": "#/definitions/model.Screening"
-                },
-                "screeningId": {
-                    "type": "integer"
-                },
-                "seat": {
-                    "$ref": "#/definitions/model.Seat"
-                },
-                "seatId": {
-                    "type": "integer"
+                "seats": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.Seat"
+                    }
                 }
             }
         },
@@ -1155,19 +1166,13 @@ const docTemplate = `{
         "model.Seat": {
             "type": "object",
             "properties": {
-                "col": {
-                    "type": "integer"
-                },
                 "id": {
                     "type": "integer"
                 },
-                "movieHall": {
-                    "$ref": "#/definitions/model.MovieHall"
-                },
-                "movie_hall_id": {
+                "row_id": {
                     "type": "integer"
                 },
-                "row": {
+                "seat_number": {
                     "type": "integer"
                 }
             }

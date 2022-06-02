@@ -185,9 +185,13 @@ func (h *ReservationHandler) CustomerCreateReservation(c *gin.Context) {
 			c.JSON(http.StatusConflict, gin.H{"error": err.Error()})
 			return
 		}
+		if errors.Is(err, merror.ErrNumberOfSeatsDontMatch) {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusOK, reservation.ID)
+	c.JSON(http.StatusAccepted, reservation.ID)
 }

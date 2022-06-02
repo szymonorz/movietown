@@ -10,8 +10,15 @@ INSERT INTO discount_types(type, discount) VALUES('dziecko', 15);
 INSERT INTO discount_types(type, discount) VALUES('student', 20);
 INSERT INTO discount_types(type, discount) VALUES('senior', 30);
 
-INSERT INTO movie_halls(name, number_of_seats) VALUES('DN',100);
-INSERT INTO movie_halls(name, number_of_seats) VALUES('DZ',60);
+INSERT INTO rows(seat_limit) VALUES(10);
+INSERT INTO rows(seat_limit) VALUES(18);
+
+INSERT INTO movie_halls(name) VALUES('DN');
+INSERT INTO movie_halls(name) VALUES('DZ');
+
+INSERT INTO movie_hall_rows(row_id, movie_hall_id, row_number) VALUES (1, 1, 1);
+INSERT INTO movie_hall_rows(row_id, movie_hall_id, row_number) VALUES (2, 1, 2);
+INSERT INTO movie_hall_rows(row_id, movie_hall_id, row_number) VALUES (1, 1, 3);
 
 INSERT INTO movies(title, director, description, length, url) VALUES('Pain and suffering','Jane Doe','A story about making this horrible project my god i hate it.',120, 'http://localhost:4000/image/painandsuffering.png');
 INSERT INTO movies(title, director, description, length, url) VALUES('Spiderman: Far From Home','Jon Watts','Following the events of Avengers: Endgame (2019), Spider-Man must step up to take on new threats in a world that has changed forever.',120, 'http://localhost:4000/image/painandsuffering.png');

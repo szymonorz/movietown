@@ -36,11 +36,26 @@ CREATE TABLE IF NOT EXISTS movie_movie_types(
 	FOREIGN KEY (movie_type_id) REFERENCES movie_types(id)
 );
 
+CREATE TABLE IF NOT EXISTS rows(
+	id SERIAL,
+	seat_limit INT NOT NULL,
+	CONSTRAINT rows_id_k PRIMARY KEY(id)
+);
+
 CREATE TABLE IF NOT EXISTS movie_halls(
     id SERIAL,
     name VARCHAR(10) NOT NULL,
-    number_of_seats INT NOT NULL,
     CONSTRAINT movie_hall_id_k PRIMARY KEY(id)
+);
+
+CREATE TABLE IF NOT EXISTS movie_hall_rows(
+	id SERIAL,
+	row_id INT NOT NULL,
+	movie_hall_id INT NOT NULL,
+	row_number	INT NOT NULL,
+	CONSTRAINT movie_hall_row_id_k PRIMARY KEY(id),
+	FOREIGN KEY (row_id) REFERENCES rows(id),
+	FOREIGN KEY (movie_hall_id) REFERENCES movie_halls(id)
 );
 
 CREATE TABLE IF NOT EXISTS screenings(
@@ -58,14 +73,11 @@ CREATE TABLE IF NOT EXISTS screenings(
 );
 
 CREATE TABLE IF NOT EXISTS seats(
-    id SERIAL,
-    row INT NOT NULL,
-    col INT NOT NULL,
-    movie_hall_id INT NOT NULL,
+    id SERIAL UNIQUE,
+	row_id INT NOT NULL,
+	seat_number INT NOT NULL,
     CONSTRAINT seat_id_k PRIMARY KEY(id),
-    CONSTRAINT fk_seat_movie_hall
-        FOREIGN KEY(movie_hall_id)
-            REFERENCES movie_halls(id) ON DELETE CASCADE
+	FOREIGN KEY (row_id) REFERENCES rows(id)
 );
 
 CREATE TABLE IF NOT EXISTS reservation_types(

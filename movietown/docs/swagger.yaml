@@ -159,14 +159,33 @@ definitions:
         type: array
       title:
         type: string
+      url:
+        type: string
     type: object
   model.MovieHall:
     properties:
       id:
         type: integer
+      movieHallRows:
+        items:
+          $ref: '#/definitions/model.MovieHallRow'
+        type: array
       name:
         type: string
       number_of_seats:
+        type: integer
+    type: object
+  model.MovieHallRow:
+    properties:
+      id:
+        type: integer
+      movie_hall_id:
+        type: integer
+      row:
+        $ref: '#/definitions/model.Row'
+      row_id:
+        type: integer
+      row_number:
         type: integer
     type: object
   model.MovieMovieType:
@@ -232,26 +251,16 @@ definitions:
       type:
         type: string
     type: object
-  model.ReservedSeat:
+  model.Row:
     properties:
-      discountType:
-        $ref: '#/definitions/model.DiscountType'
-      discountTypeId:
-        type: integer
       id:
         type: integer
-      reservation:
-        $ref: '#/definitions/model.Reservation'
-      reservationId:
+      seat_limit:
         type: integer
-      screening:
-        $ref: '#/definitions/model.Screening'
-      screeningId:
-        type: integer
-      seat:
-        $ref: '#/definitions/model.Seat'
-      seatId:
-        type: integer
+      seats:
+        items:
+          $ref: '#/definitions/model.Seat'
+        type: array
     type: object
   model.Screening:
     properties:
@@ -270,15 +279,11 @@ definitions:
     type: object
   model.Seat:
     properties:
-      col:
-        type: integer
       id:
         type: integer
-      movie_hall_id:
+      row_id:
         type: integer
-      movieHall:
-        $ref: '#/definitions/model.MovieHall'
-      row:
+      seat_number:
         type: integer
     type: object
 host: localhost:4000

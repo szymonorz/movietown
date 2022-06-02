@@ -65,12 +65,21 @@ func (r *ReservedSeatRepository) CreateForCustomer(
 
 	for _, v := range seats {
 		var tmps model.Seat
-		if err := tx.Model(&model.Seat{}).Where("movie_hall_id = ?", screening.MovieHallId).
-			Where("id = ?", v.SeatId).Find(&tmps).Error; err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
+		// if err := tx.Model(&model.Seat{}).Where("movie_hall_id = ?", screening.MovieHallId).
+		// 	Where("id = ?", v.SeatId).Find(&tmps).Error; err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
+		// 	tx.Rollback()
+		// 	log.Println(err.Error())
+		// 	return err
+		// }
+		if err := tx.Model(&model.Seat{}).Joins(`join rows on seats.row_id = rows.id 
+										join movie_hall_rows on movie_hall_rows.row_id = rows.id`).
+			Where("movie_hall_rows.movie_hall_id = ?", screening.MovieHallId).
+			Where("seats.id = ?", v.SeatId).Find(&tmps).Error; err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
 			tx.Rollback()
 			log.Println(err.Error())
 			return err
 		}
+
 		if tmps.ID == 0 {
 			tx.Rollback()
 			return merror.ErrSeatNotExists
