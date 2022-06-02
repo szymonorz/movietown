@@ -23,13 +23,10 @@ func (r *ScreeningRepository) Create(screening *model.Screening) error {
 
 func (r *ScreeningRepository) FindById(id uint) (model.Screening, error) {
 	var screening model.Screening
-	err := r.db.Preload("MovieMovieType").
+	err := r.db.
 		Preload("MovieMovieType.Movie").
 		Preload("MovieMovieType.MovieType").
 		Preload("MovieHall").
-		Preload("MovieHall.MovieHallRows").
-		Preload("MovieHall.MovieHallRows.Row").
-		Preload("MovieHall.MovieHallRows.Row.Seats").
 		First(&screening, model.Screening{ID: id}).Error
 	return screening, err
 }
