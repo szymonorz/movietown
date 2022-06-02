@@ -148,11 +148,6 @@ type customerReservation struct {
 	Discounts         model.RequestSeats `json:"discounts"`
 }
 
-type customerGuestReservation struct {
-	customerReservation
-	apiCustomerRegister
-}
-
 // CustomerCreateReservation godoc
 // @Summary      Customer makes a seat reservation for screening
 // @Description  make reservation as a customer
