@@ -153,44 +153,6 @@ type customerGuestReservation struct {
 	apiCustomerRegister
 }
 
-// GuestCreateReservation godoc
-// @Summary      Show reservations
-// @Description  make reservation as a guest
-// @Tags         reservations
-// @Accept       json
-// @Produce      json
-// @Param		 guestReservation body 	customerGuestReservation true "guest reservation DTO"
-// @Success      200  {array}  []model.ReservedSeat
-// @Router       /api/v1/reservations/guest/create [post]
-func (h *ReservationHandler) GuestCreateReservation(c *gin.Context) {
-	var request customerGuestReservation
-	if err := c.Bind(&request); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-	customer := model.Customer{
-		Name:         request.Name,
-		Surname:      request.Surname,
-		Username:     request.Username,
-		Email:        request.Email,
-		Password:     request.Password,
-		Phone_number: request.Phone_number,
-	}
-	reservation := model.Reservation{
-		ScreeningId:       request.ScreeningId,
-		Reserved:          true,
-		Active:            true,
-		ReservationTypeId: request.ReservationTypeId,
-	}
-	seats, err := h.reservedSeatService.GuestReserveSeats(request.SeatsId, request.Discounts, &customer, &reservation)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
-
-	c.JSON(http.StatusOK, seats)
-}
-
 // CustomerCreateReservation godoc
 // @Summary      Customer makes a seat reservation for screening
 // @Description  make reservation as a customer

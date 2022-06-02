@@ -494,46 +494,6 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/v1/reservations/guest/create": {
-            "post": {
-                "description": "make reservation as a guest",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "reservations"
-                ],
-                "summary": "Show reservations",
-                "parameters": [
-                    {
-                        "description": "guest reservation DTO",
-                        "name": "guestReservation",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/api.customerGuestReservation"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "type": "array",
-                                "items": {
-                                    "$ref": "#/definitions/model.ReservedSeat"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
         "/api/v1/reservations/seats/{screening_id}": {
             "get": {
                 "description": "get takenSeats by customer_id",
@@ -846,55 +806,6 @@ const docTemplate = `{
                 }
             }
         },
-        "api.customerGuestReservation": {
-            "type": "object",
-            "required": [
-                "email",
-                "name",
-                "password",
-                "phone_number",
-                "reservation_type_id",
-                "screening_id",
-                "seat_ids",
-                "surname",
-                "username"
-            ],
-            "properties": {
-                "discounts": {
-                    "$ref": "#/definitions/model.RequestSeats"
-                },
-                "email": {
-                    "type": "string"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "password": {
-                    "type": "string"
-                },
-                "phone_number": {
-                    "type": "string"
-                },
-                "reservation_type_id": {
-                    "type": "integer"
-                },
-                "screening_id": {
-                    "type": "integer"
-                },
-                "seat_ids": {
-                    "type": "array",
-                    "items": {
-                        "type": "integer"
-                    }
-                },
-                "surname": {
-                    "type": "string"
-                },
-                "username": {
-                    "type": "string"
-                }
-            }
-        },
         "api.customerReservation": {
             "type": "object",
             "required": [
@@ -972,17 +883,23 @@ const docTemplate = `{
                 "id": {
                     "type": "integer"
                 },
-                "mm_type": {
-                    "$ref": "#/definitions/model.MovieMovieType"
+                "movie_title": {
+                    "type": "string"
+                },
+                "movie_type": {
+                    "type": "string"
                 },
                 "price": {
-                    "type": "integer"
+                    "type": "number"
                 },
                 "reservation_type": {
                     "type": "string"
                 },
                 "seat_count": {
                     "type": "integer"
+                },
+                "time_of_screening": {
+                    "type": "string"
                 }
             }
         },
@@ -1062,6 +979,9 @@ const docTemplate = `{
                     }
                 },
                 "title": {
+                    "type": "string"
+                },
+                "url": {
                     "type": "string"
                 }
             }

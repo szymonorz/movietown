@@ -42,41 +42,6 @@ definitions:
     - new_password
     - old_password
     type: object
-  api.customerGuestReservation:
-    properties:
-      discounts:
-        $ref: '#/definitions/model.RequestSeats'
-      email:
-        type: string
-      name:
-        type: string
-      password:
-        type: string
-      phone_number:
-        type: string
-      reservation_type_id:
-        type: integer
-      screening_id:
-        type: integer
-      seat_ids:
-        items:
-          type: integer
-        type: array
-      surname:
-        type: string
-      username:
-        type: string
-    required:
-    - email
-    - name
-    - password
-    - phone_number
-    - reservation_type_id
-    - screening_id
-    - seat_ids
-    - surname
-    - username
-    type: object
   api.customerReservation:
     properties:
       discounts:
@@ -130,14 +95,18 @@ definitions:
     properties:
       id:
         type: integer
-      mm_type:
-        $ref: '#/definitions/model.MovieMovieType'
+      movie_title:
+        type: string
+      movie_type:
+        type: string
       price:
-        type: integer
+        type: number
       reservation_type:
         type: string
       seat_count:
         type: integer
+      time_of_screening:
+        type: string
     type: object
   api.takenSeats:
     properties:
@@ -634,32 +603,6 @@ paths:
               type: array
             type: array
       summary: Shows all discount available
-      tags:
-      - reservations
-  /api/v1/reservations/guest/create:
-    post:
-      consumes:
-      - application/json
-      description: make reservation as a guest
-      parameters:
-      - description: guest reservation DTO
-        in: body
-        name: guestReservation
-        required: true
-        schema:
-          $ref: '#/definitions/api.customerGuestReservation'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            items:
-              items:
-                $ref: '#/definitions/model.ReservedSeat'
-              type: array
-            type: array
-      summary: Show reservations
       tags:
       - reservations
   /api/v1/reservations/seats/{screening_id}:

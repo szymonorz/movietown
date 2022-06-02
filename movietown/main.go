@@ -120,7 +120,6 @@ func main() {
 		{
 			reservationApi.GET("/", reservationHandler.GetCustomerReservations)
 			reservationApi.POST("/customer/create", auth.CustomerAuthMiddleware(), reservationHandler.CustomerCreateReservation)
-			reservationApi.POST("/guest/create", reservationHandler.GuestCreateReservation)
 			reservationApi.GET("/types", reservationTypeHandler.GetReservationTypes)
 			reservationApi.GET("/discounts", discountHandler.GetAllDiscounts)
 			reservationApi.GET("/seats/:screening_id", reservationHandler.GetReservedSeatsForScreening)

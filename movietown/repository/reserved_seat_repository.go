@@ -34,62 +34,6 @@ func (r *ReservedSeatRepository) FindAllByReservationId(reservation_id uint) ([]
 	return reserved_seats, err
 }
 
-func (r *ReservedSeatRepository) CreateForGuest(
-	seats []model.ReservedSeat,
-	guest *model.Customer,
-	reservation *model.Reservation) error {
-
-	tx := r.db.Begin()
-
-	defer func() {
-		if r := recover(); r != nil {
-			tx.Rollback()
-			panic(r)
-		}
-	}()
-
-	if err := tx.Error; err != nil {
-		return err
-	}
-
-	if err := tx.Model(&model.Customer{}).Create(guest).Error; err != nil {
-		tx.Rollback()
-		return err
-	}
-	reservation.CustomerId = &guest.ID
-	if err := tx.Model(&model.Reservation{}).Create(reservation).Error; err != nil {
-		tx.Rollback()
-		return err
-	}
-	var screening model.Screening
-	if err := tx.Model(&model.Screening{}).
-		Where("id = ?", reservation.ScreeningId).First(&screening).Error; err != nil {
-
-		tx.Rollback()
-		return err
-	}
-
-	log.Println("Everything went well :^)")
-	for _, v := range seats {
-		if err := tx.Model(&model.Seat{}).Where("movie_hall_id = ?", screening.MovieHallId).
-			Where("id = ?", v.SeatId).First(&model.Seat{}).Error; err != nil {
-			tx.Rollback()
-			return err
-		}
-	}
-
-	log.Printf("%d\n", reservation.ID)
-	for i := range seats {
-		seats[i].ReservationId = reservation.ID
-	}
-	if err := tx.Model(&model.ReservedSeat{}).Create(seats).Error; err != nil {
-		tx.Rollback()
-		return err
-	}
-	log.Println("Everything went well :^)")
-	return tx.Commit().Error
-}
-
 func (r *ReservedSeatRepository) CreateForCustomer(
 	seats []model.ReservedSeat,
 	reservation *model.Reservation) error {
