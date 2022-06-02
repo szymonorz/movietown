@@ -677,6 +677,41 @@
                 }
             }
         },
+        "/api/v1/screening/seats/{movie_hall_id}": {
+            "get": {
+                "description": "get []model.MovieHallRow by movie_hall_id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "movie_hall_rows"
+                ],
+                "summary": "Returns rows for movie_hall_id",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "format": "int",
+                        "description": "rows in movie_hall_id",
+                        "name": "movie_hall_id",
+                        "in": "path"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.MovieHallRow"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/screening/{movie_id}": {
             "get": {
                 "description": "get []Screening by movie_id",

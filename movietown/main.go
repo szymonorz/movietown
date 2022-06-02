@@ -22,6 +22,12 @@ func IntitializeMovieHandler(database *gorm.DB) api.MovieHandler {
 	return api.NewMovieHandler(movieService)
 }
 
+func InitializeMovieHallHandler(database *gorm.DB) api.MovieHallHandler {
+	movieHallRepo := repository.NewMovieHallRepository(database)
+	movieHallService := service.NewMovieHallService(movieHallRepo)
+	return api.NewMovieHallHandler(movieHallService)
+}
+
 func InitializeScreeningHandler(database *gorm.DB) api.ScreeningHandler {
 	screeningRepo := repository.NewScreeningRepository(database)
 	screeningService := service.NewScreeningService(screeningRepo)
@@ -81,6 +87,7 @@ func main() {
 	reservationHandler := InitializeReservationHandler(db, auth)
 	reservationTypeHandler := InitializeReservationTypeHandler(db)
 	discountHandler := InitializeDiscountHandler(db)
+	movieHallHandler := InitializeMovieHallHandler(db)
 
 	gin.SetMode(gin.DebugMode)
 	router := gin.Default()
@@ -107,6 +114,7 @@ func main() {
 		{
 			screeningApi.GET("/:movie_id", screeningHandler.GetMovieScreeningsByTime)
 			screeningApi.GET("/", screeningHandler.GetScreeningsByTime)
+			screeningApi.GET("/seats/:movie_hall_id", movieHallHandler.GetRows)
 			screeningApi.GET("/s/:id", screeningHandler.GetScreeningById)
 			screeningApi.POST("/add", screeningHandler.AddScreening)
 		}
