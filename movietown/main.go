@@ -10,7 +10,6 @@ import (
 
 	_ "movietown/docs"
 
-	"github.com/casbin/casbin/v2"
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
@@ -43,10 +42,10 @@ func InitializeCustomerHandler(auth auth.AuthMiddleware) api.CustomerHandler {
 	return api.NewCustomerHandler(auth)
 }
 
-func InitializeAuthMiddleware(database *gorm.DB, enforcer *casbin.Enforcer) auth.AuthMiddleware {
+func InitializeAuthMiddleware(database *gorm.DB) auth.AuthMiddleware {
 	customerRepo := repository.NewCustomerRepository(database)
 	customerService := service.NewCustomerService(customerRepo)
-	return auth.NewAuthMiddleware(customerService, enforcer)
+	return auth.NewAuthMiddleware(customerService)
 }
 
 func InitializeReservationTypeHandler(database *gorm.DB) api.ReservationTypeHandler {
@@ -74,12 +73,8 @@ func main() {
 	if db, err = database.InitPostgresConnection(postgresString); err != nil {
 		log.Fatalf("error: %v", err)
 	}
-	authEnforcer, err := casbin.NewEnforcer("./config/auth.conf", "./config/policy.csv")
-	if err != nil {
-		log.Fatal(err)
-	}
 
-	auth := InitializeAuthMiddleware(db, authEnforcer)
+	auth := InitializeAuthMiddleware(db)
 	screeningHandler := InitializeScreeningHandler(db)
 	movieHandler := IntitializeMovieHandler(db)
 	customerHandler := InitializeCustomerHandler(auth)

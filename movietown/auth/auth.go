@@ -7,22 +7,16 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/casbin/casbin/v2"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 )
 
 type AuthMiddleware struct {
 	CustomerService service.CustomerService
-	Enforcer        *casbin.Enforcer
 }
 
-func NewAuthMiddleware(customerService service.CustomerService,
-	enforcer *casbin.Enforcer) AuthMiddleware {
-	return AuthMiddleware{
-		CustomerService: customerService,
-		Enforcer:        enforcer,
-	}
+func NewAuthMiddleware(customerService service.CustomerService) AuthMiddleware {
+	return AuthMiddleware{CustomerService: customerService}
 }
 
 func (auth *AuthMiddleware) TokenValid(r *http.Request, secret string) (jwt.MapClaims, error) {
