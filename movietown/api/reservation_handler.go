@@ -193,5 +193,5 @@ func (h *ReservationHandler) CustomerCreateReservation(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusAccepted, reservation.ID)
+	c.JSON(http.StatusCreated, reservation.ID)
 }

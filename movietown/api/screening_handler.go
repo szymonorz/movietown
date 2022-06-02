@@ -176,5 +176,5 @@ func (h *ScreeningHandler) AddScreening(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"success": screening.ID})
+	c.JSON(http.StatusCreated, gin.H{"success": screening.ID})
 }

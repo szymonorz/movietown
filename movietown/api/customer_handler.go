@@ -117,7 +117,7 @@ func (h *CustomerHandler) RegisterNewCustomer(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, pair)
+	c.JSON(http.StatusCreated, pair)
 
 }
 
