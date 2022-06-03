@@ -2,34 +2,12 @@ import { List, ListItem, makeStyles } from '@material-ui/core';
 import React, { useContext, useEffect } from 'react';
 import { Link, Navigate, Outlet } from 'react-router-dom';
 import { getCustomerInfo, LoginStateContext } from '../../api/CustomerApi'
-
-
-const useStyles = makeStyles(() => ({
-    container: {
-        display: "flex",
-        flexDirection: "row",
-        flexWrap: "wrap"
-    },
-    list: {
-        backgroundColor: "#282c34",
-        margin: "0 150px 0 0",
-        padding: "20px",
-        width: "150px",
-        height: "500px",
-        borderRadius: "10px"
-    },
-    item: {
-        borderBottom: ".5px solid #222222"
-    },
-    link: {
-        color: "white",
-        textDecoration: "none",
-    }
-}))
-
+import { StyledContainer } from '../customer_components/StyledContainer';
+import { StyledLink } from '../customer_components/StyledLink';
+import { StyledList } from '../customer_components/StyledList';
+import { styled } from '@mui/material'
 
 const CustomerPage: React.FC<{}> = () => {
-    const { container, list, link, item } = useStyles()
     const provider = useContext(LoginStateContext)
     const { loginState, setLoginState } = provider!
     useEffect(() => {
@@ -50,31 +28,31 @@ const CustomerPage: React.FC<{}> = () => {
     return (
         <div>
             {!loginState && <Navigate to="/" />}
-            <div className={container}>
-                <List className={list}>
-                    <ListItem className={item}>
-                        <Link className={link} replace to="info">
+            <StyledContainer>
+                <StyledList>
+                    <ListItem>
+                        <StyledLink replace to="info">
                             Edytuj informacje konta
-                        </Link>
+                        </StyledLink>
                     </ListItem>
-                    <ListItem className={item}>
-                        <Link className={link} replace to="password">
+                    <ListItem >
+                        <StyledLink replace to="password">
                             Zmień hasło
-                        </Link>
+                        </StyledLink>
                     </ListItem>
-                    <ListItem className={item}>
-                        <Link className={link} replace to="reservations">
+                    <ListItem >
+                        <StyledLink replace to="reservations">
                             Moje rezerwacje
-                        </Link>
+                        </StyledLink>
                     </ListItem>
-                    <ListItem className={item}>
-                        <Link className={link} replace to="delete">
+                    <ListItem>
+                        <StyledLink replace to="delete">
                                 Usuń konto
-                        </Link>
+                        </StyledLink>
                     </ListItem>
-                </List>
+                </StyledList>
                 <Outlet />
-            </div>
+            </StyledContainer>
         </div>
     )
 }

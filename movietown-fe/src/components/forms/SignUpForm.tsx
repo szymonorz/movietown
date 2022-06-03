@@ -17,7 +17,6 @@ export interface SignUpValues {
 
 interface SignUpProps {
     registerError: boolean,
-    className: string,
     onSubmit: (values: SignUpValues) => void
 }
 
@@ -31,9 +30,9 @@ const signUpFormValidator = Yup.object().shape({
 
 })
 
-const SignUpForm: React.FC<SignUpProps> = ({registerError, className, onSubmit }) => {
+const SignUpForm: React.FC<SignUpProps> = ({registerError, onSubmit }) => {
     return (
-        <div className={className}>
+        <div>
             <Formik
                 initialValues={{
                     name: '',

@@ -18,14 +18,13 @@ const signInFormValidation = Yup.object().shape({
 
 interface SignInFormProps {
     loginError: boolean,
-    className: string,
     onSubmit: (values: SignInValues) => void;
 }
 
-const SignIn: React.FC<SignInFormProps> = ({ loginError, className, onSubmit }) => {
+const SignIn: React.FC<SignInFormProps> = ({ loginError, onSubmit }) => {
 
     return (
-        <div className={className}>
+        <div>
             <Formik
                 initialValues={{
                     username: '',

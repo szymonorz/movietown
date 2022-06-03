@@ -8,6 +8,7 @@ import { makeStyles } from '@material-ui/styles';
 import * as Yup from 'yup';
 import { updateCustomerInfo } from '../../api/CustomerApi';
 import MButton from '../MButton';
+import { StyledForm } from './StyledForm';
 
 
 export interface AccountValues {
@@ -91,7 +92,7 @@ const CustomerAccount: React.FC<{}> = () => {
                 }}
             >
                 {({handleSubmit}) => (
-                    <Form className={form}>
+                    <StyledForm>
                         <Grid container spacing={3}>
                             <Grid item xs={12}>
                                 <Typography>
@@ -147,7 +148,7 @@ const CustomerAccount: React.FC<{}> = () => {
                         onClick={() =>
                             setDisabled(!disabled)
                         }/>
-                    </Form>
+                    </StyledForm>
                 )}
 
             </Formik>

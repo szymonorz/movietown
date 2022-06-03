@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import { getCustomerInfo, LoginStateContext } from '../../api/CustomerApi'
 import { getCustomerReservations, reservation } from '../../api/ReservationApi'
 import ReservationCard from './ReservationCard'
+import { StyledList } from './StyledList'
 
 const useStyles = makeStyles(() => ({
     list: {
@@ -50,7 +51,7 @@ const CustomerReservations: React.FC<{}> = () => {
         }
     }, [loginState])
 
-    return <List className={list}>
+    return <StyledList>
         {customerReservations.map((customerReservation, index) => {
             return <ReservationCard reservation={customerReservation} key={index}/>
         })}
@@ -59,7 +60,7 @@ const CustomerReservations: React.FC<{}> = () => {
                Brak rezerwacji.
             </div>
         )}
-    </List>
+    </StyledList>
 }
 
 export default CustomerReservations

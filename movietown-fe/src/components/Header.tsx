@@ -1,7 +1,9 @@
 import { Button, Toolbar, Typography, makeStyles } from '@material-ui/core'
+import { styled } from '@mui/material';
 import { useContext, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { LoginStateContext } from '../api/CustomerApi';
+import { StyledLink } from './customer_components/StyledLink';
 import SearchBar from './SearchBar';
 
 
@@ -20,61 +22,57 @@ let headersData = [
     }
 ]
 
-const useStyles = makeStyles(() => ({
-    header: {
-        marginBottom: "30px",
-        backgroundColor: "#282c34"
-    },
-    logo: {
-        fontFamily: "Helvetica",
-        fontWeight: "bold",
-        textDecoration: "none",
-        color: "white",
-        textShadow: `-2px 2px 2px #A51272,
-                      2px 2px 2px #A51272,
-                      2px -2px 2px #A51272,
-                      -2px -2px 10px #A51272`,
-        background: "#282c34"
-    },
-    toolbar: {
-        display: "flex",
-        justifyContent: "space-between"
-    },
+const StyledHeader = styled('div')({
+    marginBottom: "30px",
+    backgroundColor: "#282c34"
+})
 
-    menuButton: {
-        fontWeight: "bold",
-        height: "50px",
-        fontSize: "13px",
-        background: "#A51272",
-        '&:hover': {
-            backgroundColor: "#A51272",
-        },
-        color: "white",
-        margin: "0 5px 0 5px"
+const MToolbar = styled(Toolbar)({
+    display: "flex",
+    justifyContent: "space-between"
+})
+
+const SearchWrapper = styled('div')({
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "spaceBetween"
+})
+
+const Logo = styled(Typography)({
+    fontFamily: "Helvetica",
+    fontWeight: "bold",
+    textDecoration: "none",
+    color: "white",
+    textShadow: `-2px 2px 2px #A51272,
+                    2px 2px 2px #A51272,
+                    2px -2px 2px #A51272,
+                    -2px -2px 10px #A51272`,
+    background: "#282c34"
+})
+
+const MenuButton = styled(Button)({
+    fontWeight: "bold",
+    height: "50px",
+    fontSize: "13px",
+    background: "#A51272",
+    '&:hover': {
+        backgroundColor: "#A51272",
     },
-    pain: {
-        display: "flex",
-        flexDirection: "row",
-        justifyContent: "spaceBetween"
-    },
-    search: {
-        background: "white"
-    }
-}))
+    color: "white",
+    margin: "0 5px 0 5px"
+})
 
 const Header: React.FC<{}> = () => {
-    const { header, logo, toolbar, menuButton, pain, search } = useStyles()
     const {loginState, setLoginState} = useContext(LoginStateContext)!
     const navigate = useNavigate()
     const movieTownLogo = (
-        <Typography
+        <Logo
             {...{
                 variant: "h5",
                 component: "h1",
-                className: logo
             }}>
             MovieTown
-        </Typography>
+        </Logo>
     )
     const makeButtons = () => {
         return headersData.map(({ label, href }) => {
@@ -82,24 +80,22 @@ const Header: React.FC<{}> = () => {
                 href = "/account/info"
                 label = "Moje konto"
                 return (
-                    <Button
+                    <MenuButton
                     {...{
                         key: label,
                         color: "inherit",
                         to: href,
-                        className: menuButton,
                         component: Link
                     }}>
                     {label}
-                    </Button>
+                    </MenuButton>
                 )
             } else if(loginState && href === "/logout"){
                 return (
-                    <Button
+                    <MenuButton
                     {...{
                         key: label,
-                        color: "inherit",
-                        className: menuButton
+                        color: "inherit"
                     }}
                     onClick={() => {
                         localStorage.removeItem("token")
@@ -110,20 +106,19 @@ const Header: React.FC<{}> = () => {
                     }}
                 >
                     {label}
-                </Button>
+                </MenuButton>
                 )
             }else if( href !== "/logout"){
                 return (
-                    <Button
+                    <MenuButton
                         {...{
                             key: label,
                             color: "inherit",
                             to: href,
-                            className: menuButton,
                             component: Link
                         }}>
                         {label}
-                    </Button>
+                    </MenuButton>
                 )
             }
         })
@@ -131,16 +126,16 @@ const Header: React.FC<{}> = () => {
 
     const displayButtons = () => {
         return (
-            <Toolbar className={toolbar}>
-                <Link to={"/"} className={logo}>
+            <MToolbar>
+                <StyledLink to={"/"}>
                     {movieTownLogo}
-                </Link>
-                <div className={pain}>
+                </StyledLink>
+                <SearchWrapper>
                     <SearchBar
                         onSubmit={setSearchQuery} />
                     {makeButtons()}
-                </div>
-            </Toolbar>
+                </SearchWrapper>
+            </MToolbar>
         )
     }
     const [searchQuery, setSearchQuery] = useState("")
@@ -153,11 +148,9 @@ const Header: React.FC<{}> = () => {
         }
     }, [searchQuery])
 
-    return (
-        <div className={header}>
+    return <StyledHeader>
             {displayButtons()}
-        </div>
-    )
+        </StyledHeader>
 }
 
 export default Header

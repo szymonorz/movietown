@@ -5,6 +5,7 @@ import MTextField from '../forms/formComponents/TextField';
 import { Button, makeStyles } from '@material-ui/core'
 import { changeCustomersPassword } from '../../api/CustomerApi';
 import MButton from '../MButton';
+import { StyledForm } from './StyledForm';
 
 export interface ChangePasswordValues {
     old_password: string,
@@ -19,17 +20,7 @@ const PasswordValidation = Yup.object().shape({
         .not([Yup.ref('old_password')], "Nowe hasło nie może być takie samo jak stare hasło")
 })
 
-const useStyles = makeStyles(() => ({
-    form: {
-        color: "white",
-        padding: "30px",
-        backgroundColor: "#282c34",
-        borderRadius: "20px"
-    }
-}))
-
 const CustomerChangePassword: React.FC<{}> = () => {
-    const { form } = useStyles()
     const token = localStorage.getItem("token") || ""
     return (
         <div>
@@ -48,7 +39,7 @@ const CustomerChangePassword: React.FC<{}> = () => {
             >
 
                 {({ values, handleSubmit }) => (
-                    <Form className={form}>
+                    <StyledForm>
                         <MTextField
                             value={values.old_password}
                             name={'old_password'}
@@ -64,7 +55,7 @@ const CustomerChangePassword: React.FC<{}> = () => {
 
                         </MTextField>
                         <MButton label='Zmień hasło' onClick={handleSubmit}/>
-                    </Form>
+                    </StyledForm>
                 )}
 
 

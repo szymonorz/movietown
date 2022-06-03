@@ -25,8 +25,6 @@ const useStyles = makeStyles(() => ({
         margin: "8px 10px 0 10px",
         float: "left"
     }
-
-
 }))
 
 interface DiscountFormProps {

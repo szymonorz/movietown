@@ -7,30 +7,19 @@ import { getMovieById, movie } from '../../api/MovieApi'
 import { getScreeningByMovieId, screening } from '../../api/ScreeningApi'
 import ScreeningList from '../ScreeningList'
 import DateAdapter from '@mui/lab/AdapterDateFns'
+import { Description, Title } from '../MovieCard';
+import { DatePickerLabel } from '../customer_components/DatePickerLabel';
 
 const useStyles = makeStyles(() => ({
-    datePickerLabel: {
-        backgroundColor: "white",
-        borderRadius: "8px",
-        margin: "0 40% 0 40%"
-    },
     entire: {
         color: "white",
         padding: "20px",
         backgroundColor: "#282c34"
     },
-    title: {
-        fontSize: "30px",
-        fontWeight: "bold"
-    },
-    description: {
-        textAlign: "left",
-        fontSize: "20px"
-    }
 }))
 
 const MoviePage: React.FC<{}> = () => {
-    const { datePickerLabel, entire, title, description } = useStyles()
+    const {entire} = useStyles()
     const { id } = useParams()
     const [movieData, setMovieData] = useState<null | movie>(null)
     const [screenings, setScreenings] = useState<screening[]>([])
@@ -100,16 +89,16 @@ const MoviePage: React.FC<{}> = () => {
                     <img src={movieData.url} />
                 </Grid>
                 <Grid item xs={8}>
-                    <Typography className={title}>
+                    <Title>
                         {movieData.title}
-                    </Typography>
-                    <Typography className={description}>
+                    </Title>
+                    <Description>
                         {movieData.description}
-                    </Typography>
+                    </Description>
                 </Grid>
             </Grid>
             <Divider />
-            <div className={datePickerLabel}>
+            <DatePickerLabel>
                 <LocalizationProvider dateAdapter={DateAdapter}>
                     <DatePicker
                         value={date}
@@ -119,7 +108,7 @@ const MoviePage: React.FC<{}> = () => {
                         renderInput={(params) => <TextField {...params} />}
                     />
                 </LocalizationProvider>
-            </div>
+            </DatePickerLabel>
             <ScreeningList screenings={screenings} />
         </div>
     }

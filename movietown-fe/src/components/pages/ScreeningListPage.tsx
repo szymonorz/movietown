@@ -5,18 +5,10 @@ import DateAdapter from '@mui/lab/AdapterDateFns'
 import { TextField } from '@mui/material';
 import { getDaysScreenings, screening } from '../../api/ScreeningApi';
 import ScreeningList from '../ScreeningList';
+import { DatePickerLabel } from '../customer_components/DatePickerLabel';
 
-
-const useStyles = makeStyles(() => ({
-    datePickerLabel: {
-        backgroundColor: "white",
-        borderRadius: "8px",
-        margin: "0 40% 0 40%"
-    }
-}))
 
 const ScreeningListPage: React.FC<{}> = () => {
-    const { datePickerLabel } = useStyles()
     const [date, setDate] = useState<Date | null>(new Date())
     const [screenings, setScreenings] = useState<screening[]>([])
 
@@ -47,18 +39,17 @@ const ScreeningListPage: React.FC<{}> = () => {
 
     return (
         <div>
-            <div className={datePickerLabel}>
+            <DatePickerLabel>
                 <LocalizationProvider dateAdapter={DateAdapter}>
                     <DatePicker
-                        className={datePickerLabel}
                         value={date}
                         onChange={(newDate) => {
-                            setDate(newDate)
+                            setDate(newDate as Date)
                         }}
                         renderInput={(params) => <TextField {...params} />}
                     />
                 </LocalizationProvider>
-            </div>
+            </DatePickerLabel>
             <ScreeningList screenings={screenings} />
         </div>
     )

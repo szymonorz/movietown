@@ -1,49 +1,37 @@
 import { Divider } from '@material-ui/core';
-import { makeStyles } from '@material-ui/styles';
 import React, { useContext, useEffect, useState } from 'react';
 import SignUpForm, { SignUpValues } from '../forms/SignUpForm';
 import SignInForm, { SignInValues } from './../forms/SignInForm';
 import AccessToken from '../../model/AccessToken';
-import {loginCustomer, LoginStateContext, registerCustomer} from '../../api/CustomerApi';
-import {Navigate} from 'react-router-dom';
+import { loginCustomer, LoginStateContext, registerCustomer } from '../../api/CustomerApi';
+import { Navigate } from 'react-router-dom';
+import { StyledContainer } from '../customer_components/StyledContainer';
+import { styled } from '@mui/material';
 
-const useStyles = makeStyles(() => ({
-    container: {
-        display: "flex",
-        flexDirection: "row",
-        color: "white",
-        padding: "10px",
-        border: "2px solid #282c34",
-        boxShadow: "3px 3px 3px #282c34",
-        backgroundColor: "#282c34",
-        margin: "100px"
 
-    },
-    containerElement: {
-        margin: "20px",
-        width: "50%",
-        padding: "30px",
-
-    }
-}))
+const StyledContainerElement = styled('div')({
+    margin: "20px",
+    width: "50%",
+    padding: "30px",
+    backgroundColor: "#282c34",
+})
 
 const SignInPage: React.FC<{}> = () => {
     const provider = useContext(LoginStateContext)
     const { loginState, setLoginState } = provider!
-    const { container, containerElement } = useStyles()
     const [loginError, setLoginError] = useState<boolean>(false)
     const [registerError, setRegisterError] = useState<boolean>(false)
     useEffect(() => {
         const token = localStorage.getItem("token")
         if (token && token != "") {
-          setLoginState(true)
+            setLoginState(true)
         }
-      }, [])
-   
+    }, [])
+
 
     const login = async (values: SignInValues) => {
         try {
-            const {data} = await loginCustomer(values)
+            const { data } = await loginCustomer(values)
             const token = data as AccessToken
             localStorage.setItem("token", token.access_token)
             setLoginState(true)
@@ -56,7 +44,7 @@ const SignInPage: React.FC<{}> = () => {
 
     const register = async (values: SignUpValues) => {
         try {
-            const {data} = await registerCustomer(values)
+            const { data } = await registerCustomer(values)
             const token = data as AccessToken
             localStorage.setItem("token", token.access_token)
             setLoginState(true)
@@ -68,20 +56,22 @@ const SignInPage: React.FC<{}> = () => {
     }
 
     return (
-        <div className={container}>
-            {loginState && <Navigate replace to="/"/>} 
-            <SignInForm
-                loginError={loginError}
-                className={containerElement}
-                onSubmit={(values: SignInValues) => login(values)}
-            />
+        <StyledContainer>
+            {loginState && <Navigate replace to="/" />}
+            <StyledContainerElement>
+                <SignInForm
+                    loginError={loginError}
+                    onSubmit={(values: SignInValues) => login(values)}
+                />
+            </StyledContainerElement>
             <Divider orientation='vertical' flexItem />
-            <SignUpForm
-                registerError={registerError}
-                className={containerElement}
-                onSubmit={(values: SignUpValues) => register(values)}
-            />
-        </div>
+            <StyledContainerElement>
+                <SignUpForm
+                    registerError={registerError}
+                    onSubmit={(values: SignUpValues) => register(values)}
+                />
+            </StyledContainerElement>
+        </StyledContainer>
     )
 }
 
