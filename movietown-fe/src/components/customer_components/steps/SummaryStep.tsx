@@ -117,7 +117,7 @@ const SummaryStep: React.FC<SummaryStepProps> = ({ setNextDisabled, screening, s
     return (
         <div>
             <div className={parent}>
-                <TicketList seat_ids={provider!.customerReservation.seat_ids} />
+                <TicketList seats={provider!.customerReservation.seats} />
                 <div className={list}>
                     {renderBoughtSeatsWithDiscountTypes()}
                 </div>

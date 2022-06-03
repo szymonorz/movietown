@@ -1,64 +1,124 @@
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import { CustomerReservationContext, getTakenSeats } from '../../../../api/ReservationApi';
+import { getSeatsInMovieHall, movie_hall_row, seat } from '../../../../api/ScreeningApi';
 
 interface SeatsGridProps {
-    numberOfSeats: number,
+    movieHallId: number,
     setNextDisabled: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-const SeatsGrid: React.FC<SeatsGridProps> = ({ setNextDisabled, numberOfSeats }) => {
+const SeatsGrid: React.FC<SeatsGridProps> = ({ setNextDisabled, movieHallId }) => {
     const canvasRef = useRef<HTMLCanvasElement>(null)
     const provider = useContext(CustomerReservationContext)
-    const [seatsIds, setSeatsIds] = useState<number[]>(provider!.customerReservation.seat_ids)
-    const [takenSeatsIds, setTakenSeatsIds] = useState<number[]>([])
+    const [seats, setSeats] = useState<seat[]>([])
+    const [takenSeats, setTakenSeats] = useState<seat[]>([])
+    const [movieHallRows, setMovieHallRows] = useState<movie_hall_row[]>([])
     const seatsToChoose = provider!.customerReservation.seatsToChoose
     useEffect(() => {
         const screeningId = provider!.customerReservation.screening_id
+        getSeatsInMovieHall(movieHallId)
+        .then(({data}) =>{
+           const movie_hall_rows = (data as movie_hall_row[]).map((mrow, index) => {
+                const new_seats = mrow.row.seats.map((seat, index) => {
+                    return {
+                        ...seat,
+                        row_number: mrow.row_number
+                    }
+                })
+
+                return {
+                    ...mrow,
+                    row: {
+                        ...mrow.row,
+                        seats: new_seats,
+                    }
+                }
+            })
+            setMovieHallRows(rows => [...movie_hall_rows])
+        })
+        .catch((err) => console.error(err))
+
         getTakenSeats(screeningId)
         .then(({data}) => {
             console.log(data)
-            if(data["taken_seat_ids"])
-                setTakenSeatsIds(prev => [...data["taken_seat_ids"]])
+            setTakenSeats(prev => [...data])
         })
         .catch((err) => console.error(err))
     }, [])
+
+    const isSeatInArray = (seat: seat, seats: seat[]) => {
+        // console.log("isSeatInArray")
+        // console.log("seats", seats)
+        // console.log("seat", seat)
+        return seats.find((element, index, array ) => {
+            return (element.id === seat.id) && 
+            (element.row_number === seat.row_number) && 
+            (element.seat_number === seat.seat_number)
+        }) !== undefined
+    }
+
+
     // do not change anything down there otherwise the entire thing will explode
     // this is a threat
     const boxSize = 40;
     const handleClick = (event: React.MouseEvent<HTMLCanvasElement, MouseEvent>) => {
         const canvas = canvasRef.current
+        
         const rect = canvas?.getBoundingClientRect()
         const x = event.clientX - rect!.left
         const y = Math.floor(event.clientY - rect!.top)
-        const numOfRows = Math.floor(numberOfSeats / 10)
-        if (x >= boxSize && y >= boxSize && x < boxSize * 11 && y < boxSize * (numOfRows + 1)) {
-            const row = Math.floor(y / boxSize) - 1;
-            const col = Math.floor((x) / (boxSize)) - 1;
+        const numOfRows = movieHallRows.length
+        console.log(numOfRows, y)
+        if (x >= boxSize && y >= boxSize && x < boxSize * 20 && y < boxSize * (numOfRows + 1)) {
+            
+            const row = Math.floor(y / boxSize);
+            const col = Math.floor((x) / (boxSize));
             const data = canvas?.getContext("2d")?.getImageData(x, y, 1, 1)
             const green = data?.data[1]
             const red = data?.data[0]
-            const seatIndex = row * 10 + col + 1;
-            if (green === 0x99 || red === 0x99) {
-
-                if (seatsIds.includes(seatIndex)) {
-                    seatsIds.splice(seatsIds.indexOf(seatIndex), 1);
-                    setSeatsIds([...seatsIds]);
-                    provider!.setCustomerReservation(prev => {
-                        return {
-                            ...prev,
-                            seatsToChoose: seatsToChoose + 1
+            const chosenRow = movieHallRows.find((element, index, array) => {
+                return (element.row_number == row)
+            })
+            if(chosenRow !== undefined){
+                const chosenSeat = chosenRow.row.seats.find((element, index, array) => {
+                    return (element.seat_number == col)
+                })
+                if(chosenSeat !== undefined){
+                    const newSeat: seat = {
+                        id: chosenSeat?.id,
+                        row_number: row,
+                        row_id: 0,
+                        seat_number: col
+                    }
+                    console.log("new", newSeat)
+                    console.log("chosen", chosenSeat)
+                    console.log("is in", isSeatInArray(newSeat, seats))
+                    if (green === 0x99 || red === 0x99) {
+                        if (isSeatInArray(newSeat, seats)) {
+                            console.log("clicked")
+                            console.log(newSeat)
+                            seats.splice(seats.indexOf(newSeat), 1);
+                            setSeats([...seats]);
+                            provider!.setCustomerReservation(prev => {
+                                return {
+                                    ...prev,
+                                    seatsToChoose: seatsToChoose + 1
+                                }
+                            })
+                        } else if(seatsToChoose){
+                            setSeats([...seats, newSeat]);
+                            console.log("added")
+                            provider!.setCustomerReservation(prev => {
+                                return {
+                                    ...prev,
+                                    seatsToChoose: seatsToChoose - 1
+                                }
+                            })
                         }
-                    })
-                } else if(seatsToChoose){
-                    setSeatsIds([...seatsIds, seatIndex]);
-                    provider!.setCustomerReservation(prev => {
-                        return {
-                            ...prev,
-                            seatsToChoose: seatsToChoose - 1
-                        }
-                    })
+        
+                    }
                 }
-
+               
             }
         }
     }
@@ -66,12 +126,14 @@ const SeatsGrid: React.FC<SeatsGridProps> = ({ setNextDisabled, numberOfSeats })
 
     useEffect(() => {
         const canvas = canvasRef.current
+        console.log(seats)
+        console.log(movieHallRows)
         if(!provider!.customerReservation.seatsToChoose) setNextDisabled(false)
         else setNextDisabled(true)
         provider!.setCustomerReservation(prev => {
             return {
                 ...prev,
-                seat_ids: [...seatsIds],
+                seats: [...seats],
                 seatsToChoose: seatsToChoose
             }
         })
@@ -81,47 +143,47 @@ const SeatsGrid: React.FC<SeatsGridProps> = ({ setNextDisabled, numberOfSeats })
                 context.fillStyle = "#414348"
                 context.fillRect(0, 0, context.canvas.width, context.canvas.height)
                 context.font = "bold 10pt Courier"
-
-                const numOfRows = Math.floor(numberOfSeats / 10)
-                context.fillStyle = "#009900"
-                let index = 0;
-                for (let row = 1; row <= numOfRows; row++) {
-                    for (let col = 1; col <= 10; col++) {
-                        if (seatsIds.includes(index + 1)) {
+                movieHallRows.forEach((movieHallRow , index) => {
+                    let rowN = movieHallRow.row_number
+                    context.fillStyle = "#009900"
+                    movieHallRow.row.seats.forEach((seat, col) => {
+                        console.log("is in", isSeatInArray(seat, seats))
+                        if(isSeatInArray(seat, seats)){
+                            console.log("uh")
                             context.fillStyle = "#990000"
                         }
-                        if(takenSeatsIds.includes(index + 1)){
+                        if(isSeatInArray(seat, takenSeats)){
                             context.fillStyle = "#1f1f1f"
                         }
+                        context.beginPath()
                         context.beginPath()
                         context.strokeStyle = "#414348"
                         context.lineWidth = 10
                         context.rect(
-                            (col - 1) * boxSize + 40,
-                            row * boxSize,
+                            (col) * boxSize + 40,
+                            rowN * boxSize,
                             boxSize,
                             boxSize
                         )
                         context.fillRect(
-                            (col - 1) * boxSize + 40,
-                            row * boxSize,
+                            (col) * boxSize + 40,
+                            rowN * boxSize,
                             boxSize,
                             boxSize
                         )
                         context.stroke()
                         context.fillStyle = "#FFFFFF"
 
-                        context.fillText(+col + "", (col - 1) * boxSize + 50, row * boxSize + 25)
+                        context.fillText(seat.seat_number + "", (col) * boxSize + 50, rowN * boxSize + 25)
                         context.fillStyle = "#009900"
-                        index = index + 1;
-                    }
-                }
+                    })
+                })
             }
         }
-    }, [seatsIds, takenSeatsIds])
+    }, [seats, takenSeats, movieHallRows])
 
 
-    return <canvas ref={canvasRef} width={500} height={500} onClick={handleClick} />
+    return <canvas ref={canvasRef} width={800} height={500} onClick={handleClick} />
 }
 
 export default SeatsGrid

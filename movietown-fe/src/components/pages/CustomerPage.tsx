@@ -37,8 +37,7 @@ const CustomerPage: React.FC<{}> = () => {
         if (token) {
             const infoPromise = getCustomerInfo(token)
             infoPromise.catch((err: { response: { status: number; }; }) => {
-                console.error(err.response.status)
-                if (err.response.status === 401) {
+                if (err.response.status != 500) {
                     setLoginState(false)
                     localStorage.removeItem("token")
                 }

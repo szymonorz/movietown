@@ -1,6 +1,7 @@
 package service
 
 import (
+	"log"
 	"movietown/merror"
 	"movietown/model"
 	"movietown/repository"
@@ -14,32 +15,39 @@ func NewReservedSeatService(repository repository.ReservedSeatRepository) Reserv
 	return ReservedSeatService{repository: repository}
 }
 
-func (s *ReservedSeatService) GetAllTakenSeatIds(screening_id uint) ([]uint, error) {
-	seats, err := s.repository.FindAllByScreeningId(screening_id)
+func (s *ReservedSeatService) GetAllTakenSeatIds(screening_id uint) ([]model.RequestSeat, error) {
+	reserved, err := s.repository.FindAllByScreeningId(screening_id)
 	if err != nil {
 		return nil, err
 	}
-	var seat_ids []uint
-	for _, e := range seats {
-		seat_ids = append(seat_ids, e.SeatId)
+	var seats []model.RequestSeat
+	for _, r := range reserved {
+		log.Println(r.MovieHallRow.ID)
+		log.Println(r.MovieHallRowId)
+		var seat model.RequestSeat
+		seat.ID = r.SeatId
+		seat.RowId = r.Seat.RowId
+		seat.SeatNumber = r.Seat.SeatNumber
+		seat.RowNumber = r.MovieHallRow.RowNumber
+		seats = append(seats, seat)
 	}
-	return seat_ids, nil
+
+	return seats, nil
 }
 
 func (s *ReservedSeatService) GetAllSeatsFromReservations(reservation_id uint) ([]model.ReservedSeat, error) {
 	return s.repository.FindAllByReservationId(reservation_id)
 }
 
-func (s *ReservedSeatService) RegularReserveSeats(seat_ids []uint, discounts model.RequestSeats, reservation *model.Reservation) error {
-	var seats []model.ReservedSeat
+func (s *ReservedSeatService) RegularReserveSeats(seats []model.RequestSeat, discounts model.DiscountSeats, reservation *model.Reservation) error {
+	var rseats []model.ReservedSeat
 	normalSeatCount := discounts.NormalSeats
 	childrenSeatCount := discounts.ChildrenSeats
 	studentSeatCount := discounts.StudentSeats
 	elderlySeatCount := discounts.ElderlySeats
 	sum := normalSeatCount + childrenSeatCount + studentSeatCount + elderlySeatCount
-	for _, seat := range seat_ids {
+	for _, seat := range seats {
 		var discount_id uint
-		// log.Println(seat)
 		if normalSeatCount != 0 {
 			discount_id = 1
 			normalSeatCount--
@@ -53,20 +61,19 @@ func (s *ReservedSeatService) RegularReserveSeats(seat_ids []uint, discounts mod
 			discount_id = 4
 			elderlySeatCount--
 		}
-		copy := new(uint)
-		*copy = seat
 		s := model.ReservedSeat{
-			SeatId:         seat,
+			SeatId:         seat.ID,
+			MovieHallRowId: seat.RowNumber,
 			ScreeningId:    reservation.ScreeningId,
 			DiscountTypeId: discount_id,
 		}
-		seats = append(seats, s)
-		// log.Println(*seats[i].SeatId)
+		rseats = append(rseats, s)
 	}
+	log.Println(len(seats))
 	if int(sum) != len(seats) {
 		return merror.ErrNumberOfSeatsDontMatch
 	}
 
-	err := s.repository.CreateForCustomer(seats, reservation)
+	err := s.repository.CreateForCustomer(rseats, reservation)
 	return err
 }

@@ -121,6 +121,7 @@ CREATE TABLE IF NOT EXISTS reserved_seats(
     reservation_id INT NOT NULL,
     screening_id INT NOT NULL,
     discount_type_id  INT NOT NULL,
+	movie_hall_row_id INT NOT NULL,
     CONSTRAINT reserved_seat_id_k PRIMARY KEY(id),
     CONSTRAINT fk_seat_reserver
         FOREIGN KEY(seat_id)
@@ -131,6 +132,7 @@ CREATE TABLE IF NOT EXISTS reserved_seats(
     CONSTRAINT fk_screening
 	FOREIGN KEY(screening_id)
 	    REFERENCES screenings(id),
-    FOREIGN KEY (discount_type_id) REFERENCES discount_types(id)
+    FOREIGN KEY (discount_type_id) REFERENCES discount_types(id),
+	FOREIGN KEY (movie_hall_row_id) REFERENCES movie_hall_rows(id)
 );
 

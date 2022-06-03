@@ -13,6 +13,7 @@ import MoviePage from './components/pages//MoviePage';
 import CustomerDeleteAccount from './components/customer_components/CustomerDeleteAccount';
 import { LoginStateContext } from './api/CustomerApi';
 import CustomerReservations from './components/customer_components/CustomerReservations';
+import HomePage from './components/pages/HomePage';
 function App() {
   const [loginState, setLoginState] = useState<boolean>(true)
   const provider = useMemo(() => ({ loginState, setLoginState }), [loginState, setLoginState])
@@ -30,7 +31,7 @@ function App() {
       <LoginStateContext.Provider value={provider}>
         <Header/>
         <Routes>
-
+          <Route path="" element={<HomePage />}/>
           <Route path="signin" element={<SignInPage />} />
           <Route path="account" element={<CustomerPage />}>
             <Route path="info" element={<CustomerAccount />} />

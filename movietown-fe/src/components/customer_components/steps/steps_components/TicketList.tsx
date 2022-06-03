@@ -1,8 +1,9 @@
 import { List, makeStyles } from '@material-ui/core'
 import React from 'react'
+import { seat } from '../../../../api/ScreeningApi'
 
 interface TicketListProps {
-    seat_ids: number[]
+    seats: seat[]
 }
 
 const useStyles = makeStyles(() => ({
@@ -19,18 +20,16 @@ const useStyles = makeStyles(() => ({
 
 }))
 
-const TicketList: React.FC<TicketListProps> = ({ seat_ids }) => {
+const TicketList: React.FC<TicketListProps> = ({ seats }) => {
     const { ticket, list } = useStyles()
 
     const generateTicketList = () => {
-        return seat_ids.map((seat_id, index) => {
-            const row = Math.floor((seat_id + 1) / 10) + 1
-            const col = (seat_id + 1) % 10
+        return seats.map((seat, index) => {
             return (
                 <div key={index} className={ticket}>
                     <div>Bilet: </div>
-                    <div>Rząd: {row}</div>
-                    <div>Miejsce: {col}</div>
+                    <div>Rząd: {seat.row_number}</div>
+                    <div>Miejsce: {seat.seat_number}</div>
                 </div>
 
             )

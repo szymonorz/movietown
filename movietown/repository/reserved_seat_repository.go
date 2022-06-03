@@ -20,8 +20,9 @@ func NewReservedSeatRepository(database *gorm.DB) ReservedSeatRepository {
 func (r *ReservedSeatRepository) FindAllByScreeningId(screening_id uint) ([]model.ReservedSeat, error) {
 	var reserved_seats []model.ReservedSeat
 	err := r.db.
+		Preload("Seat").
+		Preload("MovieHallRow").
 		Where("screening_id = ?", screening_id).
-		Select("id", "seat_id").
 		Find(&reserved_seats).Error
 	return reserved_seats, err
 }
@@ -74,7 +75,9 @@ func (r *ReservedSeatRepository) CreateForCustomer(
 		if err := tx.Model(&model.Seat{}).Joins(`join rows on seats.row_id = rows.id 
 										join movie_hall_rows on movie_hall_rows.row_id = rows.id`).
 			Where("movie_hall_rows.movie_hall_id = ?", screening.MovieHallId).
-			Where("seats.id = ?", v.SeatId).Find(&tmps).Error; err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
+			Where("seats.id = ?", v.SeatId).
+			Where("movie_hall_rows.id = ?", v.MovieHallRowId).
+			Find(&tmps).Error; err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
 			tx.Rollback()
 			log.Println(err.Error())
 			return err

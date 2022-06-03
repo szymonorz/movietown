@@ -3,11 +3,11 @@ import { CustomerReservationContext } from '../../../api/ReservationApi'
 import SeatsGrid from './steps_components/SeatsGrid'
 
 interface SelectSeatsFragmentProps {
-    numberOfSeats: number,
+    movieHallId: number,
     setNextDisabled: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-const SelectSeatsFragment: React.FC<SelectSeatsFragmentProps> = ({ setNextDisabled, numberOfSeats }) => {
+const SelectSeatsFragment: React.FC<SelectSeatsFragmentProps> = ({ setNextDisabled, movieHallId }) => {
     const provider = useContext(CustomerReservationContext)
     const seats = provider!.customerReservation.seatsToChoose
 
@@ -22,7 +22,7 @@ const SelectSeatsFragment: React.FC<SelectSeatsFragmentProps> = ({ setNextDisabl
             ) : (
                 <div>Wybrano wszystkie miejsca, przejdz dalej</div>
             )}
-            <SeatsGrid setNextDisabled={setNextDisabled} numberOfSeats={numberOfSeats}/>
+            <SeatsGrid setNextDisabled={setNextDisabled} movieHallId={movieHallId}/>
         </div>
     )
 }

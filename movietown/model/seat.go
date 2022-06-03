@@ -7,3 +7,8 @@ type Seat struct {
 	// MovieHallId *uint     `json:"movie_hall_id"`
 	// MovieHall   MovieHall `gorm:"foreignKey:MovieHallId"`
 }
+
+type RequestSeat struct {
+	Seat
+	RowNumber uint `json:"row_number"`
+}

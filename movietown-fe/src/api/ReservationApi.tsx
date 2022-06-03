@@ -1,5 +1,6 @@
 import axios from 'axios'
 import React, { createContext } from 'react'
+import { seat } from './ScreeningApi'
 
 
 const instance = axios.create({
@@ -14,7 +15,7 @@ export interface discounts {
 }
 
 export interface customerReservation {
-    seat_ids: number[],
+    seats: seat[],
     screening_id: number,
     reservation_type_id: number,
     discounts: discounts,
@@ -25,13 +26,6 @@ export interface discount {
     id: number,
     type: string,
     discount: number
-}
-
-export interface seat{
-    id: number,
-    row: number,
-    col: number,
-    movie_hall_id: number
 }
 
 export interface reservation {
@@ -65,7 +59,7 @@ export const getTakenSeats = async(screeningId: number) => {
 
 export const createReservation = async (token: string, values: customerReservation) => {
     return await instance.post("/customer/create", {
-        seat_ids: values.seat_ids,
+        seats: values.seats,
         screening_id: values.screening_id,
         reservation_type_id: values.reservation_type_id,
         discounts: values.discounts,

@@ -10,9 +10,11 @@ type ReservedSeat struct {
 	DiscountType   DiscountType `gorm:"foreignKey:DiscountTypeId"`
 	ReservationId  uint
 	Reservation    Reservation `gorm:"foreignKey:ReservationId"`
+	MovieHallRowId uint
+	MovieHallRow   MovieHallRow `gorm:"foreignKey:MovieHallRowId"`
 }
 
-type RequestSeats struct {
+type DiscountSeats struct {
 	NormalSeats   uint `json:"normal_seats"`
 	ChildrenSeats uint `json:"children_seats"`
 	StudentSeats  uint `json:"student_seats"`

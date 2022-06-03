@@ -26,6 +26,27 @@ export interface screening{
     start_of_screening: Date,
 }
 
+export interface seat{
+    id: number,
+    row_number: number,
+    row_id: number,
+    seat_number: number
+}
+
+export interface row {
+    id: number,
+    seat_limit: number,
+    seats: seat[]
+}
+
+export interface movie_hall_row {
+    id: number,
+    row_id: number,
+    row: row,
+    movie_hall_id: number,
+    row_number: number
+}
+
 const instance = axios.create({
     baseURL: "http://localhost:4000/api/v1/screening"
 })
@@ -43,6 +64,10 @@ export const getDaysScreenings = async ({from, to}: screeningParams, limit: numb
             offset: offset
         }
     })
+}
+
+export const getSeatsInMovieHall = async (movieHallId: number) => {
+    return await instance.get(`/seats/${movieHallId}`)
 }
 
 export const getScreeningByMovieId = async (movieId: number, {from, to}: screeningParams, limit: number = 5, offset: number = 0) => {

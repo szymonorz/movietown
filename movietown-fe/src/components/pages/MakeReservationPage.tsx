@@ -2,7 +2,7 @@ import { Stepper, Step, StepLabel, Button, makeStyles, styled, StepConnector } f
 import React, { useMemo, useState, useEffect } from 'react'
 import ReservationSeatsFragment from '../customer_components/steps/ReservationSeatsFragment'
 import { MakeReservationStep } from '../customer_components/steps/common'
-import { CustomerReservationContext } from '../../api/ReservationApi'
+import { customerReservation, CustomerReservationContext } from '../../api/ReservationApi'
 import { useSearchParams, Navigate } from 'react-router-dom';
 import { getScreeningById, screening } from '../../api/ScreeningApi';
 import SelectSeatsFragment from '../customer_components/steps/SelectSeatsFragment'
@@ -95,8 +95,8 @@ const MakeReservationPage: React.FC<{}> = () => {
         start_of_screening: new Date(),
     })
 
-    const [customerReservation, setCustomerReservation] = useState({
-        seat_ids: [] as number[],
+    const [customerReservation, setCustomerReservation] = useState<customerReservation>({
+        seats: [],
         screening_id: 0,
         reservation_type_id: 1,
         discounts: {
@@ -201,7 +201,7 @@ const MakeReservationPage: React.FC<{}> = () => {
                             <div>
                                 <SelectSeatsFragment
                                     setNextDisabled={setNextDisabled}
-                                    numberOfSeats={screening.movie_hall.number_of_seats}
+                                    movieHallId={screening.movie_hall.id}
                                 />
                             </div>
                         )}

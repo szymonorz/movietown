@@ -33,10 +33,6 @@ func NewReservationHandler(reservationService service.ReservationService,
 	}
 }
 
-type takenSeats struct {
-	SeatIds []uint `json:"taken_seat_ids"`
-}
-
 // GetReservedSeatsForScreening godoc
 // @Summary      Show reserved seats for screening
 // @Description  get takenSeats by customer_id
@@ -44,7 +40,7 @@ type takenSeats struct {
 // @Accept       json
 // @Produce      json
 // @Param        screening_id    path     string  false  "search reserved seats for screening_id"  Format(int)
-// @Success      200  {object}  takenSeats
+// @Success      200  {object}  []model.ReservedSeat
 // @Router       /api/v1/reservations/seats/{screening_id} [get]
 func (h *ReservationHandler) GetReservedSeatsForScreening(c *gin.Context) {
 	screening_id, err := strconv.ParseUint(c.Param("screening_id"), 10, 0)
@@ -57,10 +53,8 @@ func (h *ReservationHandler) GetReservedSeatsForScreening(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, err)
 		return
 	}
-	var ts takenSeats
-	ts.SeatIds = seats
 
-	c.JSON(http.StatusOK, ts)
+	c.JSON(http.StatusOK, seats)
 }
 
 type reservationResponse struct {
@@ -142,10 +136,10 @@ func (h *ReservationHandler) GetCustomerReservationsFromId(c *gin.Context) {
 }
 
 type customerReservation struct {
-	SeatsId           []uint             `json:"seat_ids" validate:"required"`
-	ScreeningId       uint               `json:"screening_id" validate:"required"`
-	ReservationTypeId uint               `json:"reservation_type_id" validate:"required"`
-	Discounts         model.RequestSeats `json:"discounts"`
+	Seats             []model.RequestSeat `json:"seats" validate:"required"`
+	ScreeningId       uint                `json:"screening_id" validate:"required"`
+	ReservationTypeId uint                `json:"reservation_type_id" validate:"required"`
+	Discounts         model.DiscountSeats `json:"discounts"`
 }
 
 // CustomerCreateReservation godoc
@@ -174,7 +168,7 @@ func (h *ReservationHandler) CustomerCreateReservation(c *gin.Context) {
 		ReservationTypeId: request.ReservationTypeId,
 		CustomerId:        &customer.ID,
 	}
-	err = h.reservedSeatService.RegularReserveSeats(request.SeatsId, request.Discounts, &reservation)
+	err = h.reservedSeatService.RegularReserveSeats(request.Seats, request.Discounts, &reservation)
 	if err != nil {
 		if errors.Is(err, merror.ErrSeatTaken) {
 			c.JSON(http.StatusConflict, gin.H{"error": err.Error()})
