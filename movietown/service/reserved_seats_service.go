@@ -22,8 +22,6 @@ func (s *ReservedSeatService) GetAllTakenSeatIds(screening_id uint) ([]model.Req
 	}
 	var seats []model.RequestSeat
 	for _, r := range reserved {
-		log.Println(r.MovieHallRow.ID)
-		log.Println(r.MovieHallRowId)
 		var seat model.RequestSeat
 		seat.ID = r.SeatId
 		seat.RowId = r.Seat.RowId

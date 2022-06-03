@@ -54,7 +54,6 @@ const HomePage: React.FC<{}> = () => {
         getQueriedMovies("", 5, 0).then(({data}) => {
             const movies = data as movie[]
             movies.map((movie, index) => {
-                console.log(movie.url)
                 setData(carouselData => [...carouselData, {
                     image: movie.url,
                     headerText: movie.title,

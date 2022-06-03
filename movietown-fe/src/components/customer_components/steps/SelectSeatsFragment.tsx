@@ -11,10 +11,6 @@ const SelectSeatsFragment: React.FC<SelectSeatsFragmentProps> = ({ setNextDisabl
     const provider = useContext(CustomerReservationContext)
     const seats = provider!.customerReservation.seatsToChoose
 
-    useEffect(() => {
-        console.log(provider!.customerReservation)
-    },[])
-
     return (
         <div>
             {seats ? (

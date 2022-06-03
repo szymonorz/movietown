@@ -26,7 +26,6 @@ const CustomerReservations: React.FC<{}> = () => {
     const navigate = useNavigate()
 
     const showCustomerReservations = (token : string) => {
-        console.log(token)
         getCustomerReservations(token)
         .then(({data}) => setCustomerReservations([...data]))
         .catch((err) => console.error(err))

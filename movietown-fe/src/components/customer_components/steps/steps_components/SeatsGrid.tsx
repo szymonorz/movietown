@@ -40,16 +40,13 @@ const SeatsGrid: React.FC<SeatsGridProps> = ({ setNextDisabled, movieHallId }) =
 
         getTakenSeats(screeningId)
         .then(({data}) => {
-            console.log(data)
-            setTakenSeats(prev => [...data])
+            if(data !== null)
+                setTakenSeats(prev => [...data])
         })
         .catch((err) => console.error(err))
     }, [])
 
     const isSeatInArray = (seat: seat, seats: seat[]) => {
-        // console.log("isSeatInArray")
-        // console.log("seats", seats)
-        // console.log("seat", seat)
         return seats.find((element, index, array ) => {
             return (element.id === seat.id) && 
             (element.row_number === seat.row_number) && 
@@ -68,7 +65,6 @@ const SeatsGrid: React.FC<SeatsGridProps> = ({ setNextDisabled, movieHallId }) =
         const x = event.clientX - rect!.left
         const y = Math.floor(event.clientY - rect!.top)
         const numOfRows = movieHallRows.length
-        console.log(numOfRows, y)
         if (x >= boxSize && y >= boxSize && x < boxSize * 20 && y < boxSize * (numOfRows + 1)) {
             
             const row = Math.floor(y / boxSize);
@@ -90,13 +86,8 @@ const SeatsGrid: React.FC<SeatsGridProps> = ({ setNextDisabled, movieHallId }) =
                         row_id: 0,
                         seat_number: col
                     }
-                    console.log("new", newSeat)
-                    console.log("chosen", chosenSeat)
-                    console.log("is in", isSeatInArray(newSeat, seats))
                     if (green === 0x99 || red === 0x99) {
                         if (isSeatInArray(newSeat, seats)) {
-                            console.log("clicked")
-                            console.log(newSeat)
                             seats.splice(seats.indexOf(newSeat), 1);
                             setSeats([...seats]);
                             provider!.setCustomerReservation(prev => {
@@ -107,7 +98,6 @@ const SeatsGrid: React.FC<SeatsGridProps> = ({ setNextDisabled, movieHallId }) =
                             })
                         } else if(seatsToChoose){
                             setSeats([...seats, newSeat]);
-                            console.log("added")
                             provider!.setCustomerReservation(prev => {
                                 return {
                                     ...prev,
@@ -126,8 +116,6 @@ const SeatsGrid: React.FC<SeatsGridProps> = ({ setNextDisabled, movieHallId }) =
 
     useEffect(() => {
         const canvas = canvasRef.current
-        console.log(seats)
-        console.log(movieHallRows)
         if(!provider!.customerReservation.seatsToChoose) setNextDisabled(false)
         else setNextDisabled(true)
         provider!.setCustomerReservation(prev => {
@@ -147,9 +135,7 @@ const SeatsGrid: React.FC<SeatsGridProps> = ({ setNextDisabled, movieHallId }) =
                     let rowN = movieHallRow.row_number
                     context.fillStyle = "#009900"
                     movieHallRow.row.seats.forEach((seat, col) => {
-                        console.log("is in", isSeatInArray(seat, seats))
                         if(isSeatInArray(seat, seats)){
-                            console.log("uh")
                             context.fillStyle = "#990000"
                         }
                         if(isSeatInArray(seat, takenSeats)){
