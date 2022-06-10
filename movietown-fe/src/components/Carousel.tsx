@@ -1,5 +1,5 @@
 import { styled } from '@mui/material'
-import React, { useState } from 'react'
+import React, { useLayoutEffect, useState } from 'react'
 import { movie } from '../api/MovieApi';
 import CarouselButton from './CarouselButton';
 import CarouselImage from './CarouselImage';
@@ -21,6 +21,14 @@ interface CarouselProps {
 
 const Carousel: React.FC<CarouselProps> = ({ data }) => {
     const [current, setCurrent] = useState<number>(0)
+
+    // For whatever reason Firefox scrolls back to the top of the page when `current` is 0
+    // This code fixes this weird bug.
+    const X = window.scrollX
+    const Y = window.scrollY
+    useLayoutEffect(() => {
+        window.scrollTo(X, Y)
+    }, [current])
 
     const nextImage = () => {
         setCurrent(current => current + 1 === data.length ? 0 : current + 1)
