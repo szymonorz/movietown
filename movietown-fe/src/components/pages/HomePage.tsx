@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { getDaysScreenings, screening } from '../../api/ScreeningApi'
 import ScreeningList from '../ScreeningList'
 import { getQueriedMovies, movie } from '../../api/MovieApi'
+import Carousel from '../Carousel'
 
 interface carouselData {
     image: string,
@@ -34,7 +35,7 @@ const useStyles = makeStyles(() => ({
 const HomePage: React.FC<{}> = () => {
     const { card, header, content } = useStyles()
     const [screenings, setScreenings] = useState<screening[]>([])
-    const [data, setData] = useState<carouselData[]>([])
+    const [data, setData] = useState<movie[]>([])
     useEffect(() => {
         setData([])
         const today = new Date()
@@ -51,30 +52,27 @@ const HomePage: React.FC<{}> = () => {
             setScreenings([...data])
         }).catch((err) => console.error(err))
 
-        getQueriedMovies("", 5, 0).then(({data}) => {
-            const movies = data as movie[]
-            movies.map((movie, index) => {
-                setData(carouselData => [...carouselData, {
-                    image: movie.url,
-                    headerText: movie.title,
-                    subText: movie.description
-                }])
-            })
+        getQueriedMovies("", 3, 0).then(({data}) => {
+            // const movies = data as movie[]
+            setData(data)
+            // movies.map((movie, index) => {
+            //     setData(carouselData => [...carouselData, {
+            //         image: movie.url,
+            //         headerText: movie.title,
+            //         subText: movie.description
+            //     }])
+            // })
         }).catch((err) => console.error(err))
 
     }, [])
     return <Grid container className={card}>
-        <Grid item xs={7}>
+        <Grid item xs={12}>
             <Typography className={header}>
                 Witaj w MovieTown
             </Typography>
         </Grid>
-        <Divider orientation='vertical' flexItem />
-        <Grid item xs={5}>
-            <Typography>
-                Co dzisiaj leci:
-            </Typography>
-            <ScreeningList screenings={screenings} />
+        <Grid item xs={6}>
+            <Carousel data={data}/>
         </Grid>
     </Grid>
 }
