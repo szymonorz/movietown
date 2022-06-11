@@ -4,6 +4,7 @@ import { getDaysScreenings, screening } from '../../api/ScreeningApi'
 import ScreeningList from '../ScreeningList'
 import { getQueriedMovies, movie } from '../../api/MovieApi'
 import Carousel from '../Carousel'
+import { styled } from '@mui/material'
 
 interface carouselData {
     image: string,
@@ -11,29 +12,28 @@ interface carouselData {
     subText?: string
 }
 
-const useStyles = makeStyles(() => ({
-    card: {
-        color: "white",
-        borderRadius: "10px",
-        width: "90%",
-        margin: "20px",
-        padding: "20px",
-        backgroundColor: "#282c34",
-        textAlign: "left"
-    },
-    header: {
-        fontSize: "40px",
-        fontWeight: "bold",
-        fontFamily: "Halvetica",
-    },
-    content: {
-        marginTop: "20px",
-        fontSize: "20px"
-    }
-}))
+
+const Home = styled('div')({
+    display: "flex",
+    justifyContent: "center"
+})
+
+const Card = styled(Grid)({
+    color: "white",
+    borderRadius: "10px",
+    width: "90%",
+    padding: "20px",
+    backgroundColor: "#282c34",
+    textAlign: "left"
+})
+
+const CardHeader = styled(Typography)({
+    fontSize: "40px",
+    fontWeight: "bold",
+    fontFamily: "Halvetica",
+})
 
 const HomePage: React.FC<{}> = () => {
-    const { card, header, content } = useStyles()
     const [screenings, setScreenings] = useState<screening[]>([])
     const [data, setData] = useState<movie[]>([])
     useEffect(() => {
@@ -52,29 +52,23 @@ const HomePage: React.FC<{}> = () => {
             setScreenings([...data])
         }).catch((err) => console.error(err))
 
-        getQueriedMovies("", 3, 0).then(({data}) => {
-            // const movies = data as movie[]
+        getQueriedMovies("", 3, 0).then(({ data }) => {
             setData(data)
-            // movies.map((movie, index) => {
-            //     setData(carouselData => [...carouselData, {
-            //         image: movie.url,
-            //         headerText: movie.title,
-            //         subText: movie.description
-            //     }])
-            // })
         }).catch((err) => console.error(err))
 
     }, [])
-    return <Grid container className={card}>
-        <Grid item xs={12}>
-            <Typography className={header}>
-                Witaj w MovieTown
-            </Typography>
-        </Grid>
-        <Grid item xs={6}>
-            <Carousel data={data}/>
-        </Grid>
-    </Grid>
+    return <Home>
+        <Card container>
+            <Grid item xs={12}>
+                <CardHeader>
+                    Witaj w MovieTown
+                </CardHeader>
+            </Grid>
+            <Grid item xs={6}>
+                <Carousel data={data} />
+            </Grid>
+        </Card>
+    </Home>
 }
 
 export default HomePage
