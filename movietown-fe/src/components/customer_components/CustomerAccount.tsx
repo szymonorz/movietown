@@ -9,6 +9,7 @@ import * as Yup from 'yup';
 import { updateCustomerInfo } from '../../api/CustomerApi';
 import MButton from '../MButton';
 import { StyledForm } from './StyledForm';
+import { CustomerContainer } from './StyledCustomerContainer';
 
 
 export interface AccountValues {
@@ -78,7 +79,7 @@ const CustomerAccount: React.FC<{}> = () => {
     }, [])
 
     return (
-        <div style={{width: "50%"}}>
+        <CustomerContainer>
             {(!loginState) && <Navigate replace to={"/"} />}
             <Formik
                 enableReinitialize
@@ -152,7 +153,7 @@ const CustomerAccount: React.FC<{}> = () => {
                 )}
 
             </Formik>
-        </div>
+        </CustomerContainer>
     )
 }
 

@@ -1,11 +1,11 @@
-import { Formik, Form } from 'formik';
+import { Formik } from 'formik';
 import React from 'react';
 import * as Yup from 'yup';
 import MTextField from '../forms/formComponents/TextField';
-import { Button, makeStyles } from '@material-ui/core'
 import { changeCustomersPassword } from '../../api/CustomerApi';
 import MButton from '../MButton';
 import { StyledForm } from './StyledForm';
+import { CustomerContainer } from './StyledCustomerContainer';
 
 export interface ChangePasswordValues {
     old_password: string,
@@ -23,7 +23,7 @@ const PasswordValidation = Yup.object().shape({
 const CustomerChangePassword: React.FC<{}> = () => {
     const token = localStorage.getItem("token") || ""
     return (
-        <div>
+        <CustomerContainer>
             <Formik
                 initialValues={{
                     old_password: '',
@@ -61,7 +61,7 @@ const CustomerChangePassword: React.FC<{}> = () => {
 
 
             </Formik>
-        </div>
+        </CustomerContainer>
     )
 }
 

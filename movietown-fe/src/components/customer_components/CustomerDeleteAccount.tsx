@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Navigate } from 'react-router-dom'
 import { deleteCustomerAccount, getCustomerInfo } from '../../api/CustomerApi'
+import { CustomerContainer } from './StyledCustomerContainer'
 
 const useStyles = makeStyles(() => ({
     container: {
@@ -62,7 +63,7 @@ const CustomerDeleteAccount: React.FC<{}> = () => {
     }
 
     return (
-        <div className={container}>
+        <CustomerContainer>
             <div className={element}>
                 <div>
                     Czy jesteś pewien, że chcesz usunąć swoje konto?
@@ -80,7 +81,7 @@ const CustomerDeleteAccount: React.FC<{}> = () => {
 
             </div>
 
-        </div>
+        </CustomerContainer>
     )
 }
 

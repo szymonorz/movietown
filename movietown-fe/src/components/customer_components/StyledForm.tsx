@@ -5,5 +5,5 @@ export const StyledForm = styled(Form)({
     color: "white",
     padding: "30px",
     backgroundColor: "#282c34",
-    borderRadius: "20px"
+    borderRadius: "10px"
 })
