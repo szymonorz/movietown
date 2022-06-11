@@ -4,13 +4,6 @@ import { Formik, Form } from 'formik'
 import * as Yup from 'yup';
 import { TextField, Typography, makeStyles, Grid } from '@material-ui/core';
 
-const validateSeatForm = () => Yup.object().shape({
-    normal_seats: Yup.number().positive("Number cannot be negative").required("Required"),
-    children_seats: Yup.number().positive("Number cannot be negative").required("Required"),
-    student_seats: Yup.number().positive("Number cannot be negative").required("Required"),
-    elderly_seats: Yup.number().positive("Number cannot be negative").required("Required")
-})
-
 const useStyles = makeStyles(() => ({
     form: {
         display: "flex",
@@ -46,7 +39,6 @@ const DiscountForm: React.FC<DiscountFormProps> = ({ setNumberOfSeats }) => {
     return (
         <Formik
             initialValues={provider!.customerReservation.discounts}
-            validationSchema={validateSeatForm}
             onSubmit={(values) => console.log(values)}
         >
             {({ handleBlur }) => (
@@ -66,9 +58,7 @@ const DiscountForm: React.FC<DiscountFormProps> = ({ setNumberOfSeats }) => {
                                 value={discountSeats.normal_seats}
                                 onChange={(event) => {
                                     const val = parseInt(event.target.value)
-                                    if (isNaN(val)) {
-                                        console.log("AAAA")
-                                    } else {
+                                    if (!isNaN(val)){
                                         provider!.setCustomerReservation(prev => {
                                             return {
                                                 ...prev,
@@ -103,9 +93,7 @@ const DiscountForm: React.FC<DiscountFormProps> = ({ setNumberOfSeats }) => {
                                 value={discountSeats.children_seats}
                                 onChange={(event) => {
                                     const val = parseInt(event.target.value)
-                                    if (isNaN(val)) {
-                                        console.log("AAAA")
-                                    } else {
+                                    if (!isNaN(val)){
                                         provider!.setCustomerReservation(prev => {
                                             return {
                                                 ...prev,
@@ -139,9 +127,7 @@ const DiscountForm: React.FC<DiscountFormProps> = ({ setNumberOfSeats }) => {
                                 value={discountSeats.student_seats}
                                 onChange={(event) => {
                                     const val = parseInt(event.target.value)
-                                    if (isNaN(val)) {
-                                        console.log("AAAA")
-                                    } else {
+                                    if (!isNaN(val)){
                                         provider!.setCustomerReservation(prev => {
                                             return {
                                                 ...prev,
@@ -176,9 +162,7 @@ const DiscountForm: React.FC<DiscountFormProps> = ({ setNumberOfSeats }) => {
                                 value={discountSeats.elderly_seats}
                                 onChange={(event) => {
                                     const val = parseInt(event.target.value)
-                                    if (isNaN(val)) {
-                                        console.log("AAAA")
-                                    } else {
+                                    if (!isNaN(val)) {
                                         provider!.setCustomerReservation(prev => {
                                             return {
                                                 ...prev,

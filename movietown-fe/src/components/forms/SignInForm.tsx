@@ -12,8 +12,8 @@ export interface SignInValues {
 }
 
 const signInFormValidation = Yup.object().shape({
-    username: Yup.string().required("Required"),
-    password: Yup.string().required("Required"),
+    username: Yup.string().required("Pole wymagane"),
+    password: Yup.string().required("Pole wymagane"),
 })
 
 interface SignInFormProps {
@@ -69,7 +69,7 @@ const SignIn: React.FC<SignInFormProps> = ({ loginError, onSubmit }) => {
             </Formik>
 
             {loginError && (
-                <div>Something broke</div>
+                <div>Coś poszło nie tak</div>
             )}
         </div>
     )

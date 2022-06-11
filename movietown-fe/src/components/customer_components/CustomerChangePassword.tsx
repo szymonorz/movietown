@@ -14,9 +14,9 @@ export interface ChangePasswordValues {
 
 
 const PasswordValidation = Yup.object().shape({
-    old_password: Yup.string().required("Required"),
+    old_password: Yup.string().required("Pole wymagane"),
     new_password: Yup.string()
-        .required("Required")
+        .required("Pole wymagane")
         .not([Yup.ref('old_password')], "Nowe hasło nie może być takie samo jak stare hasło")
 })
 

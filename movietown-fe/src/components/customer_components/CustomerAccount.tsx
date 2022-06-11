@@ -22,23 +22,14 @@ export interface AccountValues {
     is_student: boolean
 }
 
-const useStyles = makeStyles(() => ({
-    form: {
-        color: "white",
-        padding: "30px",
-        backgroundColor: "#282c34",
-        borderRadius: "20px"
-    }
-}))
-
 const accountFormValidator = Yup.object().shape({
-    name: Yup.string().required("Required"),
-    surname: Yup.string().required("Required"),
-    email: Yup.string().email("Invalid email").required("Required"),
-    username: Yup.string().required("Required"),
-    phone_number: Yup.string().required("Required"),
+    name: Yup.string().required("Pole wymagane"),
+    surname: Yup.string().required("Pole wymagane"),
+    email: Yup.string().email("Niepoprawny email").required("Pole wymagane"),
+    username: Yup.string().required("Pole wymagane"),
+    phone_number: Yup.string().matches(/^\d+$/, "Tylko cyfry są dzwolone").required("Pole wymagane")
+    })
 
-})
 
 const CustomerAccount: React.FC<{}> = () => {
     const provider = useContext(LoginStateContext)
@@ -53,9 +44,8 @@ const CustomerAccount: React.FC<{}> = () => {
         is_student: false
     })
     const [disabled, setDisabled] = useState<boolean>(true)
-    const [authorized, setAuthorized] = useState<boolean>(false)
+    const [error, setError] = useState<any>()
     const token = localStorage.getItem("token")
-    const { form } = useStyles()
     useEffect(() => {
         if (token) {
             const infoPromise = getCustomerInfo(token)
@@ -66,9 +56,9 @@ const CustomerAccount: React.FC<{}> = () => {
                     console.error("Something broke")
                 }
             }).catch((err) => {
+                setError(err)
                 console.error(err.response.status)
                 if(err.response.status === 401){
-                    setAuthorized(false)
                     setLoginState(false)
                     localStorage.removeItem("token")
                 }
@@ -151,8 +141,12 @@ const CustomerAccount: React.FC<{}> = () => {
                         }/>
                     </StyledForm>
                 )}
-
             </Formik>
+            {error && (
+                <div>
+                    {error["email"]}
+                </div>
+            )}
         </CustomerContainer>
     )
 }

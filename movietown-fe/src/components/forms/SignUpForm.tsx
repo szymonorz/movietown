@@ -21,13 +21,12 @@ interface SignUpProps {
 }
 
 const signUpFormValidator = Yup.object().shape({
-    name: Yup.string().required("Required"),
-    surname: Yup.string().required("Required"),
-    email: Yup.string().email("Invalid email").required("Required"),
-    username: Yup.string().required("Required"),
-    password: Yup.string().required("Required"),
-    phone_number: Yup.string().required("Required"),
-
+    name: Yup.string().required("Pole wymagane"),
+    surname: Yup.string().required("Pole wymagane"),
+    email: Yup.string().email("Invalid email").required("Pole wymagane"),
+    username: Yup.string().required("Pole wymagane"),
+    password: Yup.string().required("Pole wymagane"),
+    phone_number: Yup.string().matches(/^\d+$/, "Tylko cyfry są dzwolone").required("Pole wymagane"),
 })
 
 const SignUpForm: React.FC<SignUpProps> = ({registerError, onSubmit }) => {
@@ -57,7 +56,7 @@ const SignUpForm: React.FC<SignUpProps> = ({registerError, onSubmit }) => {
                             <Grid item xs={6}>
                                 <MTextField
                                     name='name'
-                                    label='First Name'
+                                    label='Imię'
                                     placeholder='Grzegorz'
 
                                 />
@@ -65,14 +64,14 @@ const SignUpForm: React.FC<SignUpProps> = ({registerError, onSubmit }) => {
                             <Grid item xs={6}>
                                 <MTextField
                                     name='surname'
-                                    label='Last Name'
+                                    label='Nazwisko'
                                     placeholder='Brzęczyszczykiewicz'
                                 />
                             </Grid>
                             <Grid item xs={6}>
                                 <MTextField
                                     name='username'
-                                    label='Username'
+                                    label='Nazwa użytkownika'
                                     placeholder='lain'
                                 />
                             </Grid>
@@ -80,7 +79,7 @@ const SignUpForm: React.FC<SignUpProps> = ({registerError, onSubmit }) => {
                                 <MTextField
                                     name='password'
                                     label='password'
-                                    type='password'
+                                    type='Hasło'
                                     placeholder='deez nutz'
                                 />
                             </Grid>
@@ -94,7 +93,7 @@ const SignUpForm: React.FC<SignUpProps> = ({registerError, onSubmit }) => {
                             <Grid item xs={12}>
                                 <MTextField
                                     name='phone_number'
-                                    label='Phone number'
+                                    label='Numer telefonu'
                                     placeholder='123456789'
                                 />
                             </Grid>
