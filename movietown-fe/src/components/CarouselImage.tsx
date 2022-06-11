@@ -1,5 +1,6 @@
 import { styled } from '@mui/material'
 import React from 'react'
+import { Link } from 'react-router-dom'
 import { movie } from '../api/MovieApi'
 
 const StyledCarouselImage = styled('img')({
@@ -51,14 +52,14 @@ interface CarouselImageProps {
 }
 
 const CarouselImage: React.FC<CarouselImageProps> = ({ data }) => {
-    return <div>
+    return <Link to={`/movie/${data.id}`}>
         <OverlayShadow>
             <OverlayText>
                 {data.title}
             </OverlayText>
         </OverlayShadow>
         <StyledCarouselImage src={data.url} />
-    </div>
+    </Link>
 }
 
 export default CarouselImage
