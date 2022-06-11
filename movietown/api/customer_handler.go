@@ -104,6 +104,16 @@ func (h *CustomerHandler) RegisterNewCustomer(c *gin.Context) {
 		return
 	}
 
+	if match := email_regex.MatchString(req_customer.Email); !match {
+		c.JSON(http.StatusBadRequest, gin.H{"email": "invalid email"})
+		return
+	}
+
+	if strongPassword := validatePassword(req_customer.Password); !strongPassword {
+		c.JSON(http.StatusBadRequest, gin.H{"password": "weak password (must be 8 characters lower, upper, number and special"})
+		return
+	}
+
 	customer := getRegisterCustomer(req_customer)
 	err := h.auth.CustomerService.AddNewCustomer(&customer)
 	if err != nil {
@@ -172,6 +182,10 @@ func (h *CustomerHandler) UpdateCustomerInfo(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, err)
 		return
 	}
+	if match := email_regex.MatchString(request.Email); !match {
+		c.JSON(http.StatusBadRequest, gin.H{"email": "invalid email"})
+		return
+	}
 	customer, err := h.auth.GetCustomerInfoFromRequest(c.Request)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -211,7 +225,10 @@ func (h *CustomerHandler) ChangeCustomerPassword(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid request body"})
 		return
 	}
-
+	if strongPassword := validatePassword(request.NewPassword); !strongPassword {
+		c.JSON(http.StatusBadRequest, gin.H{"password": "weak password (must be 8 characters lower, upper, number and special"})
+		return
+	}
 	customer, err := h.auth.GetCustomerFromRequest(c.Request)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
