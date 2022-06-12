@@ -12,6 +12,19 @@ services:
             - "./sql:/docker-entrypoint-initdb.d/"
         networks:
             - apps-network
+    movietown-be:
+      build:
+        context: .
+        dockerfile: ./movietown/Dockerfile
+      ports:
+        - "4000:4000"
+      env_file:
+        - ./movietown/.env
+      depends_on:
+        movietown-db:
+          condition: service_started
+      networks:
+        - apps-network
 
 networks:
     apps-network:

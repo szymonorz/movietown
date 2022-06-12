@@ -1,14 +1,14 @@
 FROM golang:1.17.8
 
-WORKDIR /cinema-be
+WORKDIR /movietown
 
-COPY /cinema-be/go.mod .
-COPY /cinema-be/go.sum .
+COPY /movietown/go.mod .
+COPY /movietown/go.sum .
 
 RUN go mod download
 
-COPY /cinema-be /cinema-be
+COPY /movietown /movietown
 
 RUN go build
 
-CMD ["./cinema-be"]
+CMD ["./movietown"]

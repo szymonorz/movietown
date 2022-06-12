@@ -1,14 +1,15 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"movietown/api"
 	"movietown/auth"
 	"movietown/database"
+	_ "movietown/docs"
 	"movietown/repository"
 	"movietown/service"
-
-	_ "movietown/docs"
+	"os"
 
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
@@ -73,7 +74,10 @@ func InitializeDiscountHandler(database *gorm.DB) api.DiscountHandler {
 // @host      localhost:4000
 // @BasePath  /
 func main() {
-	postgresString := "postgres://postgres:postgres@localhost:5432/movietown"
+	db_host := os.Getenv("DB_HOST")
+	db_port := os.Getenv("DB_PORT")
+	db_name := os.Getenv("DB_NAME")
+	postgresString := fmt.Sprintf("postgres://postgres:postgres@%s:%s/%s", db_host, db_port, db_name)
 	var db *gorm.DB
 	var err error
 	if db, err = database.InitPostgresConnection(postgresString); err != nil {
