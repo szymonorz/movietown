@@ -1,7 +1,7 @@
 import React from 'react';
 import * as Yup from 'yup';
 import { Formik, Form } from 'formik';
-import { Grid, Typography, Button, makeStyles } from '@material-ui/core';
+import { Grid, Typography } from '@material-ui/core';
 import MTextField from './formComponents/TextField';
 import MButton from '../MButton';
 
@@ -80,14 +80,14 @@ const SignUpForm: React.FC<SignUpProps> = ({registerError, onSubmit }) => {
                                     name='password'
                                     label='password'
                                     type='Hasło'
-                                    placeholder='deez nutz'
+                                    placeholder='*******'
                                 />
                             </Grid>
                             <Grid item xs={12}>
                                 <MTextField
                                     name='email'
                                     label='Email'
-                                    placeholder='joe+mama@mail.com'
+                                    placeholder='joe@mail.com'
                                 />
                             </Grid>
                             <Grid item xs={12}>

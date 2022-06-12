@@ -1,6 +1,6 @@
 import React from 'react';
 import { Formik, Form } from 'formik';
-import { Grid, Typography, makeStyles } from '@material-ui/core';
+import { Grid, Typography } from '@material-ui/core';
 import MTextField from './formComponents/TextField';
 import * as Yup from 'yup';
 import MButton from '../MButton';
@@ -55,7 +55,7 @@ const SignIn: React.FC<SignInFormProps> = ({ loginError, onSubmit }) => {
                                     name='password'
                                     label='Hasło'
                                     type='password'
-                                    placeholder='deez nutz' />
+                                    placeholder='********' />
                             </Grid>
 
                         </Grid>

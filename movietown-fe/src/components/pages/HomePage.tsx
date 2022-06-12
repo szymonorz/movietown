@@ -1,16 +1,8 @@
 import {Grid, Typography } from '@material-ui/core'
 import React, { useEffect, useState } from 'react'
-import { getDates, getDaysScreenings, request_screening } from '../../api/ScreeningApi'
 import { getLatestMovies, movie } from '../../api/MovieApi'
 import Carousel from '../Carousel'
 import { styled } from '@mui/material'
-
-interface carouselData {
-    image: string,
-    headerText?: string,
-    subText?: string
-}
-
 
 const Home = styled('div')({
     display: "flex",
