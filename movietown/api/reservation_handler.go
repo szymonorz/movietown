@@ -2,6 +2,7 @@ package api
 
 import (
 	"errors"
+	"log"
 	"math"
 	"movietown/auth"
 	"movietown/merror"
@@ -83,30 +84,35 @@ func (h *ReservationHandler) GetCustomerReservations(c *gin.Context) {
 		return
 	}
 	var response []reservationResponse
-	reservations, _ := h.reservationService.GetCustomerReservations(customer.ID)
+	reservations, err := h.reservationService.GetCustomerReservations(customer.ID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	var tmp reservationResponse
+	log.Println(len(reservations))
 	for _, reservation := range reservations {
-		var tmp reservationResponse
 		tmp.ID = reservation.ID
-		tmp.MovieTitle = reservation.Screening.MovieMovieType.Movie.Title
-		tmp.MovieType = reservation.Screening.MovieMovieType.MovieType.Type
-		tmp.TimeOfScreening = reservation.Screening.Start_of_screening.Format(time.RFC3339)
-		tmp.ReservationType = reservation.ReservationType.Type
+		tmp.MovieTitle = reservation.MovieTitle
+		tmp.MovieType = reservation.MovieType
+		tmp.TimeOfScreening = reservation.TimeOfScreening.Format(time.RFC3339)
+		tmp.ReservationType = reservation.ReservationType
 		seats, err := h.reservedSeatService.GetAllSeatsFromReservations(reservation.ID)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
 		}
 		tmp.SeatCount = uint(len(seats))
-		tmp.Price = calcPrice(seats, reservation.Screening.MovieMovieType.MovieType)
+		tmp.Price = calcPrice(seats, reservation.MovieTypePrice)
 		response = append(response, tmp)
 	}
 	c.JSON(http.StatusOK, response)
 }
 
-func calcPrice(seats []model.ReservedSeat, movie_type model.MovieType) float64 {
+func calcPrice(seats []model.ReservedSeat, movie_type float64) float64 {
 	var price float64
 	for _, s := range seats {
-		price += movie_type.Price - (movie_type.Price * (float64(s.DiscountType.Discount) * 0.01))
+		price += movie_type - (movie_type * (float64(s.DiscountType.Discount) * 0.01))
 	}
 	return math.Round(price/0.01) * 0.01
 }

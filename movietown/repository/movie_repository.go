@@ -22,6 +22,16 @@ func (r *MovieRepository) FindById(movie_id uint) (model.Movie, error) {
 	return movie, err
 }
 
+func (r *MovieRepository) FindMovieImageURL(movie_id uint) (string, error) {
+	var imageURL string
+	err := r.db.
+		Model(model.Movie{}).
+		Select("url").
+		First(&imageURL).Error
+
+	return imageURL, err
+}
+
 func (r *MovieRepository) FindByNamePattern(pattern string, limit, offset int) ([]model.Movie, error) {
 	var movies []model.Movie
 	err := r.db.Preload("MovieType").

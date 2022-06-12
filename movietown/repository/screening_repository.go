@@ -21,32 +21,36 @@ func (r *ScreeningRepository) Create(screening *model.Screening) error {
 	return result.Error
 }
 
-func (r *ScreeningRepository) FindById(id uint) (model.Screening, error) {
-	var screening model.Screening
+func (r *ScreeningRepository) FindById(id uint) (model.RequestScreening, error) {
+	var screening model.RequestScreening
 	err := r.db.
-		Preload("MovieMovieType.Movie").
-		Preload("MovieMovieType.MovieType").
-		Preload("MovieHall").
+		Model(model.Screening{}).
+		Select(`
+			screenings.id as id, movie_hall_id, start_of_screening, 
+			movie_halls.name as movie_hall_name, movies.id as movie_id,
+			movies.title as movie_title, movie_types.price as price, movie_types.type as movie_type
+		`).
+		Joins("JOIN movie_halls ON movie_halls.id = movie_hall_id").
+		Joins("JOIN movie_movie_types mm_type ON mm_type.id = movie_movie_type_id").
+		Joins("JOIN movies ON mm_type.movie_id = movies.id").
+		Joins("JOIN movie_types ON mm_type.movie_type_id = movie_types.id").
 		First(&screening, model.Screening{ID: id}).Error
 	return screening, err
 }
 
-func (r *ScreeningRepository) FindByMovieId(movie_id uint, limit, offset int) ([]model.Screening, error) {
-	var screenings []model.Screening
-	err := r.db.Preload("MovieMovieType").Preload("MovieHall").
-		Where("movie_id = ?", movie_id).
-		Limit(limit).
-		Offset(offset).
-		Find(&screenings).Error
-	return screenings, err
-}
-
-func (r *ScreeningRepository) FindBetween(from, to time.Time, limit, offset int) ([]model.Screening, error) {
-	var screenings []model.Screening
-	err := r.db.Preload("MovieMovieType").
-		Preload("MovieHall").
-		Preload("MovieMovieType.Movie").
-		Preload("MovieMovieType.MovieType").
+func (r *ScreeningRepository) FindBetween(from, to time.Time, limit, offset int) ([]model.RequestScreening, error) {
+	var screenings []model.RequestScreening
+	err := r.db.
+		Model(model.Screening{}).
+		Select(`
+		screenings.id as id, movie_hall_id, start_of_screening, 
+		movie_halls.name as movie_hall_name, movies.id as movie_id,
+		movies.title as movie_title, movie_types.price as price, movie_types.type as movie_type
+		`).
+		Joins("JOIN movie_halls ON movie_halls.id = movie_hall_id").
+		Joins("JOIN movie_movie_types mm_type ON mm_type.id = movie_movie_type_id").
+		Joins("JOIN movies ON mm_type.movie_id = movies.id").
+		Joins("JOIN movie_types ON mm_type.movie_type_id = movie_types.id").
 		Where("start_of_screening between ? and ?", from, to).
 		Limit(limit).
 		Offset(offset).
@@ -55,14 +59,20 @@ func (r *ScreeningRepository) FindBetween(from, to time.Time, limit, offset int)
 	return screenings, err
 }
 
-func (r *ScreeningRepository) FindByMovieIdBetween(movie_id uint, from, to time.Time, limit, offset int) ([]model.Screening, error) {
-	var screenings []model.Screening
-	err := r.db.Preload("MovieMovieType").
-		Preload("MovieHall").
-		Preload("MovieMovieType.Movie").
-		Preload("MovieMovieType.MovieType").
-		Joins("JOIN movie_movie_types AS mm_types ON screenings.movie_movie_type_id = mm_types.id").
-		Where("mm_types.movie_id = ?", movie_id).
+func (r *ScreeningRepository) FindByMovieIdBetween(movie_id uint, from, to time.Time, limit, offset int) ([]model.RequestScreening, error) {
+	var screenings []model.RequestScreening
+	err := r.db.
+		Model(model.Screening{}).
+		Select(`
+		screenings.id as id, movie_hall_id, start_of_screening, 
+		movie_halls.name as movie_hall_name, movies.id as movie_id,
+		movies.title as movie_title, movie_types.price as price, movie_types.type as movie_type
+		`).
+		Joins("JOIN movie_halls ON movie_halls.id = movie_hall_id").
+		Joins("JOIN movie_movie_types mm_type ON mm_type.id = movie_movie_type_id").
+		Joins("JOIN movies ON mm_type.movie_id = movies.id").
+		Joins("JOIN movie_types ON mm_type.movie_type_id = movie_types.id").
+		Where("mm_type.movie_id = ?", movie_id).
 		Where("start_of_screening between ? and ?", from, to).
 		Limit(limit).
 		Offset(offset).

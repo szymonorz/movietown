@@ -17,6 +17,6 @@ func (rs *ReservationService) AddReservation(reservation *model.Reservation) err
 	return rs.repository.Create(reservation)
 }
 
-func (rs *ReservationService) GetCustomerReservations(customer_id uint) ([]model.Reservation, error) {
+func (rs *ReservationService) GetCustomerReservations(customer_id uint) ([]model.RequestReservation, error) {
 	return rs.repository.FindByCustomerId(customer_id)
 }

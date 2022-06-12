@@ -16,21 +16,7 @@ func NewReservedSeatService(repository repository.ReservedSeatRepository) Reserv
 }
 
 func (s *ReservedSeatService) GetAllTakenSeatIds(screening_id uint) ([]model.RequestSeat, error) {
-	reserved, err := s.repository.FindAllByScreeningId(screening_id)
-	if err != nil {
-		return nil, err
-	}
-	var seats []model.RequestSeat
-	for _, r := range reserved {
-		var seat model.RequestSeat
-		seat.ID = r.SeatId
-		seat.RowId = r.Seat.RowId
-		seat.SeatNumber = r.Seat.SeatNumber
-		seat.RowNumber = r.MovieHallRow.RowNumber
-		seats = append(seats, seat)
-	}
-
-	return seats, nil
+	return s.repository.FindAllByScreeningId(screening_id)
 }
 
 func (s *ReservedSeatService) GetAllSeatsFromReservations(reservation_id uint) ([]model.ReservedSeat, error) {

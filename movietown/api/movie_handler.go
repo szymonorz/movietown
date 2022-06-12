@@ -48,6 +48,22 @@ func (h *MovieHandler) GetMovies(c *gin.Context) {
 	c.JSON(http.StatusOK, movies)
 }
 
+func (h *MovieHandler) GetMovieImageURL(c *gin.Context) {
+	movie_id, err := strconv.ParseUint(c.Param("movie_id"), 10, 0)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	imageURL, err := h.service.FindMovieImageURL(uint(movie_id))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, imageURL)
+}
+
 // GetMovieInfo godoc
 // @Summary      Show movie info
 // @Description  get []model.Movie

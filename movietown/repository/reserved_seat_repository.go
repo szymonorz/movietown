@@ -17,11 +17,16 @@ func NewReservedSeatRepository(database *gorm.DB) ReservedSeatRepository {
 	return ReservedSeatRepository{db: database}
 }
 
-func (r *ReservedSeatRepository) FindAllByScreeningId(screening_id uint) ([]model.ReservedSeat, error) {
-	var reserved_seats []model.ReservedSeat
+func (r *ReservedSeatRepository) FindAllByScreeningId(screening_id uint) ([]model.RequestSeat, error) {
+	var reserved_seats []model.RequestSeat
 	err := r.db.
-		Preload("Seat").
-		Preload("MovieHallRow").
+		Model(&model.ReservedSeat{}).
+		Select(`
+			seat_id as id , seats.row_id as row_id, seats.seat_number as seat_number, 
+			movie_hall_rows.row_number as row_number
+			`).
+		Joins("JOIN seats ON seats.id = seat_id").
+		Joins("JOIN movie_hall_rows ON movie_hall_rows.id = movie_hall_row_id").
 		Where("screening_id = ?", screening_id).
 		Find(&reserved_seats).Error
 	return reserved_seats, err
@@ -29,7 +34,9 @@ func (r *ReservedSeatRepository) FindAllByScreeningId(screening_id uint) ([]mode
 
 func (r *ReservedSeatRepository) FindAllByReservationId(reservation_id uint) ([]model.ReservedSeat, error) {
 	var reserved_seats []model.ReservedSeat
-	err := r.db.Preload("DiscountType").
+	err := r.db.
+		Select("discount_types.discount, discount_types.type").
+		Joins("JOIN discount_types ON discount_types.id = discount_type_id").
 		Where("reservation_id = ?", reservation_id).
 		Find(&reserved_seats).Error
 	return reserved_seats, err
