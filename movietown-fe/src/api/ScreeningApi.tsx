@@ -47,6 +47,17 @@ export interface movie_hall_row {
     row_number: number
 }
 
+export interface request_screening {
+   id: number,
+   movie_id: number,
+   movie_title: string,
+   movie_type: string,
+   price: number,
+   movie_hall_id: number,
+   movie_hall_name: string,
+   start_of_screening: Date
+}
+
 const instance = axios.create({
     baseURL: "http://localhost:4000/api/v1/screening"
 })

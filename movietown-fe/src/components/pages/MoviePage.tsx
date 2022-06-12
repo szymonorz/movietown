@@ -4,7 +4,7 @@ import { DatePicker, LocalizationProvider } from '@mui/lab';
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { getMovieById, movie } from '../../api/MovieApi'
-import { getScreeningByMovieId, screening } from '../../api/ScreeningApi'
+import { getScreeningByMovieId, request_screening, screening } from '../../api/ScreeningApi'
 import ScreeningList from '../ScreeningList'
 import DateAdapter from '@mui/lab/AdapterDateFns'
 import { Description, Title } from '../MovieCard';
@@ -22,7 +22,7 @@ const MoviePage: React.FC<{}> = () => {
     const {entire} = useStyles()
     const { id } = useParams()
     const [movieData, setMovieData] = useState<null | movie>(null)
-    const [screenings, setScreenings] = useState<screening[]>([])
+    const [screenings, setScreenings] = useState<request_screening[]>([])
     const [error, setError] = useState<null | any>(null)
 
     useEffect(() => {

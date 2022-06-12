@@ -4,7 +4,7 @@ import ReservationSeatsFragment from '../customer_components/steps/ReservationSe
 import { MakeReservationStep } from '../customer_components/steps/common'
 import { customerReservation, CustomerReservationContext } from '../../api/ReservationApi'
 import { useSearchParams, Navigate } from 'react-router-dom';
-import { getScreeningById, screening } from '../../api/ScreeningApi';
+import { getScreeningById, request_screening, screening } from '../../api/ScreeningApi';
 import SelectSeatsFragment from '../customer_components/steps/SelectSeatsFragment'
 import SummaryStep from '../customer_components/steps/SummaryStep'
 import { stepConnectorClasses } from '@mui/material'
@@ -69,30 +69,15 @@ const MakeReservationPage: React.FC<{}> = () => {
     const [reservationId, setReservationId] = useState<number | null>(null)
     const [loginState, setLoginState] = useState<boolean>(true)
 
-    const [screening, setScreening] = useState<screening>({
+    const [screening, setScreening] = useState<request_screening>({
         id: 0,
-        mm_type: {
-            id: 0,
-            movie: {
-                id: 0,
-                title: '',
-                director: '',
-                description: '',
-                length: 0,
-                url: '',
-                movie_types: []
-            },
-            movie_type: {
-                price: 0,
-                type: ''
-            }
-        },
-        movie_hall: {
-            id: 0,
-            name: '',
-            number_of_seats: 0
-        },
-        start_of_screening: new Date(),
+        movie_id: 0,
+        movie_title: "",
+        movie_hall_id: 0,
+        movie_type: "",
+        price: 0,
+        movie_hall_name: "",
+        start_of_screening: new Date()
     })
 
     const [customerReservation, setCustomerReservation] = useState<customerReservation>({
@@ -201,7 +186,7 @@ const MakeReservationPage: React.FC<{}> = () => {
                             <div>
                                 <SelectSeatsFragment
                                     setNextDisabled={setNextDisabled}
-                                    movieHallId={screening.movie_hall.id}
+                                    movieHallId={screening.movie_hall_id}
                                 />
                             </div>
                         )}

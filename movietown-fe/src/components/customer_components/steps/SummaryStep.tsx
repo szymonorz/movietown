@@ -1,11 +1,11 @@
 import { Divider, makeStyles, Button } from '@material-ui/core'
 import React, { useContext, useEffect, useState } from 'react'
 import { createReservation, CustomerReservationContext, discount, getDiscounts } from '../../../api/ReservationApi'
-import { screening } from '../../../api/ScreeningApi'
+import { request_screening } from '../../../api/ScreeningApi'
 import TicketList from './steps_components/TicketList'
 
 interface SummaryStepProps {
-    screening: screening,
+    screening: request_screening,
     setNextDisabled: React.Dispatch<React.SetStateAction<boolean>>,
     setReservationId: React.Dispatch<React.SetStateAction<number | null>>
 }
@@ -39,7 +39,7 @@ const SummaryStep: React.FC<SummaryStepProps> = ({ setNextDisabled, screening, s
     const provider = useContext(CustomerReservationContext)
     const [discountTypes, setDiscountTypes] = useState<discount[]>([])
     const [error, setError] = useState<string | null>(null)
-    const price = screening.mm_type.movie_type.price
+    const price = screening.price
     const seats = provider!.customerReservation.discounts
     useEffect(() => {
         setNextDisabled(true)

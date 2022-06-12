@@ -1,12 +1,12 @@
 import { Grid, Typography, TextField, makeStyles } from '@material-ui/core';
 import React, { useState, useEffect, useContext, useRef } from 'react';
 import { customerReservation, CustomerReservationContext } from '../../../api/ReservationApi';
-import { screening } from '../../../api/ScreeningApi';
+import { request_screening, screening } from '../../../api/ScreeningApi';
 import DiscountForm from './steps_components/DiscountForm';
 
 
 interface ChooseMovieTypeProps {
-    screening: screening,
+    screening: request_screening,
     setNextDisabled: React.Dispatch<React.SetStateAction<boolean>>
 
 }
@@ -65,7 +65,7 @@ const ReservationSeatsFragment: React.FC<ChooseMovieTypeProps> = ({ setNextDisab
             <Grid container spacing={2}>
                 <Grid item xs={4}>
                     <Typography>
-                        Tytuł: {screening.mm_type.movie.title}
+                        Tytuł: {screening.movie_title}
                     </Typography>
                 </Grid>
                 <Grid item xs={4}>
@@ -76,10 +76,10 @@ const ReservationSeatsFragment: React.FC<ChooseMovieTypeProps> = ({ setNextDisab
                 </Grid>
                 <Grid item xs={4}>
                     <Typography>
-                        Sala: {screening.movie_hall.name}
+                        Sala: {screening.movie_hall_name}
                     </Typography>
                     <Typography>
-                        Rodzaj: {screening.mm_type.movie_type.type}
+                        Rodzaj: {screening.movie_type}
                     </Typography>
                 </Grid>
                 <Grid item xs={4}>
@@ -89,7 +89,7 @@ const ReservationSeatsFragment: React.FC<ChooseMovieTypeProps> = ({ setNextDisab
                             className={input}
                             value={numberOfSeats}
                             type='number'
-                            InputProps={{ inputProps: { min: 0, max: screening.movie_hall.number_of_seats }, className: input }}
+                            InputProps={{ inputProps: { min: 0 }, className: input }}
                             onChange={(e) => {
 
                                 setNumberOfSeats(parseInt(e.currentTarget.value))

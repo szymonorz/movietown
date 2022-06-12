@@ -3,14 +3,14 @@ import { DatePicker, LocalizationProvider } from '@mui/lab';
 import React, { useEffect, useState } from 'react';
 import DateAdapter from '@mui/lab/AdapterDateFns'
 import { TextField } from '@mui/material';
-import { getDaysScreenings, screening } from '../../api/ScreeningApi';
+import { getDaysScreenings, request_screening, screening } from '../../api/ScreeningApi';
 import ScreeningList from '../ScreeningList';
 import { DatePickerLabel } from '../customer_components/DatePickerLabel';
 
 
 const ScreeningListPage: React.FC<{}> = () => {
     const [date, setDate] = useState<Date | null>(new Date())
-    const [screenings, setScreenings] = useState<screening[]>([])
+    const [screenings, setScreenings] = useState<request_screening[]>([])
 
     useEffect(() => {
 
