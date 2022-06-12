@@ -41,13 +41,13 @@ func (r *CustomerRepository) Update(id uint, customer model.Customer) error {
 	return err
 }
 
-func (r *CustomerRepository) UpdateCustomer(employee model.CustomerInfo) error {
-	return r.db.Model(&model.Customer{}).Where("id = ?", employee.ID).UpdateColumns(model.CustomerInfo{
-		Username:     employee.Username,
-		Name:         employee.Name,
-		Surname:      employee.Surname,
-		Phone_number: employee.Phone_number,
-		Email:        employee.Email,
+func (r *CustomerRepository) UpdateCustomer(customer model.CustomerInfo) error {
+	return r.db.Model(&model.Customer{}).Where("id = ?", customer.ID).UpdateColumns(model.CustomerInfo{
+		Username:     customer.Username,
+		Name:         customer.Name,
+		Surname:      customer.Surname,
+		Phone_number: customer.Phone_number,
+		Email:        customer.Email,
 	}).Error
 }
 
