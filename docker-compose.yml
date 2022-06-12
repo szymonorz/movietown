@@ -12,14 +12,6 @@ services:
             - "./sql:/docker-entrypoint-initdb.d/"
         networks:
             - apps-network
-    movietown-be:
-        build:
-            context: .
-            dockerfile: ./cinema-be/Dockerfile
-        ports:
-            - "8080:8080"
-        networks:
-            - apps-network
 
 networks:
     apps-network:
