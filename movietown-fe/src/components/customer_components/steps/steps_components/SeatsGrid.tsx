@@ -13,6 +13,8 @@ const SeatsGrid: React.FC<SeatsGridProps> = ({ setNextDisabled, movieHallId }) =
     const [seats, setSeats] = useState<seat[]>([])
     const [takenSeats, setTakenSeats] = useState<seat[]>([])
     const [movieHallRows, setMovieHallRows] = useState<movie_hall_row[]>([])
+    const [boxSize, setBoxSize] = useState<number>(40)
+    const [maxSeats, setMaxSeats] = useState<number>(0)
     const seatsToChoose = provider!.customerReservation.seatsToChoose
     useEffect(() => {
         const screeningId = provider!.customerReservation.screening_id
@@ -57,7 +59,6 @@ const SeatsGrid: React.FC<SeatsGridProps> = ({ setNextDisabled, movieHallId }) =
 
     // do not change anything down there otherwise the entire thing will explode
     // this is a threat
-    const boxSize = 40;
     const handleClick = (event: React.MouseEvent<HTMLCanvasElement, MouseEvent>) => {
         const canvas = canvasRef.current
         
@@ -65,7 +66,7 @@ const SeatsGrid: React.FC<SeatsGridProps> = ({ setNextDisabled, movieHallId }) =
         const x = event.clientX - rect!.left
         const y = Math.floor(event.clientY - rect!.top)
         const numOfRows = movieHallRows.length
-        if (x >= boxSize && y >= boxSize && x < boxSize * 20 && y < boxSize * (numOfRows + 1)) {
+        if (x >= boxSize && y >= boxSize && x < boxSize * (maxSeats + 1) && y < boxSize * (numOfRows + 1)) {
             
             const row = Math.floor(y / boxSize);
             const col = Math.floor((x) / (boxSize));
@@ -73,11 +74,11 @@ const SeatsGrid: React.FC<SeatsGridProps> = ({ setNextDisabled, movieHallId }) =
             const green = data?.data[1]
             const red = data?.data[0]
             const chosenRow = movieHallRows.find((element, index, array) => {
-                return (element.row_number == row)
+                return (element.row_number === row)
             })
             if(chosenRow !== undefined){
                 const chosenSeat = chosenRow.row.seats.find((element, index, array) => {
-                    return (element.seat_number == col)
+                    return (element.seat_number === col)
                 })
                 if(chosenSeat !== undefined){
                     const newSeat: seat = {
@@ -116,6 +117,9 @@ const SeatsGrid: React.FC<SeatsGridProps> = ({ setNextDisabled, movieHallId }) =
 
     useEffect(() => {
         const canvas = canvasRef.current
+        const maxSeats = Math.max(...(movieHallRows.map(item => item.row.seats.length)))
+        setMaxSeats(maxSeats)
+       
         if(!provider!.customerReservation.seatsToChoose) setNextDisabled(false)
         else setNextDisabled(true)
         provider!.setCustomerReservation(prev => {
@@ -127,12 +131,15 @@ const SeatsGrid: React.FC<SeatsGridProps> = ({ setNextDisabled, movieHallId }) =
         })
         if (canvas) {
             const context = canvas!.getContext("2d")
+            setBoxSize((context!.canvas.width / maxSeats) - 5)
             if (context) {
                 context.fillStyle = "#414348"
                 context.fillRect(0, 0, context.canvas.width, context.canvas.height)
                 context.font = "bold 10pt Courier"
                 movieHallRows.forEach((movieHallRow , index) => {
                     let rowN = movieHallRow.row_number
+                    context.fillStyle = "#eee"
+                    context.fillText(rowN +"", boxSize - 25, rowN * boxSize + 25)
                     context.fillStyle = "#009900"
                     movieHallRow.row.seats.forEach((seat, col) => {
                         if(isSeatInArray(seat, seats)){
@@ -166,7 +173,7 @@ const SeatsGrid: React.FC<SeatsGridProps> = ({ setNextDisabled, movieHallId }) =
                 })
             }
         }
-    }, [seats, takenSeats, movieHallRows])
+    }, [seats, takenSeats, movieHallRows, boxSize, maxSeats])
 
 
     return <canvas ref={canvasRef} width={800} height={500} onClick={handleClick} />
