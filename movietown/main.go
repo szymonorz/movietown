@@ -110,6 +110,7 @@ func main() {
 			movieApi.GET("/", movieHandler.GetMovies)
 			movieApi.GET("/:movie_id", movieHandler.GetMovieInfo)
 			movieApi.GET("/:movie_id/image", movieHandler.GetMovieImageURL)
+			movieApi.GET("/latest", movieHandler.GetLatestMovies)
 		}
 		screeningApi := v1.Group("/screening")
 		{

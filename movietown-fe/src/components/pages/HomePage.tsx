@@ -1,8 +1,7 @@
-import { Divider, Grid, makeStyles, Typography } from '@material-ui/core'
+import {Grid, Typography } from '@material-ui/core'
 import React, { useEffect, useState } from 'react'
-import { getDaysScreenings, screening } from '../../api/ScreeningApi'
-import ScreeningList from '../ScreeningList'
-import { getQueriedMovies, movie } from '../../api/MovieApi'
+import { getDates, getDaysScreenings, request_screening } from '../../api/ScreeningApi'
+import { getLatestMovies, movie } from '../../api/MovieApi'
 import Carousel from '../Carousel'
 import { styled } from '@mui/material'
 
@@ -34,25 +33,11 @@ const CardHeader = styled(Typography)({
 })
 
 const HomePage: React.FC<{}> = () => {
-    const [screenings, setScreenings] = useState<screening[]>([])
     const [data, setData] = useState<movie[]>([])
     useEffect(() => {
         setData([])
-        const today = new Date()
-        const to = new Date()
-        to.setDate(today.getDate() + 1)
-        to.setHours(0)
-        to.setMinutes(0)
-        to.setSeconds(0)
-        to.setMilliseconds(0)
-        getDaysScreenings({
-            from: today,
-            to: to
-        }).then(({ data }) => {
-            setScreenings([...data])
-        }).catch((err) => console.error(err))
-
-        getQueriedMovies("", 3, 0).then(({ data }) => {
+        getLatestMovies(3, 0)
+        .then(({ data }) => {
             setData(data)
         }).catch((err) => console.error(err))
 

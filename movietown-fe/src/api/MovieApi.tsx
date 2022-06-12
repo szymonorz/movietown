@@ -33,6 +33,15 @@ export const getMovieImageUrl = (movie_id: number) => {
     return instance.get(`/${movie_id}/image`)
 }
 
+export const getLatestMovies = (limit: number, offset: number) => {
+    return instance.get("/latest", {
+        params: {
+            limit: limit,
+            offset: offset
+        }
+    })
+}
+
 export const getMovieById = (id: number) => {
     return instance.get(`/${id}`)
 }

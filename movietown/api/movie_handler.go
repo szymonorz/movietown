@@ -64,6 +64,26 @@ func (h *MovieHandler) GetMovieImageURL(c *gin.Context) {
 	c.JSON(http.StatusOK, imageURL)
 }
 
+func (h *MovieHandler) GetLatestMovies(c *gin.Context) {
+	limit, err := strconv.ParseInt(c.Query("limit"), 10, 0)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	offset, err := strconv.ParseInt(c.Query("offset"), 10, 0)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	movies, err := h.service.FindLatests(int(limit), int(offset))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, movies)
+}
+
 // GetMovieInfo godoc
 // @Summary      Show movie info
 // @Description  get []model.Movie

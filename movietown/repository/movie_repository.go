@@ -41,3 +41,12 @@ func (r *MovieRepository) FindByNamePattern(pattern string, limit, offset int) (
 		Find(&movies).Error
 	return movies, err
 }
+
+func (r *MovieRepository) FindLatests(limit, offset int) ([]model.Movie, error) {
+	var movies []model.Movie
+	err := r.db.Order("id desc").
+		Limit(limit).
+		Offset(offset).
+		Find(&movies).Error
+	return movies, err
+}
