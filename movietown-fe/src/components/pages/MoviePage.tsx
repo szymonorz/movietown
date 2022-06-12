@@ -1,25 +1,30 @@
-import { Divider, Grid, makeStyles, Typography } from '@material-ui/core'
+import { Divider, Grid, styled } from '@material-ui/core'
 import { TextField } from '@mui/material';
 import { DatePicker, LocalizationProvider } from '@mui/lab';
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { getMovieById, movie } from '../../api/MovieApi'
-import { getScreeningByMovieId, request_screening, screening } from '../../api/ScreeningApi'
+import { getDates, getScreeningByMovieId, request_screening } from '../../api/ScreeningApi'
 import ScreeningList from '../ScreeningList'
 import DateAdapter from '@mui/lab/AdapterDateFns'
 import { Description, Title } from '../MovieCard';
 import { DatePickerLabel } from '../customer_components/DatePickerLabel';
 
-const useStyles = makeStyles(() => ({
-    entire: {
+const MoviePageContainer = styled('div')({
         color: "white",
         padding: "20px",
         backgroundColor: "#282c34"
-    },
-}))
+})
+
+const BigImage = styled('img')({
+    height: "500px",
+    marginRight: "50%",
+    borderRadius: "5px",
+    width: "300px",
+    objectFit: "contain"
+})
 
 const MoviePage: React.FC<{}> = () => {
-    const {entire} = useStyles()
     const { id } = useParams()
     const [movieData, setMovieData] = useState<null | movie>(null)
     const [screenings, setScreenings] = useState<request_screening[]>([])
@@ -43,20 +48,7 @@ const MoviePage: React.FC<{}> = () => {
     useEffect(() => {
         const movieId = Number(id)
         if (!isNaN(movieId)) {
-            const today = new Date
-            const d = today.getDay() === date!.getDay() ? today : date!
-            const to = new Date(d)
-            to.setDate(d.getDate() + 1)
-            to.setHours(0)
-            to.setMinutes(0)
-            to.setSeconds(0)
-            to.setMilliseconds(0)
-            if (d.getDay() != today.getDay()) {
-                d.setHours(0)
-                d.setMinutes(0)
-                d.setSeconds(0)
-                d.setMilliseconds(0)
-            }
+            const [d, to] = getDates(date!)
             getScreeningByMovieId(movieId, {
                 from: d as Date,
                 to: to
@@ -86,7 +78,7 @@ const MoviePage: React.FC<{}> = () => {
         return <div>
             <Grid container>
                 <Grid item xs={4}>
-                    <img src={movieData.url} />
+                    <BigImage src={movieData.url} />
                 </Grid>
                 <Grid item xs={8}>
                     <Title>
@@ -113,10 +105,9 @@ const MoviePage: React.FC<{}> = () => {
         </div>
     }
 
-    return <div className={entire}>
+    return <MoviePageContainer>
         {error == null ? showMovieInfo(movieData) : showError(error)}
-
-    </div>
+    </MoviePageContainer>
 }
 
 export default MoviePage

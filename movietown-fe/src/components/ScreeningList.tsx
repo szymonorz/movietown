@@ -1,5 +1,5 @@
 import React from 'react';
-import {request_screening, screening} from '../api/ScreeningApi';
+import {request_screening} from '../api/ScreeningApi';
 import ScreeningCard from './ScreeningCard';
 import { StyledList } from './customer_components/StyledList';
 

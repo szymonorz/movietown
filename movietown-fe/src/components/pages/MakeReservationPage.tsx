@@ -4,7 +4,7 @@ import ReservationSeatsFragment from '../customer_components/steps/ReservationSe
 import { MakeReservationStep } from '../customer_components/steps/common'
 import { customerReservation, CustomerReservationContext } from '../../api/ReservationApi'
 import { useSearchParams, Navigate } from 'react-router-dom';
-import { getScreeningById, request_screening, screening } from '../../api/ScreeningApi';
+import { getScreeningById, request_screening } from '../../api/ScreeningApi';
 import SelectSeatsFragment from '../customer_components/steps/SelectSeatsFragment'
 import SummaryStep from '../customer_components/steps/SummaryStep'
 import { stepConnectorClasses } from '@mui/material'

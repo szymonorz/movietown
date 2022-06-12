@@ -62,6 +62,26 @@ const instance = axios.create({
     baseURL: "http://localhost:4000/api/v1/screening"
 })
 
+
+export const getDates = (date: Date): [Date, Date] => {
+    const today = new Date()     
+    const d = today.getDay() === date!.getDay() ? today : date!
+    const to = new Date(d)
+    to.setDate(d.getDate() + 1)
+    to.setHours(0)
+    to.setMinutes(0)
+    to.setSeconds(0)
+    to.setMilliseconds(0)
+    if(d.getDay() !== today.getDay()){
+        d.setHours(0)
+        d.setMinutes(0)
+        d.setSeconds(0)
+        d.setMilliseconds(0)
+    }
+
+    return [d as Date, to]
+}
+
 export const getScreeningById = async (id: number) => {
     return await instance.get(`/s/${id}`)
 }

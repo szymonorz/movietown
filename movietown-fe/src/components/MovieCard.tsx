@@ -1,8 +1,9 @@
 import React from 'react'
-import { Typography, makeStyles, Divider, Grid } from '@material-ui/core'
+import { Typography, Divider, Grid } from '@material-ui/core'
 import { movie } from '../api/MovieApi'
 import { Link } from 'react-router-dom'
 import { styled } from '@mui/material'
+import { Image } from './StyledImage'
 
 
 interface MovieCardProps {
@@ -16,12 +17,6 @@ const Card = styled('div')({
     justifyContent: "space-between",
     color: "white",
     margin: "0 25% 0 25%"
-})
-
-const Image = styled('img')({
-    width: "80px",
-    height: "100px",
-    marginRight: "50%"
 })
 
 export const Title = styled(Typography)({

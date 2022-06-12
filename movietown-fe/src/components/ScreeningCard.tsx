@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import { makeStyles, Typography, Divider, Grid } from '@material-ui/core'
-import { request_screening, screening } from '../api/ScreeningApi'
-import { getMovieImageUrl, movie, movie_type } from '../api/MovieApi'
+import { request_screening } from '../api/ScreeningApi'
+import { getMovieImageUrl} from '../api/MovieApi'
 import { Link } from 'react-router-dom'
+import { Image } from './StyledImage'
 
 const useStyles = makeStyles(() => ({
     element: {
@@ -30,11 +31,6 @@ const useStyles = makeStyles(() => ({
         justifyContent: "space-around",
         color: "white",
         fontWeight: "bold"
-    },
-    image: {
-        width: "80px",
-        height: "100px",
-        marginRight: "50%"
     }
 }))
 
@@ -43,7 +39,7 @@ interface ScreeningCardProps {
 }
 
 const ScreeningCard: React.FC<ScreeningCardProps> = ({ value }) => {
-    const { href, timeLabel, block, element, image } = useStyles()
+    const { href, timeLabel, block, element } = useStyles()
     const time = new Date(value.start_of_screening)
     const [imageURL, setImageURL] = useState<string>("")
 
@@ -56,7 +52,7 @@ const ScreeningCard: React.FC<ScreeningCardProps> = ({ value }) => {
             <Grid container>
                 <Grid item xs={3}>
                     <Link to={`/movie/${value.movie_id}`}>
-                        <img src={imageURL} className={image} />
+                        <Image src={imageURL}/>
                     </Link>
                 </Grid>
                 <Grid item xs={9}>

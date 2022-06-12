@@ -38,12 +38,12 @@ export interface reservation {
     price: number
 }
 
-export interface IAMGOINGTOLOSEMYFUCKINGMIND{
+export interface CustomerReservationProvider{
     customerReservation: customerReservation,
     setCustomerReservation: React.Dispatch<React.SetStateAction<customerReservation>>
 }
 
-export const CustomerReservationContext = createContext<IAMGOINGTOLOSEMYFUCKINGMIND | null>(null)
+export const CustomerReservationContext = createContext<CustomerReservationProvider | null>(null)
 
 export const getReservationTypes = async () => {
     return await instance.get("/types");

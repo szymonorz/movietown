@@ -1,7 +1,7 @@
 import { Grid, Typography, TextField, makeStyles } from '@material-ui/core';
-import React, { useState, useEffect, useContext, useRef } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { customerReservation, CustomerReservationContext } from '../../../api/ReservationApi';
-import { request_screening, screening } from '../../../api/ScreeningApi';
+import { request_screening } from '../../../api/ScreeningApi';
 import DiscountForm from './steps_components/DiscountForm';
 
 
@@ -57,7 +57,7 @@ const ReservationSeatsFragment: React.FC<ChooseMovieTypeProps> = ({ setNextDisab
             }
         })
 
-    }, [numberOfSeats])
+    }, [numberOfSeats, provider])
 
 
     return (
