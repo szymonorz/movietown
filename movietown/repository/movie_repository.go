@@ -27,6 +27,7 @@ func (r *MovieRepository) FindMovieImageURL(movie_id uint) (string, error) {
 	err := r.db.
 		Model(model.Movie{}).
 		Select("url").
+		Where("id = ?", movie_id).
 		First(&imageURL).Error
 
 	return imageURL, err
