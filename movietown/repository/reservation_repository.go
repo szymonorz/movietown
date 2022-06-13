@@ -27,13 +27,6 @@ func (r *ReservationRepository) FindById(id uint) (model.Reservation, error) {
 	return reservation, err
 }
 
-/*
-	tmp.ID = reservation.ID
-		tmp.MovieTitle = reservation.Screening.MovieMovieType.Movie.Title
-		tmp.MovieType = reservation.Screening.MovieMovieType.MovieType.Type
-		tmp.TimeOfScreening = reservation.Screening.Start_of_screening.Format(time.RFC3339)
-		tmp.ReservationType = reservation.ReservationType.Type
-*/
 func (r *ReservationRepository) FindByCustomerId(customer_id uint) ([]model.RequestReservation, error) {
 	var reservations []model.RequestReservation
 	err := r.db.
@@ -47,11 +40,6 @@ func (r *ReservationRepository) FindByCustomerId(customer_id uint) ([]model.Requ
 		Joins("JOIN movies ON mm_type.movie_id = movies.id").
 		Joins("JOIN movie_types ON mm_type.movie_type_id = movie_types.id").
 		Joins("JOIN reservation_types ON reservation_types.id = reservation_type_id").
-		// Preload("Screening").
-		// Preload("Screening.MovieMovieType").
-		// Preload("ReservationType").
-		// Preload("Screening.MovieMovieType.Movie").
-		// Preload("Screening.MovieMovieType.MovieType").
 		Where(model.Reservation{CustomerId: &customer_id}).
 		Find(&reservations).Error
 	return reservations, err
