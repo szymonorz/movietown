@@ -70,7 +70,7 @@ const CustomerAccount: React.FC<{}> = () => {
 
     return (
         <CustomerContainer>
-            {(!loginState) && <Navigate replace to={"/"} />}
+            {(!loginState) && <Navigate replace to={"/signin?logged=false"} />}
             <Formik
                 enableReinitialize
                 initialValues={accountValues}

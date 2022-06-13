@@ -151,7 +151,7 @@ const MakeReservationPage: React.FC<{}> = () => {
 
     return (
         <div className={thing}>
-            {!loginState && (<Navigate to="/signin"/>)}
+            {!loginState && (<Navigate to="/signin?logged=false"/>)}
             {reservationId == null && (
                 <div>
                     <Stepper activeStep={activeStep} connector={<Connector/>} style={{background: "none"}}>

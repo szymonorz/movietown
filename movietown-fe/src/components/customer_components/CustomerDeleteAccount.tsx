@@ -41,13 +41,13 @@ const CustomerDeleteAccount: React.FC<{}> = () => {
                         setAuthorized(false)
                         setLoginState(false)
                         localStorage.removeItem("token")
-                        navigate("/")
+                        navigate("/signin?logged=false")
                     }
                 })
         } else {
             setLoginState(false)
             setAuthorized(false)
-            navigate("/")
+            navigate("/signin?logged=false")
         }
     }, [loginState])
 

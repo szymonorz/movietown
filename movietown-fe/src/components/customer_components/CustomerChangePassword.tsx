@@ -1,11 +1,12 @@
 import { Formik } from 'formik';
-import React from 'react';
+import React, { useContext, useEffect } from 'react';
 import * as Yup from 'yup';
 import MTextField from '../forms/formComponents/TextField';
-import { changeCustomersPassword } from '../../api/CustomerApi';
+import { changeCustomersPassword, getCustomerInfo, LoginStateContext } from '../../api/CustomerApi';
 import MButton from '../MButton';
 import { StyledForm } from './StyledForm';
 import { CustomerContainer } from './StyledCustomerContainer';
+import { Navigate } from 'react-router-dom';
 
 export interface ChangePasswordValues {
     old_password: string,
@@ -22,8 +23,25 @@ const PasswordValidation = Yup.object().shape({
 
 const CustomerChangePassword: React.FC<{}> = () => {
     const token = localStorage.getItem("token") || ""
+    const provider = useContext(LoginStateContext)
+    const { loginState, setLoginState } = provider!
+    useEffect(() => {
+        if (token) {
+            const infoPromise = getCustomerInfo(token)
+            infoPromise.then(({ status, data }) => {
+
+            }).catch((err) => {
+                setLoginState(false)
+                localStorage.removeItem("token")
+
+            })
+        } else {
+            setLoginState(false)
+        }
+    }, [])
     return (
         <CustomerContainer>
+            {(!loginState) && <Navigate replace to={"/signin?logged=false"} />}
             <Formik
                 initialValues={{
                     old_password: '',
@@ -54,7 +72,7 @@ const CustomerChangePassword: React.FC<{}> = () => {
                             type={'password'}>
 
                         </MTextField>
-                        <MButton label='Zmień hasło' onClick={handleSubmit}/>
+                        <MButton label='Zmień hasło' onClick={handleSubmit} />
                     </StyledForm>
                 )}
 

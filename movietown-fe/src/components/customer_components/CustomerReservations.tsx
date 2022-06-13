@@ -54,12 +54,12 @@ const CustomerReservations: React.FC<{}> = () => {
                 if (err.response.status === 401) {
                     setLoginState(false)
                     localStorage.removeItem("token")
-                    navigate("/")
+                    navigate("/signin?logged=false")
                 }
             })
         } else {
             setLoginState(false)
-            navigate("/")
+            navigate("/signin?logged=false")
         }
     }, [loginState])
 
